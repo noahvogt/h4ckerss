@@ -1,6 +1,6 @@
 # Baseline calculation
 
-The implemented pipeline selects monthly facts, validates research factors, and estimates facility electricity and location-based CO₂e per fact.
+The pipeline selects monthly facts, validates research factors, estimates facility electricity and location-based CO₂e per fact, and summarizes and ranks baseline drivers.
 
 ## Baseline selection
 
@@ -64,8 +64,27 @@ Grid factors cover Switzerland (`CH`), Germany (`DE`), Ireland (`IE`), and a mix
 
 The result adds `co2e_kg_low`, `co2e_kg_mid`, and `co2e_kg_high` alongside the status and grid metadata. It preserves the original facts and their index and order. Non-finite or negative calculated emissions raise `ValueError`. All 216 unknown emissions facts in the checked-in baseline lack an energy estimate.
 
+## Summaries and driver rankings
+
+[`summarize_baseline()`](../backend/app/pipeline/summary.py) takes the already selected and calculated facts. Use `by="month"` for monthly totals and omit `by` for the annual company total. It also accepts location, department, tool, category, and resource ID, alone or in combination. Missing group labels are kept as a group. Each fact is counted once per grouping. CHF is summed once, with credits retaining their sign. Energy and emissions are summed separately for each scenario over known values. A group with no known values for a metric returns a missing subtotal. An empty input with the fact columns returns an empty summary.
+
+Coverage is tracked independently for cost, energy, and emissions. Each physical metric counts calculated, unknown, and cost-only facts. It also counts calculated facts with partial usage flagged in source notes. The recognized flags are known tokens or messages only and billing periods with missing days. `partial_token_fact_count` counts facts flagged for partial token usage, which can be traced back to the original fact notes.
+
+| Coverage | Meaning |
+|---|---|
+| `complete` | All applicable facts have numeric values and none have a recognized partial-data flag for the metric. |
+| `partial` | A known subtotal exists, and at least one applicable fact is unavailable or flagged as partial. |
+| `unavailable` | Applicable facts exist and none have a known value. |
+| `inapplicable` | Every fact is cost-only for the physical metric. |
+
+Cost coverage counts known amounts, missing amounts, and known subtotals flagged as incomplete. Estimated CHF amounts remain part of the known subtotal. Cost-only rows contribute to CHF and are excluded from physical coverage. These labels describe the available data and the model's coverage. They do not establish complete physical measurement.
+
+The annual summary counts 698 facts and retains CHF 470,300.4703 net. Energy and emissions each have 468 calculated, 216 unknown, and 14 cost-only facts. Of the calculated facts for each metric, 183 have flagged partial usage, including 134 with partial token counts. The mid scenario known subtotals are **24,185.38 kWh** and **4,203.96 kg CO₂e**, with partial coverage for both metrics.
+
+`rank_drivers()` ranks annual subtotals by resource ID, department, tool, or location. The ranking metric is signed net CHF (`cost_chf`), mid scenario kWh (`energy_kwh`), or mid scenario kg CO₂e (`co2e_kg`). Groups with unavailable values for the selected metric are excluded. Known zero values remain eligible. Rows sort by descending subtotal and ascending group label for ties, with missing labels last. Ranked rows retain the summary's coverage counts and statuses. An optional limit returns the top rows.
+
 ## Limitations and planned work
 
 Energy values use researched proxies. The storage factor assumes logical GB-days, and the GPU factor models the board. Energy and emissions cover only supported kinds and reported usage. The Swiss grid factor uses a consumption mix including imports. The German, Irish, and mixed EU factors use generation-based proxies, and the mixed EU factor represents the region rather than individual providers.
 
-Aggregation, frontend integration, and submission export are outside the current pipeline.
+Frontend integration and submission export are outside the current pipeline.

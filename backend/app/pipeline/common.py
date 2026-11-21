@@ -28,23 +28,30 @@ def month_start(dates: pd.Series, format: str | None = None) -> pd.Series:
 
 
 @cache
-def exchange_rates() -> pd.DataFrame:
+def exchange_rates(data_dir: str | Path = DATA_DIR) -> pd.DataFrame:
     """Monthly CHF rates, indexed by month (1st of month), columns CHF, EUR, USD."""
-    fx = read_csv("exchange_rates.csv", parse_dates=["month"])
+    fx = read_csv(str(Path(data_dir) / "exchange_rates.csv"), parse_dates=["month"])
     fx = fx.rename(columns={"eur_chf": "EUR", "usd_chf": "USD"}).set_index("month")
     fx["CHF"] = 1.0
     return fx.loc[:, ["CHF", "EUR", "USD"]]
 
 
-def to_chf(amount: pd.Series, currency: pd.Series | str, month: pd.Series) -> pd.Series:
+def to_chf(
+    amount: pd.Series,
+    currency: pd.Series | str,
+    month: pd.Series,
+    *,
+    data_dir: str | Path = DATA_DIR,
+) -> pd.Series:
     """Convert amounts to CHF with the monthly average rate of each row's month.
 
     - `currency` is a column or one currency for all rows ("USD").
     - `month` can be any date in the month; it is normalised with month_start().
+    - `data_dir` selects the directory containing `exchange_rates.csv`.
     - Missing amounts stay missing (never turned into 0).
     - Unknown currencies or months without a rate raise ValueError.
     """
-    fx = exchange_rates()
+    fx = exchange_rates(data_dir)
     cur = (
         pd.Series(currency, index=amount.index)
         if isinstance(currency, str)
@@ -62,8 +69,14 @@ def to_chf(amount: pd.Series, currency: pd.Series | str, month: pd.Series) -> pd
             f"no exchange rate for months: {[str(m.date()) for m in no_rate] or 'empty values'}"
         )
 
-    rate = fx.stack().reindex(pd.MultiIndex.from_arrays([months, cur])).to_numpy()
-    return amount * rate
+    rate = fx.stack().reindex(pd.MultiIndex.from_arrays([months, cur]))
+    if rate.isna().any():
+        missing_months = sorted(
+            {str(month.date()) for month in months[rate.isna().to_numpy()]}
+        )
+        raise ValueError(f"no exchange rate for months: {missing_months}")
+
+    return amount * rate.to_numpy()
 
 
 def department_for(cost_center: pd.Series) -> pd.Series:

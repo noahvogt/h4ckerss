@@ -5,7 +5,7 @@ from collections.abc import Sequence
 import pandas as pd
 
 _RANK_DIMENSIONS = {"resource_id", "department", "tool", "location"}
-_DIMENSIONS = _RANK_DIMENSIONS | {"month", "category"}
+_DIMENSIONS = _RANK_DIMENSIONS | {"month", "category", "source", "usage_kind"}
 _RANK_COLUMNS = {
     "cost_chf": "cost_chf",
     "energy_kwh": "energy_kwh_mid",

@@ -18,3 +18,14 @@ How we cleaned each source and why. One line per decision.
 - One injected instruction in `Notes` (vm-app, 2026-04-15) ignored and flagged.
 - Days without a row (48 in total) are missing data, not idle days: idle resources still get a row with quantity 0 (e.g. gpu-ml), and the gaps never hit two resources on the same day.
 - September 2026 is a partial month (data until 2026-09-06).
+
+## aws_costs.csv
+
+- 5 exact duplicate rows dropped: one per resource, all on 2025-12-03, identical in every column (re-export, same pattern as Azure).
+- All costs in USD → CHF with the monthly rate.
+- Short resource ID = last segment of the ARN (`arn:aws:compute:eu:0000:vm-test` → `vm-test`). All 7 ARNs give 7 distinct IDs, all in the master data; the loader stops if two ARNs ever share a short ID (same check for Azure resource paths).
+- Category by service: `Compute instances` (vm-test, sandbox) → `server`; Storage, Network, Build service, Support → `cloud`. An unknown service name (e.g. `AmazonEC2` in a real export) stops the load instead of silently counting as cloud (same for Azure).
+- 86 usage rows without cost: estimated the same way as Azure (`cost estimated for N days`).
+- Support fee (`support`) is a monthly charge: cost only (`usage_kind` none), no day count. The fee for September 2025 is missing in the source; it is estimated from the other months' fees (CHF 900, exactly like every other month) and noted as `monthly fee estimated from other months`. A missing fee is not a missing usage price, so it gets its own label.
+- Tags: no department or tool disagrees with the mapping; empty tags (959 rows) are covered by the mapping.
+- `sandbox` (test account, cost center 9100) kept as department `Test account`. It runs only on some days (gaps are real non-use here, not missing data). 16 rows are marked "please exclude" in the source: noted as `source marks rows for exclusion (kept)`. Whether the baseline excludes the test account is decided in #4, not by a remark in the data.

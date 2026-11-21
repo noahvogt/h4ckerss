@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 
-from app.pipeline.azure import SOURCE, load_azure
+from app.pipeline.azure import SOURCE, _estimate_missing_costs, _usage_facts, load_azure
 from app.pipeline.common import read_csv, to_chf
 
 
@@ -59,3 +59,59 @@ def test_injected_instruction_is_flagged_not_followed(facts, raw):
     flagged = facts[facts["note"].str.contains("suspicious free text")]
     assert flagged[["resource_id", "month"]].values.tolist() == [["vm-app", pd.Timestamp("2026-04-01")]]
     assert not facts["note"].str.contains("INSTRUCTION", case=False).any()
+
+
+# --- synthetic tests: known prices, so the estimate itself is checked ---------------
+
+
+def synthetic(rows):
+    """rows: (resource_id, unit, date, quantity, cost_chf)."""
+    df = pd.DataFrame(rows, columns=["resource_id", "UnitOfMeasure", "Date", "Quantity", "cost_chf"])
+    df["ServiceName"] = df["UnitOfMeasure"].map(
+        {"GPU-hour": "GPU instances", "GB-day": "Storage", "vCPU-hour": "Compute instances"}
+    )
+    df["ResourceLocation"] = "Germany (Frankfurt)"
+    df["day"] = pd.to_datetime(df["Date"])
+    df["month"] = df["day"].dt.to_period("M").dt.to_timestamp()
+    df["suspicious"] = False
+    df["tag_department"] = None
+    return df
+
+
+def test_estimate_uses_median_unit_price_of_the_month():
+    df = synthetic([
+        ("gpu-ml", "GPU-hour", "2025-09-01", 24, 48.0),  # 2.00 / h
+        ("gpu-ml", "GPU-hour", "2025-09-02", 24, 50.4),  # 2.10 / h
+        ("gpu-ml", "GPU-hour", "2025-09-03", 24, 52.8),  # 2.20 / h -> median 2.10
+        ("gpu-ml", "GPU-hour", "2025-09-04", 10, None),
+    ])
+    out = _estimate_missing_costs(df)
+    assert out["cost_chf"].iloc[3] == pytest.approx(21.0)
+    assert out["estimated"].tolist() == [False, False, False, True]
+
+
+def test_estimate_falls_back_to_other_months():
+    df = synthetic([
+        ("gpu-ml", "GPU-hour", "2025-08-31", 24, 72.0),  # 3.00 / h, previous month
+        ("gpu-ml", "GPU-hour", "2025-09-01", 24, None),  # no price in September
+    ])
+    assert _estimate_missing_costs(df)["cost_chf"].iloc[1] == pytest.approx(72.0)
+
+
+def test_estimate_never_mixes_units_of_one_resource():
+    df = synthetic([
+        ("gpu-ml", "GPU-hour", "2025-09-01", 24, 48.0),  # 2.00 / GPU-hour
+        ("gpu-ml", "GB-day", "2025-09-01", 1000, 1.0),  # 0.001 / GB-day
+        ("gpu-ml", "GB-day", "2025-09-02", 1000, None),
+    ])
+    assert _estimate_missing_costs(df)["cost_chf"].iloc[2] == pytest.approx(1.0)
+
+
+def test_partial_total_is_marked_incomplete():
+    df = synthetic([
+        ("vm-app", "vCPU-hour", "2025-09-01", 0, 10.0),  # quantity 0 -> no unit price
+        ("vm-app", "vCPU-hour", "2025-09-02", 0, None),  # nothing to estimate from
+    ])
+    fact = _usage_facts(df).iloc[0]
+    assert fact["cost_chf"] == pytest.approx(10.0)
+    assert "cost incomplete: missing for 1 day, total too low" in fact["note"]

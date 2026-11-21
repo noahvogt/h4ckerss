@@ -67,10 +67,16 @@ def _read() -> pd.DataFrame:
 
 
 def _estimate_missing_costs(usage: pd.DataFrame) -> pd.DataFrame:
+    """Fill missing cost with quantity x median unit price.
+
+    The price comes from the same resource, service and billing unit in the same
+    month, falling back to all months. Units are never mixed.
+    """
     usage = usage.copy()
     price = usage["cost_chf"] / usage["Quantity"].where(usage["Quantity"] > 0)
-    month_median = price.groupby([usage["resource_id"], usage["month"]]).transform("median")
-    overall_median = price.groupby(usage["resource_id"]).transform("median")
+    unit_keys = [usage["resource_id"], usage["ServiceName"], usage["UnitOfMeasure"]]
+    month_median = price.groupby([*unit_keys, usage["month"]]).transform("median")
+    overall_median = price.groupby(unit_keys).transform("median")
     estimate = usage["Quantity"] * month_median.fillna(overall_median)
 
     usage["estimated"] = usage["cost_chf"].isna() & estimate.notna()
@@ -83,7 +89,9 @@ def _usage_facts(usage: pd.DataFrame) -> pd.DataFrame:
     keys = ["month", "resource_id", "ServiceName", "UnitOfMeasure", "ResourceLocation"]
     g = usage.groupby(keys, as_index=False).agg(
         usage_qty=("Quantity", "sum"),
-        cost_chf=("cost_chf", lambda s: s.sum(min_count=1)),  # all missing -> stays missing
+        # Sum of the known days; all missing -> stays missing. A partial total is
+        # marked "cost incomplete" below, so it never looks complete.
+        cost_chf=("cost_chf", lambda s: s.sum(min_count=1)),
         missing_cost=("cost_chf", lambda s: int(s.isna().sum())),
         estimated=("estimated", "sum"),
         days=("day", "nunique"),
@@ -99,7 +107,9 @@ def _usage_facts(usage: pd.DataFrame) -> pd.DataFrame:
 
     notes = _join_notes(
         g["estimated"].map(lambda n: f"cost estimated for {_days(n)}" if n else ""),
-        g["missing_cost"].map(lambda n: f"cost missing for {_days(n)}" if n else ""),
+        g["missing_cost"].map(
+            lambda n: f"cost incomplete: missing for {_days(n)}, total too low" if n else ""
+        ),
         pd.Series(
             [f"data for {d} of {m} days" if d < m else "" for d, m in zip(g["days"], days_in_month)],
             index=g.index,

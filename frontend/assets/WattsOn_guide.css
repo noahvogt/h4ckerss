@@ -1,4 +1,5 @@
 .guide-mode {
+  position: relative;
   flex: none;
   padding: 8px 16px;
   background: #f3fce1;
@@ -8,18 +9,66 @@
   font-weight: 600;
 }
 
+#guide-mode {
+  display: block;
+  margin-inline-end: 88px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.guide-diagnostics-toggle {
+  position: absolute;
+  inset-inline-end: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.guide-diagnostics-toggle input {
+  accent-color: var(--eco-d);
+}
+
+@media (max-width: 300px) {
+  #guide-mode {
+    margin-inline-end: 20px;
+    white-space: normal;
+  }
+
+  .guide-diagnostics-toggle {
+    gap: 0;
+    font-size: 0;
+  }
+}
+
 .guide-answer {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
 
 .guide-sources,
-.guide-usage {
-  display: block;
+.guide-diagnostics {
   margin-top: 10px;
   color: var(--mute);
   font-size: 11px;
   overflow-wrap: anywhere;
+}
+
+.guide-diagnostics[hidden] {
+  display: none;
+}
+
+.guide-diagnostics {
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+}
+
+.guide-diagnostics p + p {
+  margin-top: 3px;
 }
 
 .guide-sources summary {

@@ -1,5 +1,7 @@
 """Select and validate the monthly facts for the baseline year."""
 
+from collections.abc import Collection
+
 import pandas as pd
 
 from app.pipeline.build import BASELINE, KEY
@@ -16,25 +18,41 @@ _MONTHLY_BILLING_SOURCES = {
 }
 
 
-def select_baseline_facts(facts: pd.DataFrame) -> pd.DataFrame:
-    """Validate the full input, then check baseline coverage and keys."""
+def select_baseline_facts(
+    facts: pd.DataFrame,
+    *,
+    required_sources: Collection[str] | None = None,
+) -> pd.DataFrame:
+    """Validate the full input, then check baseline coverage and keys.
+
+    The recurring billing feeds are required by default. An explicit collection
+    replaces that set. An empty collection disables per-source coverage checks.
+    """
     facts = validate(facts, name="baseline input")
     baseline = facts.loc[facts["month"].between(*BASELINE)].copy()
 
     expected_months = pd.date_range(*BASELINE, freq="MS")
     missing_months = expected_months.difference(baseline["month"])
+    coverage_problems = []
     if not missing_months.empty:
         months = ", ".join(missing_months.strftime("%Y-%m"))
-        raise ValueError(f"baseline facts: missing baseline months: {months}")
+        coverage_problems.append(f"missing baseline months: {months}")
 
+    required = _MONTHLY_BILLING_SOURCES if required_sources is None else set(required_sources)
     months_by_source = baseline.groupby("source")["month"].unique()
+    missing_sources = required.difference(months_by_source.index)
+    if missing_sources:
+        coverage_problems.append(f"missing required sources: {', '.join(sorted(missing_sources))}")
+
     missing_source_months = [
         f"({source}, {month:%Y-%m})"
-        for source in sorted(_MONTHLY_BILLING_SOURCES.intersection(facts["source"]))
-        for month in expected_months.difference(months_by_source.get(source, []))
+        for source in sorted(required - missing_sources)
+        for month in expected_months.difference(months_by_source[source])
     ]
     if missing_source_months:
-        raise ValueError(f"baseline facts: missing source months: {', '.join(missing_source_months)}")
+        coverage_problems.append(f"missing source months: {', '.join(missing_source_months)}")
+    if coverage_problems:
+        raise ValueError("baseline facts: " + "; ".join(coverage_problems))
 
     duplicates = baseline.duplicated(KEY, keep=False)
     if duplicates.any():

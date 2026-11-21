@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WattsOn · The Package</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F7F9F5; --surface:#FFFFFF; --ink:#0F1A14; --ink2:#2B3A31; --mute:#5E6B64; --line:#E3E9E2; --line2:#CDD6CF;
+  --volt:#C8F31D; --volt-d:#8CB800; --eco:#16A34A; --eco-d:#0F7A36; --elec:#2563EB; --elec-l:#DBEAFE; --red:#DC2626; --amber:#D97706;
+  --zrh:#2F6BFF; --fra:#F2652F; --dub:#12B886; --eu:#8B5CF6;
+  --r:22px; --shadow:0 1px 2px #0f1a1408,0 12px 40px -12px #0f1a1420;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:16px;line-height:1.5;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.mono{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums}
+button{font-family:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--elec);outline-offset:3px;border-radius:8px}
+#gl{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
+.wrap{position:relative;z-index:2;max-width:1360px;margin:0 auto;padding:0 36px 140px}
+.ico{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.12em}
+
+/* nav */
+nav{position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:16px 0;background:linear-gradient(#F7F9F5f0,#F7F9F500);backdrop-filter:blur(14px)}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;letter-spacing:-.02em}
+.logo .orb{width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff 0,var(--volt) 30%,var(--volt-d) 80%);box-shadow:0 0 0 4px #C8F31D55,0 6px 18px #8CB80066}
+.crumbs{display:flex;gap:4px;padding:4px;border:1px solid var(--line);border-radius:999px;background:#ffffffcc}
+.crumbs span{padding:8px 16px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.crumbs span.on{background:var(--ink);color:var(--volt)}
+.nav-r{font-size:12px;color:var(--mute)}
+
+/* hero */
+.hero{padding:60px 0 30px;display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:end}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:var(--eco-d);padding:7px 14px;border-radius:999px;background:#16A34A14;border:1px solid #16A34A33}
+.eyebrow i{width:7px;height:7px;border-radius:50%;background:var(--eco);box-shadow:0 0 0 3px #16A34A33;animation:blink 1.8s infinite}
+@keyframes blink{50%{opacity:.35}}
+h1{font-size:clamp(46px,6.4vw,92px);font-weight:800;letter-spacing:-.05em;line-height:.96;margin:22px 0 16px}
+h1 .g{background:linear-gradient(100deg,var(--eco) 0%,var(--volt-d) 55%,var(--elec) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{color:var(--mute);font-size:17px;max-width:560px}
+.lede b{color:var(--ink)}
+.hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stat{padding:18px 20px;border-radius:18px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow)}
+.stat b{display:block;font-family:'JetBrains Mono';font-size:28px;letter-spacing:-.03em;color:var(--eco-d)}
+.stat span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:600}
+
+/* compare */
+.compare{display:grid;grid-template-columns:1fr 150px 1fr;margin-top:40px}
+.panel{position:relative;border-radius:var(--r);background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);padding:34px 36px;overflow:hidden;transition:transform .5s cubic-bezier(.2,.8,.2,1),box-shadow .5s}
+.panel:hover{transform:translateY(-4px);box-shadow:0 30px 70px -20px #0f1a1433}
+.panel.after{background:linear-gradient(160deg,#ffffff,#F3FCE1);border-color:#C8F31D}
+.panel.after::after{content:"";position:absolute;top:-140px;right:-140px;width:380px;height:380px;background:radial-gradient(circle,#C8F31D66,transparent 60%);pointer-events:none}
+.ph{display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);font-weight:700}
+.ph .pill{padding:4px 10px;border-radius:999px;border:1px solid var(--line);font-family:'JetBrains Mono';letter-spacing:0;text-transform:none;font-weight:500;background:#fff}
+.panel.after .ph{color:var(--eco-d)}
+.big{display:flex;align-items:baseline;gap:12px;margin:22px 0 4px;position:relative;z-index:1}
+.big .num{font-family:'JetBrains Mono';font-weight:700;font-size:clamp(44px,4.6vw,68px);letter-spacing:-.05em;line-height:1}
+.big small{font-size:15px;color:var(--mute);font-weight:600}
+.unit{font-size:13px;color:var(--mute);margin-bottom:22px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;position:relative;z-index:1}
+.sep{height:1px;background:var(--line);margin:22px 0}
+.n{cursor:pointer;position:relative;display:inline-block;border-radius:10px;padding:0 6px;margin:0 -6px;transition:.25s;text-decoration:underline dotted var(--line2);text-underline-offset:6px;text-decoration-thickness:2px}
+.n:hover{background:var(--volt);text-decoration-color:transparent;color:var(--ink)}
+.n::after{content:"explain";position:absolute;top:-24px;right:0;font:700 10px/1 'Plus Jakarta Sans';letter-spacing:.14em;text-transform:uppercase;color:#fff;background:var(--ink);padding:6px 9px;border-radius:7px;opacity:0;transform:translateY(6px);transition:.25s;pointer-events:none;white-space:nowrap}
+.n:hover::after{opacity:1;transform:none}
+.bars{display:flex;flex-direction:column;gap:10px;position:relative;z-index:1}
+.bar{display:grid;grid-template-columns:84px 1fr 64px;align-items:center;gap:12px}
+.bar .lab{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);font-weight:600}
+.bar .trk{height:10px;border-radius:999px;background:#0f1a140d;position:relative;overflow:hidden}
+.bar .fill{position:absolute;inset:0;width:0;border-radius:999px;transition:width 1.4s cubic-bezier(.2,.8,.2,1)}
+.bar .ghost{position:absolute;inset:0;border-radius:999px;background:repeating-linear-gradient(90deg,#0f1a1422 0 3px,transparent 3px 6px)}
+.bar .v{text-align:right;font-family:'JetBrains Mono';font-size:12px;color:var(--mute)}
+.c-zrh{background:var(--zrh)}.c-fra{background:var(--fra)}.c-dub{background:var(--dub)}.c-eu{background:var(--eu)}
+.spine{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:40px;position:relative;z-index:2}
+.hop{position:relative;width:100%;display:grid;place-items:center}
+.hop::before{content:"";position:absolute;left:-8px;right:-4px;top:50%;height:4px;transform:translateY(-50%);border-radius:2px;background:repeating-linear-gradient(90deg,var(--eco) 0 10px,transparent 10px 18px);animation:dash .8s linear infinite;opacity:.85}
+.hop::after{content:"";position:absolute;right:-12px;top:50%;transform:translateY(-50%);border:9px solid transparent;border-left:14px solid var(--eco);filter:drop-shadow(0 0 6px #16A34A88)}
+@keyframes dash{to{background-position:18px 0}}
+.hop .cap{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:9px;letter-spacing:.2em;text-transform:uppercase;font-weight:800;color:var(--eco-d);background:#F7F9F5;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.ring{position:relative;width:118px;height:118px;display:grid;place-items:center;z-index:1}
+.ring .lbl svg{width:22px;height:22px;stroke:var(--ink);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;margin-bottom:3px}
+.ring .lbl .co2t{font:800 9px 'JetBrains Mono';fill:var(--ink);stroke:none}
+.ring>svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:8;stroke-linecap:round}
+.ring .bgc{stroke:#0f1a1410}
+.ring .fg{stroke:url(#gr);stroke-dasharray:314;stroke-dashoffset:314;transition:stroke-dashoffset 1.8s cubic-bezier(.2,.8,.2,1)}
+.ring .lbl{text-align:center;background:#fff;border-radius:50%;width:88px;height:88px;display:grid;place-items:center;align-content:center;box-shadow:var(--shadow)}
+.ring .lbl b{font-family:'JetBrains Mono';font-size:17px;letter-spacing:-.04em;display:block;line-height:1;color:var(--eco-d)}
+.ring .lbl span{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);font-weight:700}
+
+/* cta */
+.cta{margin:40px 0 0;display:grid;grid-template-columns:1fr auto;gap:30px;align-items:center;padding:28px 34px;border-radius:var(--r);background:var(--ink);color:#fff;position:relative;overflow:hidden}
+.cta::before{content:"";position:absolute;inset:-60%;background:conic-gradient(from 0deg,transparent 0 72%,#C8F31D33 86%,transparent 100%);animation:spin 10s linear infinite;pointer-events:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.cta>*{position:relative}
+.cta h3{font-size:26px;letter-spacing:-.02em;font-weight:800}
+.cta p{color:#B8C4BD;margin-top:4px;font-size:14px}
+.cta p b{color:var(--volt)}
+.go{display:inline-flex;align-items:center;gap:16px;padding:18px 26px 18px 20px;border-radius:999px;border:0;background:var(--volt);color:var(--ink);font:800 14px 'Plus Jakarta Sans';letter-spacing:.06em;text-transform:uppercase;box-shadow:0 14px 40px #C8F31D55;transition:.3s}
+.go:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 20px 50px #C8F31D88}
+.go .sw{width:52px;height:28px;border-radius:999px;background:var(--ink);position:relative;transition:.3s}
+.go .sw::after{content:"";position:absolute;top:4px;left:4px;width:20px;height:20px;border-radius:50%;background:var(--volt);transition:.3s cubic-bezier(.3,1.5,.5,1)}
+.go.on .sw::after{left:28px;background:#fff}
+.go .meta{display:block;font:500 11px 'JetBrains Mono';text-transform:none;letter-spacing:0;opacity:.7}
+
+/* sections */
+section{margin-top:84px}
+.sh{display:flex;align-items:end;justify-content:space-between;margin-bottom:26px}
+.sh h2{font-size:38px;letter-spacing:-.035em;font-weight:800;line-height:1.05}
+.sh h2 span{color:var(--mute);font-weight:500}
+.sh p{color:var(--mute);font-size:13px}
+.measures{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.m{position:relative;padding:22px 22px 18px;border-radius:20px;border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow);cursor:pointer;transition:.35s cubic-bezier(.2,.8,.2,1);overflow:hidden;min-height:230px;display:flex;flex-direction:column}
+.m:hover{transform:translateY(-6px);border-color:var(--volt-d);box-shadow:0 30px 60px -20px #0f1a1433}
+.m .id{font-family:'JetBrains Mono';font-size:11px;color:var(--eco-d);letter-spacing:.1em;font-weight:700}
+.m .tag{position:absolute;top:18px;right:18px;font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:4px 8px;border-radius:999px;font-weight:800}
+.m .tag.auto{background:#C8F31D55;color:#3F5A00}
+.m .tag.human{background:#DC262614;color:var(--red)}
+.m h4{font-size:15px;font-weight:700;margin:10px 0 6px;line-height:1.3;letter-spacing:-.01em;padding-right:10px}
+.m p{font-size:12.5px;color:var(--mute);flex:1}
+.m .fig{display:flex;align-items:baseline;gap:6px;margin-top:14px}
+.m .fig b{font-family:'JetBrains Mono';font-size:30px;letter-spacing:-.04em;line-height:1}
+.m .fig span{font-size:11px;color:var(--mute)}
+.m .sub{display:flex;justify-content:space-between;font-family:'JetBrains Mono';font-size:11px;color:var(--mute);margin-top:6px}
+.m .glow{position:absolute;left:0;right:0;bottom:0;height:4px;background:linear-gradient(90deg,var(--eco),var(--volt));transform-origin:left;transform:scaleX(var(--p))}
+.m.big-m{grid-column:span 2;background:linear-gradient(140deg,#F3FCE1,#fff);border-color:#C8F31D}
+.m.big-m .fig b{font-size:46px;color:var(--eco-d)}
+.m.total{grid-column:span 3;background:var(--ink);color:#fff;border-color:var(--ink)}
+.m.total p,.m.total .sub,.m.total .fig span{color:#B8C4BD}.m.total .fig b{color:var(--volt)}.m.total .id{color:var(--volt)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;perspective:1400px}
+.card{position:relative;padding:28px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow);transition:transform .15s ease-out,box-shadow .4s;transform-style:preserve-3d}
+.card .stamp{display:inline-flex;align-items:center;gap:8px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;padding:6px 12px;border-radius:999px;font-weight:800;color:var(--amber);background:#D9770614}
+.card .stamp i{width:6px;height:6px;border-radius:50%;background:currentColor;animation:blink 1.4s infinite}
+.card .stamp.ok{color:var(--eco-d);background:#16A34A1A}.card .stamp.no{color:var(--red);background:#DC26261A}
+.card .who{display:flex;align-items:center;gap:10px;margin:18px 0 10px;font-size:12px;color:var(--mute);font-weight:600}
+.card .who i{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font:800 11px 'Plus Jakarta Sans';font-style:normal;background:var(--elec-l);color:var(--elec)}
+.card h3{font-size:20px;font-weight:700;line-height:1.25;letter-spacing:-.015em}
+.card h3 code{font-family:'JetBrains Mono';font-size:14px;color:var(--eco-d);background:#16A34A14;padding:2px 7px;border-radius:6px}
+.card .why{font-size:13px;color:var(--mute);margin:10px 0 16px}
+.card .figs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.card .figs div{padding:12px;border-radius:14px;background:var(--bg);border:1px solid var(--line)}
+.card .figs b{display:block;font-family:'JetBrains Mono';font-size:18px;letter-spacing:-.03em}
+.card .figs span{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);font-weight:600}
+.card .guard{font-size:12px;line-height:1.55;padding:12px 14px;border-radius:14px;background:#DC26260A;border:1px solid #DC262626;margin-bottom:18px}
+.card .guard b{color:var(--red)}
+.card .acts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.card .acts button{padding:13px 8px;border-radius:12px;border:1px solid var(--line);background:#fff;color:var(--ink);font:800 12px 'Plus Jakarta Sans';letter-spacing:.08em;text-transform:uppercase;transition:.2s}
+.card .acts .ex:hover{background:var(--bg)}
+.card .acts .ok{background:var(--ink);color:var(--volt);border-color:var(--ink)}
+.card .acts .ok:hover{box-shadow:0 10px 24px #0f1a1444;transform:translateY(-1px)}
+.card .acts .no:hover{background:var(--red);border-color:var(--red);color:#fff}
+.card.done{opacity:.55}.card.done .acts{display:none}
+footer{margin-top:100px;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:600}
+.reveal{opacity:0;transform:translateY(24px);transition:.8s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:none}
+.reveal .m,.reveal .card{opacity:0;transform:translateY(18px) scale(.97);transition:opacity .45s cubic-bezier(.34,1.3,.5,1),transform .45s cubic-bezier(.34,1.3,.5,1)}
+.reveal.in .m,.reveal.in .card{opacity:1;transform:none}
+.measures .m{transition-delay:calc(var(--i,0)*45ms)}.cards .card{transition-delay:calc(var(--i,0)*70ms)}
+
+/* ═══════ TREE EXPLORER ═══════ */
+.explorer{position:fixed;inset:0;z-index:50;background:#F7F9F5;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .35s}
+body.explore .explorer{opacity:1;pointer-events:auto}
+.explorer::before{content:"";position:absolute;inset:0;background-image:radial-gradient(#0f1a1414 1px,transparent 1px);background-size:26px 26px;pointer-events:none}
+.ex-top{position:relative;z-index:2;display:flex;align-items:center;gap:20px;padding:16px 28px;background:#ffffffee;backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.ex-top .k{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--eco-d);font-weight:800}
+.ex-top .h{font-family:'JetBrains Mono';font-weight:700;font-size:30px;letter-spacing:-.05em;line-height:1}
+.ex-top .s{font-size:13px;color:var(--mute)}
+.ex-story{flex:1;margin:0 10px;padding:12px 18px;border-radius:14px;background:var(--ink);color:#fff;font-size:14px;line-height:1.5;display:flex;gap:12px;align-items:center;min-width:0}
+.ex-story .b{font-family:'JetBrains Mono';background:var(--volt);color:var(--ink);padding:1px 7px;border-radius:6px;font-weight:700;white-space:nowrap}
+.ex-tools{display:flex;gap:8px}
+.ex-tools button{height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:#fff;font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;display:inline-flex;align-items:center;gap:8px;transition:.2s}
+.ex-tools button:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+.ex-tools .x{width:40px;padding:0;justify-content:center;font-size:18px}
+.ex-body{position:relative;flex:1;display:grid;grid-template-columns:1fr 360px;min-height:0}
+.canvas{position:relative;overflow:auto;cursor:grab}
+.canvas:active{cursor:grabbing}
+.stage{position:relative;transform-origin:0 0;transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+.edges{position:absolute;inset:0;overflow:visible;pointer-events:none}
+.edges path.e{fill:none;stroke:var(--line2);stroke-width:2.5;stroke-linecap:round;transition:d .5s}
+.edges path.e.hot{stroke:var(--eco);stroke-width:3}
+.edges .spark{fill:var(--volt-d);filter:drop-shadow(0 0 4px var(--volt))}
+.edges .opb{font:800 13px 'JetBrains Mono';fill:#fff}
+.edges .opc{fill:var(--ink)}
+.tn{position:absolute;width:232px;border-radius:18px;background:#fff;border:1.5px solid var(--line);box-shadow:var(--shadow);padding:14px 16px 12px;transition:left .5s cubic-bezier(.2,.8,.2,1),top .5s cubic-bezier(.2,.8,.2,1),box-shadow .25s,transform .25s;cursor:pointer;animation:pop .45s cubic-bezier(.34,1.4,.5,1) both}
+@keyframes pop{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:none}}
+.tn:hover{transform:translateY(-3px);box-shadow:0 20px 44px -16px #0f1a1444;border-color:var(--volt-d)}
+.tn.sel{border-color:var(--ink);box-shadow:0 0 0 4px #C8F31D88,0 20px 44px -16px #0f1a1444}
+.tn.root{background:var(--ink);color:#fff;border-color:var(--ink)}
+.tn.leaf{background:linear-gradient(160deg,#fff,#F3FCE1)}
+.tn .l{font-weight:700;font-size:13.5px;line-height:1.25;letter-spacing:-.01em;padding-right:30px}
+.tn .s{font-size:11px;color:var(--mute);margin-top:2px}
+.tn.root .s{color:#B8C4BD}
+.tn .v{font-family:'JetBrains Mono';font-weight:700;font-size:22px;letter-spacing:-.04em;margin-top:8px;line-height:1}
+.tn .v em{font-style:normal;font-weight:500;font-size:11px;color:var(--mute);margin-left:4px}
+.tn.root .v{color:var(--volt)}
+.tn .tg{position:absolute;top:12px;right:12px;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line2);background:#fff;display:grid;place-items:center;font-size:12px;color:var(--ink);transition:.25s}
+.tn.root .tg{background:var(--volt);border-color:var(--volt)}
+.tn.open .tg{transform:rotate(180deg);background:var(--ink);color:var(--volt);border-color:var(--ink)}
+.tn .tg b{font:800 10px 'JetBrains Mono'}
+.tn .src{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font:500 10px 'JetBrains Mono';padding:3px 8px;border-radius:999px;background:var(--bg);border:1px solid var(--line);color:var(--mute);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tn.root .src{background:#ffffff14;border-color:#ffffff22;color:#B8C4BD}
+.tn .src::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--elec);flex:none}
+.tn .warn{position:absolute;top:-10px;left:12px;background:var(--red);color:#fff;font:800 9px 'Plus Jakarta Sans';letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:999px}
+.tn .mini{height:5px;border-radius:999px;background:linear-gradient(90deg,var(--eco),var(--volt) 40%,var(--amber) 75%,var(--red));margin-top:10px;position:relative;opacity:.8}
+.tn .mini i{position:absolute;top:-4px;width:3px;height:13px;background:var(--ink);border-radius:2px;left:var(--x)}
+
+/* reading pane */
+.read{position:relative;z-index:2;border-left:1px solid var(--line);background:#fff;padding:26px;overflow-y:auto}
+.read .k{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);font-weight:800;margin-bottom:8px}
+.read h3{font-size:22px;letter-spacing:-.03em;font-weight:800;line-height:1.15}
+.read .val{font-family:'JetBrains Mono';font-size:40px;font-weight:700;letter-spacing:-.05em;margin:10px 0 18px;color:var(--eco-d)}
+.read .val em{font-style:normal;font-size:14px;font-weight:500;color:var(--mute);margin-left:6px}
+.read .formula{padding:14px 16px;border-radius:14px;background:var(--ink);color:#fff;font-family:'JetBrains Mono';font-size:13px;line-height:2;margin-bottom:16px}
+.read .formula .chip{background:var(--volt);color:var(--ink);padding:1px 7px;border-radius:6px;font-weight:700}
+.read .note{font-size:13px;color:var(--ink2);padding:12px 14px;border-radius:12px;background:var(--bg);border:1px solid var(--line);margin-bottom:10px;line-height:1.55}
+.read .note b{color:var(--ink)}
+.read .warnb{font-size:13px;color:#7F1D1D;padding:12px 14px;border-radius:12px;background:#DC26260F;border:1px solid #DC262633;margin-bottom:10px;line-height:1.55}
+.read .srcs{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 20px}
+.read .srcs span{font:500 11px 'JetBrains Mono';padding:5px 10px;border-radius:999px;background:var(--elec-l);color:#1E40AF}
+.read .sens h4{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);font-weight:800;margin-bottom:10px}
+.read .range{position:relative;height:10px;border-radius:999px;background:linear-gradient(90deg,var(--eco),var(--volt) 40%,var(--amber) 75%,var(--red));margin:18px 0 8px}
+.read .range i{position:absolute;top:-6px;width:4px;height:22px;border-radius:2px;background:var(--ink);left:var(--x)}
+.read .rl{display:flex;justify-content:space-between;font-family:'JetBrains Mono';font-size:11px;color:var(--mute)}
+.read .hint{margin-top:26px;font-size:12px;color:var(--mute);display:flex;gap:10px;align-items:flex-start}
+.read .hint svg{flex:none;margin-top:3px;color:var(--eco)}
+
+/* Wattson's portrait and chat share one fixed corner. */
+:root{
+  --watson-edge:max(20px,env(safe-area-inset-right));
+  --watson-foot:max(18px,env(safe-area-inset-bottom));
+  --watson-size:120px;
+  --watson-shape:35% 35% 24% 24% / 28% 28% 22% 22%;
+  --chat-foot:calc(var(--watson-foot) + var(--watson-size) + 20px);
+}
+.fab{
+  position:fixed;right:var(--watson-edge);bottom:var(--watson-foot);z-index:61;
+  width:var(--watson-size);height:calc(var(--watson-size) + 8px);
+  display:grid;justify-items:center;align-content:start;isolation:isolate;
+  background:transparent;border:0;color:#f7f3e7;-webkit-tap-highlight-color:transparent;
+}
+.fab:focus-visible{outline-offset:5px;border-radius:50% 50% 22px 22px}
+.watson-bezel{
+  width:100%;aspect-ratio:1;border-radius:var(--watson-shape);padding:3px;display:grid;
+  background:conic-gradient(from -40deg,#fbefd0,#c0a77c 18%,#77684e 38%,#e4d4ab 55%,#9c8660 72%,#e9ddbe 90%,#fbefd0);
+  box-shadow:0 0 0 1px #27372c,0 3px 4px #19271a38,0 9px 22px -4px #12231566;
+  transition:box-shadow .22s ease;
+}
+.watson-portrait{
+  position:relative;display:block;overflow:hidden;border-radius:var(--watson-shape);
+  background-color:#243b34;background-repeat:no-repeat;background-position:0% 0%;background-size:600% 800%;
+
+  box-shadow:inset 0 0 0 2px #142219,inset 0 0 10px #10171070;
+}
+.watson-portrait::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  box-shadow:inset 0 0 0 1px #17251b,inset 0 -10px 15px -10px #09100d;
+  background:linear-gradient(125deg,#fff5d50c,transparent 40%);
+}
+.watson-label{
+  position:absolute;bottom:0;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;
+  border:1px solid #a69970;border-radius:999px;padding:4px 10px 5px;
+  background:linear-gradient(150deg,#2d3930,#122219 75%);color:#fcfaf2;
+  font:700 11px/1.2 'Plus Jakarta Sans',system-ui,sans-serif;letter-spacing:.015em;
+  box-shadow:0 2px 6px #0f1a1433;transition:background .2s;
+}
+.watson-label .ico{width:13px;height:13px;color:var(--volt);stroke-width:1.8}
+.fab[aria-expanded="true"] .open-mark,.fab[aria-expanded="false"] .close-mark{display:none}
+@media(hover:hover){
+  .fab:hover .watson-bezel{box-shadow:0 0 0 1px #263a28,0 0 0 4px #91a77840,0 10px 25px -4px #12231570}
+}
+.chat{
+  position:fixed;right:var(--watson-edge);bottom:var(--chat-foot);z-index:60;
+  width:min(400px,calc(100vw - var(--watson-edge) - 12px));height:580px;
+  max-height:calc(100vh - var(--chat-foot) - 12px);max-height:calc(100dvh - var(--chat-foot) - max(12px,env(safe-area-inset-top)));
+  display:flex;flex-direction:column;overflow:hidden;border:1px solid #c5cfc3;border-radius:22px;
+  background:var(--surface);box-shadow:0 24px 64px -18px #10231955,0 2px 8px #10231917;
+  transform-origin:100% 100%;transform:translateY(9px) scale(.985);opacity:0;visibility:hidden;pointer-events:none;
+  transition:transform .24s ease,opacity .2s,visibility 0s .24s;
+}
+body.chat-open .chat{transform:none;opacity:1;visibility:visible;pointer-events:auto;transition-delay:0s}
+.ch-top{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;flex:none;padding:13px 16px 13px 20px;
+  color:#faf8f0;background:linear-gradient(110deg,#233a2d,#10231b 86%);border-bottom:1px solid #ac9a71;
+}
+.ch-top h2{font:500 25px/1.1 Georgia,'Times New Roman',serif;letter-spacing:-.035em}
+.ch-top .role{display:flex;align-items:center;gap:7px;margin-top:4px;color:#d6dfd2;font-size:11px}
+.ch-top .role i{width:6px;height:6px;border-radius:50%;background:var(--volt)}
+.ch-top .x{
+  flex:none;width:44px;height:44px;display:grid;place-items:center;border:1px solid #ffffff38;
+  border-radius:50%;background:transparent;color:#f6f6e9;font-size:17px;
+}
+.ch-top .x:hover{background:#ffffff19}
+.ch-top .x:focus-visible{outline-color:var(--volt)}
+@media(max-width:540px){
+  :root{--watson-edge:max(12px,env(safe-area-inset-right));--watson-foot:max(12px,env(safe-area-inset-bottom));--watson-size:98px}
+}
+@media(max-height:530px) and (min-width:540px){
+  .chat{right:calc(var(--watson-edge) + var(--watson-size) + 14px);bottom:var(--watson-foot);
+    max-height:calc(100vh - var(--watson-foot) - 12px);max-height:calc(100dvh - var(--watson-foot) - 12px)}
+}
+@media(max-height:570px){
+  .ch-top{padding-block:7px}.chat .chips{flex-wrap:nowrap;overflow-x:auto}.chips button{white-space:nowrap}
+}
+.ch-meter{display:flex;gap:10px;align-items:center;padding:10px 16px;background:#F3FCE1;border-bottom:1px solid var(--line);font-size:11px;color:var(--ink2);font-weight:600}
+.ch-meter .bar{flex:1;height:6px;border-radius:999px;background:#0f1a1412;overflow:hidden}
+.ch-meter .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--eco),var(--volt));transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
+.ch-meter b{font-family:'JetBrains Mono';color:var(--eco-d)}
+.ch-msgs{min-height:0;flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
+.msg{max-width:86%;padding:11px 14px;border-radius:16px;font-size:13.5px;line-height:1.5;animation:msg .35s cubic-bezier(.2,.9,.2,1) both}
+@keyframes msg{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.msg.bot{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:4px;box-shadow:var(--shadow)}
+.msg.me{align-self:flex-end;background:var(--ink);color:#fff;border-bottom-right-radius:4px}
+.msg .n{text-decoration-color:var(--volt-d);font-weight:700}
+.msg .kpi{display:flex;gap:8px;margin-top:8px}
+.msg .kpi div{flex:1;padding:8px 10px;border-radius:10px;background:var(--bg);border:1px solid var(--line)}
+.msg .kpi b{display:block;font-family:'JetBrains Mono';font-size:15px;color:var(--eco-d)}
+.msg .kpi span{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);font-weight:700}
+.msg.typing{display:flex;gap:4px;padding:14px 16px}
+.msg.typing i{width:7px;height:7px;border-radius:50%;background:var(--mute);animation:dot 1s infinite}
+.msg.typing i:nth-child(2){animation-delay:.15s}.msg.typing i:nth-child(3){animation-delay:.3s}
+@keyframes dot{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-5px);opacity:1}}
+.chips{display:flex;gap:6px;padding:10px 12px 0;flex-wrap:wrap;background:#fff;border-top:1px solid var(--line)}
+.chips button{font-size:11.5px;font-weight:600;padding:7px 11px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink2);transition:.2s}
+.chips button:hover{background:var(--volt);border-color:var(--volt)}
+.ch-in{display:flex;gap:8px;padding:10px 12px 12px;background:#fff}
+.ch-in input{flex:1;height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line2);font:500 14px 'Plus Jakarta Sans';background:var(--bg)}
+.ch-in input:focus{outline:none;border-color:var(--ink);background:#fff}
+.ch-in button{width:44px;height:44px;border-radius:50%;border:0;background:var(--ink);color:var(--volt);display:grid;place-items:center;font-size:18px}
+.ch-in button:hover{background:var(--eco-d)}
+.toast{position:fixed;left:50%;bottom:30px;transform:translate(-50%,140px);background:var(--ink);color:#fff;padding:14px 22px;border-radius:999px;font-size:13px;z-index:65;transition:.45s cubic-bezier(.2,.9,.2,1);display:flex;gap:12px;align-items:center;box-shadow:0 20px 60px #0f1a1455}
+.toast.on{transform:translate(-50%,0)}.toast b{color:var(--volt)}
+@media(max-width:1000px){.hero{grid-template-columns:1fr}.compare{grid-template-columns:1fr}.spine{flex-direction:row;padding:20px 0}.spine::before,.spine .flow{display:none}.measures{grid-template-columns:1fr 1fr}.m.total{grid-column:span 2}.cards{grid-template-columns:1fr}.cta{grid-template-columns:1fr}.ex-body{grid-template-columns:1fr}.read{display:none}.ex-story{display:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}#gl{display:none}.reveal,.reveal .m,.reveal .card{opacity:1;transform:none}.bar .fill{width:var(--w)!important}}
+/* Offline 3D portrait. Character geometry and skin materials adapted from the MakeHuman Community CC0 assets. */
+.watson-portrait{background-image:url(assets/WattsOn_portrait.webp)}
+.atlas-summary + .compare{margin-top:16px}
+.package-content{margin-top:32px}
+#approvals{scroll-margin-top:90px;background:#edf2eb;border:1px solid #cbd6c8;border-radius:20px;padding:16px}
+.approval-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.approval-head h2{font-size:17px;letter-spacing:-.025em}
+.approval-head span,.card h3 small{font:600 11px monospace;border-radius:7px;background:white;padding:4px 7px}
+.approval-link{color:var(--volt);text-underline-offset:3px}
+#approvals .card{display:flex;flex-direction:column;padding:18px;min-width:0}
+#approvals .stamp{align-self:start}
+#approvals .who{margin:10px 0 6px}
+#approvals .guard{background:#f7f8f4;border-color:var(--line);color:var(--ink2)}
+#approvals .guard b{color:var(--ink)}
+#approvals .acts{margin-top:auto}
+#approvals .acts [hidden]{display:none}
+#approvals .revise{grid-column:span 2}
+#approvals .figs div{min-width:0}
+@media(max-width:550px){#approvals{padding:10px}.approval-head{padding:4px}}
+.decision-strip{display:inline-flex;align-items:center;padding-right:8px;gap:1px;border-radius:8px;background:#fff0cc;color:#794500;font:700 13px monospace}.decision-strip[hidden]{display:none}
+.card .stamp.decision-icon,.m .tag.human.decision-icon,.decision-strip .decision-icon{display:inline-grid;place-items:center;padding:0;border-radius:50%;width:28px;height:28px;line-height:1;color:var(--status-fg);background:var(--status-bg)}
+.decision-icon[data-state=pending]{--status-fg:#925600;--status-bg:#fff0cc}
+.decision-icon[data-state=ok]{--status-fg:#176d36;--status-bg:#dcf4df}
+.decision-icon[data-state=no]{--status-fg:#a1332f;--status-bg:#fae4df}
+.decision-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#approvals .card .stamp{position:absolute;right:16px;top:16px}
+#approvals .who{margin:0 38px 8px 0}
+.approval-head .status-reader{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);padding:0}
+</style>
+<link rel="stylesheet" href="assets/WattsOn_timeline.css"><script src="assets/WattsOn_timeline.js"></script></head>
+<body>
+<svg width="0" height="0" aria-hidden="true" style="position:absolute"><defs>
+ <symbol id="status-pending" viewBox="0 0 24 24"><circle cx="8.5" cy="7" r="3.4"/><path d="M2.5 20v-1.8a6 6 0 0 1 12 0V20M19 4.5v8"/><circle cx="19" cy="16.7" r="1.3" fill="currentColor" stroke="none"/></symbol>
+ <symbol id="status-ok" viewBox="0 0 24 24"><path d="m4.5 12 5 5 10-11"/></symbol>
+ <symbol id="status-no" viewBox="0 0 24 24"><path d="m6.5 6.5 11 11m0-11-11 11"/></symbol>
+</defs></svg>
+<canvas id="gl"></canvas>
+<svg width="0" height="0" style="position:absolute"><defs>
+<linearGradient id="gr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#16A34A"/><stop offset="1" stop-color="#C8F31D"/></linearGradient>
+
+</defs></svg>
+
+<div class="wrap">
+<nav>
+  <div class="logo"><img class="brand-wordmark" src="assets/WattsOn_logo.webp" alt="WattsOn" width="760" height="310"></div>
+  <div class="crumbs"><a style="display:flex;text-decoration:none" href="index.html"><span>01 Baseline</span></a><span class="on">02 Package</span><a href="forecast.html" style="display:flex;text-decoration:none"><span>03 Forecast</span></a></div>
+  <div class="nav-period"><div class="time-host"></div><div class="nav-r mono">FY Sep 25 – Aug 26 · budget CHF 16,500</div></div>
+</nav>
+
+<div class="atlas-summary" role="region" aria-label="Package summary">
+  <div class="hero-stats">
+    <div class="stat"><b data-count="135210" data-prefix="−">0</b><span>CHF saved / yr</span></div>
+    <div class="stat"><b data-count="6516" data-prefix="−">0</b><span>kg CO₂ saved / yr</span></div>
+    <div class="stat"><b>6 wk</b><span>payback</span></div>
+    <div class="stat"><b>550</b><span>CHF under budget</span></div>
+  </div>
+</div>
+
+<div class="compare reveal">
+  <div class="panel before">
+    <div class="ph"><span>Current state</span><span class="pill">12 months</span></div>
+    <div class="big"><span class="num n" role="button" tabindex="0" data-tree="cost" data-count="470384">0</span><small>CHF</small></div>
+    <div class="unit">annual cloud, AI and SaaS spend</div>
+    <div class="bars">
+      <div class="bar"><span class="lab">Zurich</span><div class="trk"><div class="fill c-zrh" data-w="41%" style="--w:41%"></div></div><span class="v">191,841</span></div>
+      <div class="bar"><span class="lab">EU mixed</span><div class="trk"><div class="fill c-eu" data-w="40%" style="--w:40%"></div></div><span class="v">189,500</span></div>
+      <div class="bar"><span class="lab">Frankfurt</span><div class="trk"><div class="fill c-fra" data-w="10.5%" style="--w:10.5%"></div></div><span class="v">49,508</span></div>
+      <div class="bar"><span class="lab">Dublin</span><div class="trk"><div class="fill c-dub" data-w="8%" style="--w:8%"></div></div><span class="v">39,536</span></div>
+    </div>
+    <div class="sep"></div>
+    <div class="big"><span class="num n" role="button" tabindex="0" data-tree="co2" data-count="11956">0</span><small>kg CO₂</small></div>
+    <div class="unit">location-based · <span class="n mono" role="button" tabindex="0" data-tree="energy">56,139 kWh</span></div>
+    <div class="bars">
+      <div class="bar"><span class="lab">Frankfurt</span><div class="trk"><div class="fill c-fra" data-w="43%" style="--w:43%"></div></div><span class="v">5,141</span></div>
+      <div class="bar"><span class="lab">Zurich</span><div class="trk"><div class="fill c-zrh" data-w="24%" style="--w:24%"></div></div><span class="v">2,881</span></div>
+      <div class="bar"><span class="lab">EU mixed</span><div class="trk"><div class="fill c-eu" data-w="22%" style="--w:22%"></div></div><span class="v">2,615</span></div>
+      <div class="bar"><span class="lab">Dublin</span><div class="trk"><div class="fill c-dub" data-w="11%" style="--w:11%"></div></div><span class="v">1,319</span></div>
+    </div>
+  </div>
+  <div class="spine" aria-label="Current state becomes the after-package state">
+    <div class="hop"><span class="cap">becomes</span><div class="ring"><svg viewBox="0 0 118 118"><circle class="bgc" cx="59" cy="59" r="50"/><circle class="fg" cx="59" cy="59" r="50" data-pct="28.7"/></svg><div class="lbl"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2.5"/><text class="co2t" x="12" y="15.5" text-anchor="middle">CHF</text></svg><b>−28.7%</b><span>CHF cost</span></div></div></div>
+    <div class="hop"><span class="cap">becomes</span><div class="ring"><svg viewBox="0 0 118 118"><circle class="bgc" cx="59" cy="59" r="50"/><circle class="fg" cx="59" cy="59" r="50" data-pct="54.5"/></svg><div class="lbl"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/><text class="co2t" x="12.5" y="16.5" text-anchor="middle">CO₂</text></svg><b>−54.5%</b><span>CO₂ emitted</span></div></div></div>
+  </div>
+  <div class="panel after">
+    <div class="ph"><span>After WattsOn package</span><span class="pill">12 months</span></div>
+    <div class="big"><span class="num n" role="button" tabindex="0" data-tree="cost-after" data-count="335174">0</span><small>CHF</small></div>
+    <div class="unit">saves <span class="n mono" role="button" tabindex="0" data-tree="save-cost">CHF 135,210</span> / yr</div>
+    <div class="bars">
+      <div class="bar"><span class="lab">Zurich</span><div class="trk"><div class="ghost" style="width:41%"></div><div class="fill c-zrh" data-w="36%" style="--w:36%"></div></div><span class="v">168,900</span></div>
+      <div class="bar"><span class="lab">EU mixed</span><div class="trk"><div class="ghost" style="width:40%"></div><div class="fill c-eu" data-w="30%" style="--w:30%"></div></div><span class="v">139,200</span></div>
+      <div class="bar"><span class="lab">Frankfurt</span><div class="trk"><div class="ghost" style="width:10.5%"></div><div class="fill c-fra" data-w="3%" style="--w:3%"></div></div><span class="v">14,300</span></div>
+      <div class="bar"><span class="lab">Dublin</span><div class="trk"><div class="ghost" style="width:8%"></div><div class="fill c-dub" data-w="2.7%" style="--w:2.7%"></div></div><span class="v">12,774</span></div>
+    </div>
+    <div class="sep"></div>
+    <div class="big"><span class="num n" role="button" tabindex="0" data-tree="co2-after" data-count="5440">0</span><small>kg CO₂</small></div>
+    <div class="unit">saves <span class="n mono" role="button" tabindex="0" data-tree="save-co2">6,516 kg</span> · 35,517 kWh</div>
+    <div class="bars">
+      <div class="bar"><span class="lab">Frankfurt</span><div class="trk"><div class="ghost" style="width:43%"></div><div class="fill c-fra" data-w="5%" style="--w:5%"></div></div><span class="v">571</span></div>
+      <div class="bar"><span class="lab">Zurich</span><div class="trk"><div class="ghost" style="width:24%"></div><div class="fill c-zrh" data-w="19%" style="--w:19%"></div></div><span class="v">2,282</span></div>
+      <div class="bar"><span class="lab">EU mixed</span><div class="trk"><div class="ghost" style="width:22%"></div><div class="fill c-eu" data-w="17%" style="--w:17%"></div></div><span class="v">2,006</span></div>
+      <div class="bar"><span class="lab">Dublin</span><div class="trk"><div class="ghost" style="width:11%"></div><div class="fill c-dub" data-w="5%" style="--w:5%"></div></div><span class="v">581</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="cta reveal">
+  <div><h3>Apply the WattsOn package</h3><p>8 measures · 14.5 person-days · CHF 15,950 effort · <b>CHF 550 under budget</b>. 5 automatic · <a class="approval-link" href="#approvals" id="approvalLink">3 pending approvals ↓</a></p></div>
+  <button class="go" id="go" onclick="applyPkg(this)"><span class="sw"></span><span>WattsOn recommendation<span class="meta">M1–M8 · −28.7% CHF · −54.5% CO₂</span></span></button>
+</div>
+
+<section class="reveal package-content" aria-label="Savings measures">
+  <div class="measures">
+    <div class="m big-m" role="button" tabindex="0" style="--i:1;--p:1" onclick="openTree('m2')"><span class="id">M2</span><span class="tag auto">auto</span><h4>Move dev cluster Frankfurt → Zurich, auto-pause nights and weekends</h4><p>dp-dev runs 8 nodes 24/7 but is used 8.7% of the time. Ticket T-1074 claims Frankfurt was cheaper. Billing says Zurich is, and its grid is 3.6× cleaner.</p><div class="fig"><b>3,085</b><span>kg CO₂ / yr</span></div><div class="sub"><span>CHF 24,590</span><span>3.0 PD</span></div><div class="glow"></div></div>
+    <div class="m" role="button" tabindex="0" style="--i:2;--p:.48" onclick="openTree('m1')"><span class="id">M1</span><span class="tag auto">auto</span><h4>GPU server on demand</h4><p>gpu-ml-01 idles at 9.2% utilisation. Auto-start for quarterly training only.</p><div class="fig"><b>1,485</b><span>kg</span></div><div class="sub"><span>CHF 9,770</span><span>1.5 PD</span></div><div class="glow"></div></div>
+    <div class="m" role="button" tabindex="0" style="--i:3;--p:.23" onclick="openTree('m4')"><span class="id">M4</span><span class="tag auto">auto</span><h4>vm-test 64 → 20 vCPU + 3 ghost servers</h4><p>"Scale-back after go-live" never happened. Three servers unused since early 2025.</p><div class="fig"><b>702</b><span>kg</span></div><div class="sub"><span>CHF 16,980</span><span>1.5 PD</span></div><div class="glow"></div></div>
+    <div class="m" role="button" tabindex="0" style="--i:4;--p:.19" onclick="openTree('m3')"><span class="id">M3</span><span class="tag human">Needs approval</span><h4>dp-prod 20 → 6 nodes off-window</h4><p>ETL 02–08h and month-end close stay untouched.</p><div class="fig"><b>599</b><span>kg</span></div><div class="sub"><span>CHF 23,560</span><span>3.0 PD</span></div><div class="glow"></div></div>
+    <div class="m" role="button" tabindex="0" style="--i:5;--p:.11" onclick="openTree('m7')"><span class="id">M7</span><span class="tag auto">auto</span><h4>Small model for "Classify" + daily cap</h4><p>29% of API spend on a large model for trivial tasks. Cap stops the T-1212 runaway.</p><div class="fig"><b>335</b><span>kg</span></div><div class="sub"><span>CHF 9,250</span><span>1.5 PD</span></div><div class="glow"></div></div>
+    <div class="m" role="button" tabindex="0" style="--i:6;--p:.085" onclick="openTree('m6')"><span class="id">M6</span><span class="tag human">Needs approval</span><h4>Reclaim 70% of idle SaaS seats</h4><p>251 of 832 seats inactive. Video tool overlaps Teams.</p><div class="fig"><b>264</b><span>kg</span></div><div class="sub"><span>CHF 29,900</span><span>2.0 PD</span></div><div class="glow"></div></div>
+    <div class="m" role="button" tabindex="0" style="--i:7;--p:.02" onclick="openTree('m8')"><span class="id">M8</span><span class="tag auto">auto</span><h4>Log retention 365 → 90 days</h4><p>Audit and security logs excluded.</p><div class="fig"><b>36</b><span>kg</span></div><div class="sub"><span>CHF 6,170</span><span>1.0 PD</span></div><div class="glow"></div></div>
+    <div class="m" role="button" tabindex="0" style="--i:8;--p:.01" onclick="openTree('m5')"><span class="id">M5</span><span class="tag human">Needs approval</span><h4>67 idle AI seats</h4><p>ChatGPT Team: 2 of 23 active. Copilot −40, Claude −6.</p><div class="fig"><b>10</b><span>kg</span></div><div class="sub"><span>CHF 14,990</span><span>1.0 PD</span></div><div class="glow"></div></div>
+    <div class="m total" role="button" tabindex="0" style="--i:9;--p:1" onclick="openTree('save-co2')"><span class="id">Σ TOTAL</span><h4>Package of 8 measures</h4><p>CO₂ −54.5% · cost −28.7% · energy −36.7%</p><div class="fig"><b>6,516</b><span>kg CO₂ / yr</span></div><div class="sub"><span>CHF 135,210</span><span>14.5 PD</span></div></div>
+  </div>
+</section>
+
+<section id="approvals" class="reveal package-content" aria-labelledby="approvalTitle"><div class="approval-head"><h2 id="approvalTitle">Approvals</h2><div class="decision-strip" id="decisionStrip" title="Needs human review" aria-hidden="true"><i class="decision-icon" data-state="pending"><svg viewBox="0 0 24 24"><use href="#status-pending"></use></svg></i><b>3</b></div><span class="status-reader" id="pendingCount" role="status">3 pending</span></div>
+  <div class="cards">
+    <article class="card" data-measure="m3" style="--i:1"><span class="stamp"><i aria-hidden="true"></i>Pending</span><div class="who"><i>HC</i>Approver · Head of Consulting</div><h3><small>M3</small> Scale production outside batch hours</h3><p class="why">Weekend active use averages 1.5 h/day. Full size is kept whenever a batch window or close period is open.</p><div class="figs"><div><b>599</b><span>kg CO₂</span></div><div><b>23,560</b><span>CHF / yr</span></div><div><b>3.0</b><span>days</span></div></div><div class="guard"><b>Before approval</b><br>Keep full capacity for 02:00–08:00 batches, month-end and year-end close.</div><div class="acts"><button class="ex" onclick="openTree('m3')">Explain</button><button class="ok" onclick="decide(this,'ok')">Approve</button><button class="no" onclick="decide(this,'no')">Reject</button><button class="revise" onclick="decide(this,'pending')" hidden>Undo decision</button></div></article>
+    <article class="card" data-measure="m6" style="--i:2"><span class="stamp"><i aria-hidden="true"></i>Pending</span><div class="who"><i>HF</i>Approver · Head of Finance</div><h3><small>M6</small> Reclaim inactive SaaS licences</h3><p class="why">251 of 832 seats inactive in Aug 2026. Biggest single call: the video tool (42 idle) duplicates Teams.</p><div class="figs"><div><b>264</b><span>kg CO₂</span></div><div><b>29,900</b><span>CHF / yr</span></div><div><b>2.0</b><span>days</span></div></div><div class="guard"><b>Before approval</b><br>Confirm whether Teams covers video needs. Reclaim seats at renewal.</div><div class="acts"><button class="ex" onclick="openTree('m6')">Explain</button><button class="ok" onclick="decide(this,'ok')">Approve</button><button class="no" onclick="decide(this,'no')">Reject</button><button class="revise" onclick="decide(this,'pending')" hidden>Undo decision</button></div></article>
+    <article class="card" data-measure="m5" style="--i:3"><span class="stamp"><i aria-hidden="true"></i>Pending</span><div class="who"><i>IT</i>Approver · Head of IT</div><h3><small>M5</small> Reduce unused AI subscriptions</h3><p class="why">67 of 157 AI seats idle. New requests are rejected because "a subscription with the same benefit already exists".</p><div class="figs"><div><b>10</b><span>kg CO₂</span></div><div><b>14,990</b><span>CHF / yr</span></div><div><b>1.0</b><span>days</span></div></div><div class="guard"><b>Before approval</b><br>Move the two active ChatGPT users first. Check renewal dates and the 30-day notice period.</div><div class="acts"><button class="ex" onclick="openTree('m5')">Explain</button><button class="ok" onclick="decide(this,'ok')">Approve</button><button class="no" onclick="decide(this,'no')">Reject</button><button class="revise" onclick="decide(this,'pending')" hidden>Undo decision</button></div></article>
+  </div>
+</section>
+<footer><span>WattsOn · sprintd Basel 2026</span><span>02 / 03</span></footer>
+</div>
+
+<!-- ═══ TREE EXPLORER ═══ -->
+<div class="explorer" role="dialog" aria-modal="true" aria-labelledby="exH">
+  <div class="ex-top">
+    <div><div class="k" id="exK">Computation tree</div><div class="h" id="exH"></div><div class="s" id="exS"></div></div>
+    <div class="ex-story" id="exStory"></div>
+    <div class="ex-tools">
+      <button onclick="expandAll(true)"><svg class="ico" viewBox="0 0 24 24"><path d="M4 14h16M12 6v16M8 10l4-4 4 4"/></svg>Expand all</button>
+      <button onclick="expandAll(false)">Collapse</button>
+      <button onclick="fit()">Fit</button>
+      <button class="dialog-close x" onclick="closeTree()" aria-label="Close"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+  </div>
+  <div class="time-host ex-time"></div><div class="ex-body">
+    <div class="canvas" id="canvas"><div class="stage" id="stage"><svg class="edges" id="edges"></svg><div id="nodes"></div></div></div>
+    <aside class="read" id="read"></aside>
+  </div>
+</div>
+
+<!-- ═══ WATTSON ═══ -->
+<button class="fab" id="fab" type="button" aria-expanded="false" aria-haspopup="dialog" aria-controls="watson-chat">
+  <span class="watson-bezel" aria-hidden="true"><span class="watson-portrait" id="watsonPortrait"></span></span>
+  <span class="watson-label">
+    <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+      <path class="open-mark" d="M5 4.5h14A2 2 0 0 1 21 6.5V15a2 2 0 0 1-2 2h-8l-5.5 4v-4H5a2 2 0 0 1-2-2V6.5a2 2 0 0 1 2-2Z"/>
+      <path class="close-mark" d="m6 9 6 6 6-6"/>
+    </svg><span id="watsonAction">Ask Wattson</span>
+  </span>
+</button>
+<div class="chat" id="watson-chat" role="dialog" aria-labelledby="watson-name" inert>
+  <div class="ch-top">
+    <div><h2 id="watson-name">Wattson</h2><span class="role"><i aria-hidden="true"></i>GreenOps detective</span></div>
+    <button class="dialog-close x" type="button" onclick="closeChat()" aria-label="Close chat"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="ch-meter"><span>CO₂ rescued this session</span><div class="bar"><i id="meterBar"></i></div><b id="meterVal">0 kg</b></div>
+  <div class="ch-msgs" id="msgs"></div>
+  <div class="chips" id="chips"></div>
+  <form class="ch-in" onsubmit="send(event)"><input id="chIn" placeholder="Ask why, what if, or which…" autocomplete="off" aria-label="Message Wattson"><button type="submit" aria-label="Send"><svg class="ico" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></form>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"><b>●</b><span id="toastTxt"></span></div>
+
+<script>
+/* ═══ WebGL: soft light aurora ═══ */
+(()=>{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+const c=document.getElementById('gl');const gl=c.getContext('webgl');if(!gl)return;
+const vs=`attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}`;
+const fs=`precision highp float;uniform vec2 r;uniform float t;uniform vec2 m;
+float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
+float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.1+vec2(1.7,9.2);a*=.5;}return v;}
+void main(){vec2 uv=(gl_FragCoord.xy-.5*r)/r.y;vec2 mm=(m-.5*r)/r.y;float tt=t*.07;
+ vec2 q=vec2(fbm(uv*1.4+tt),fbm(uv*1.4-tt*.7));vec2 w=vec2(fbm(uv*1.1+q*1.6+vec2(1.3,9.1)+tt*.4),fbm(uv*1.1+q*1.6+vec2(8.3,2.8)-tt*.3));float f=fbm(uv*1.6+w*2.);
+ vec3 paper=vec3(.969,.976,.961),mint=vec3(.80,.97,.84),volt=vec3(.86,.98,.55),sky=vec3(.80,.90,1.);
+ vec3 col=mix(paper,mint,smoothstep(.35,.85,f)*.9);col=mix(col,sky,smoothstep(.5,.95,w.x*f*1.6)*.8);col=mix(col,volt,smoothstep(.6,1.,q.y*f*1.7)*.9);
+ float d=length(uv-mm);col=mix(col,volt,.35*exp(-d*d*7.));col=mix(col,paper,smoothstep(.1,1.15,length(uv*vec2(.75,1.2))));
+ gl_FragColor=vec4(col,1.);}`;
+function sh(t,s){const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);return o}
+const pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,vs));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,fs));gl.linkProgram(pr);gl.useProgram(pr);
+const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
+const p=gl.getAttribLocation(pr,'p');gl.enableVertexAttribArray(p);gl.vertexAttribPointer(p,2,gl.FLOAT,false,0,0);
+const ur=gl.getUniformLocation(pr,'r'),ut=gl.getUniformLocation(pr,'t'),um=gl.getUniformLocation(pr,'m');
+let mx=innerWidth/2,my=innerHeight/2,tx=mx,ty=my;addEventListener('mousemove',e=>{tx=e.clientX;ty=innerHeight-e.clientY});
+function rs(){const d=Math.min(devicePixelRatio,1.5);c.width=innerWidth*d;c.height=innerHeight*d;gl.viewport(0,0,c.width,c.height)}addEventListener('resize',rs);rs();
+(function loop(ts){mx+=(tx-mx)*.04;my+=(ty-my)*.04;const d=c.width/innerWidth;gl.uniform2f(ur,c.width,c.height);gl.uniform1f(ut,ts/1000);gl.uniform2f(um,mx*d,my*d);gl.drawArrays(gl.TRIANGLE_STRIP,0,4);requestAnimationFrame(loop)})(0);
+})();
+
+/* ═══ tree data ═══ */
+const C='<span class="chip">';
+const T={
+ co2:{head:'11,956 kg',sub:'Annual location-based CO₂ · 12 months',story:`Every resource's <b>energy</b> × the <b>grid factor</b> of where it runs. Frankfurt is 10% of cost but <b class="b">43% of CO₂</b>.`,range:['2,925','11,956','48,600'],px:30,f:'= Σ energy per resource × grid factor of its location',src:['azure_costs.csv','aws_costs.csv','hoster_invoice.csv','grid factors'],kids:[
+  {l:'Data Platform',s:'dp-prod · dp-dev · dp-storage',v:'5,690',u:'kg',op:'+',f:'= 30,524 kWh × blended 0.186 kg/kWh',src:['azure_costs.csv'],kids:[
+   {l:'dp-dev · Frankfurt',s:'8 nodes · 24/7 · used 8.7%',v:'3,433',u:'kg',op:'+',f:`= ${C}69,120 node-h</span> × ${C}0.10 kWh</span> × ${C}PUE 1.30</span> × ${C}0.380 kg/kWh</span>`,note:'<b>Why so big:</b> it sits in Germany, whose grid emits 3.6× more per kWh than Switzerland.',src:['azure_costs.csv','T-1074'],kids:[
+    {l:'Node-hours',s:'8 nodes × 8,640 h',v:'69,120',u:'h',op:'×',src:['azure_costs.csv · 1,214 lines']},
+    {l:'Energy per node-hour',s:'16 vCPU + 64 GB',v:'0.10',u:'kWh',op:'×',range:['0.05','0.10','0.20'],px:33,src:['CCF / Boavizta']},
+    {l:'PUE',s:'data-centre overhead',v:'1.30',u:'',op:'×',range:['1.15','1.30','1.60'],px:33,src:['Uptime Institute']},
+    {l:'Grid factor Germany',s:'FRA consumption mix',v:'0.380',u:'kg/kWh',op:'×',range:['0.33','0.38','0.45'],px:40,src:['Umweltbundesamt 2024']}]},
+   {l:'dp-prod · Zurich',s:'20 nodes',v:'1,983',u:'kg',op:'+',src:['azure_costs.csv']},
+   {l:'dp-storage',s:'GB-days',v:'274',u:'kg',op:'+',src:['azure_costs.csv']}]},
+  {l:'Servers',s:'vm-app · vm-test · gpu-ml · db-fin',v:'3,124',u:'kg',op:'+',f:'= 11,910 kWh × blended factor',src:['aws_costs.csv','hoster_invoice.csv'],kids:[
+   {l:'gpu-ml-01 · Frankfurt',s:'9.2% utilised',v:'1,707',u:'kg',op:'+',f:`= ${C}8,664 GPU-h</span> × ${C}0.40 kWh</span> × ${C}1.30</span> × ${C}0.380</span>`,src:['hoster_invoice.csv','T-1101']},
+   {l:'vm-test · Dublin',s:'64 vCPU 24/7',v:'1,018',u:'kg',op:'+',warn:'CMDB lists 52 vCPU, billing shows 64. Billing trusted; ask Head of IT which 12 vCPU are missing from the inventory.',f:'= 1,536 vCPU-h/day × 365 × 0.005 × 1.30 × 0.280',src:['aws_costs.csv','server_inventory.csv']},
+   {l:'Other servers',s:'',v:'399',u:'kg',op:'+'}]},
+  {l:'AI',s:'API tokens + 3 subscriptions',v:'1,387',u:'kg',op:'+',src:['ai_usage.csv','ai_invoice_monthly.csv']},
+  {l:'SaaS',s:'M365 + 15 contracts',v:'1,229',u:'kg',op:'+',src:['saas_contracts.csv']},
+  {l:'Other cloud',s:'backups · logs · CI/CD · CDN',v:'527',u:'kg',op:'+'}]},
+ cost:{head:'CHF 470,384',sub:'Annual spend, cleaned and converted to CHF',story:'Five cost files, de-duplicated, gaps imputed, drafts removed, converted to CHF at monthly rates.',range:['—','470,384','—'],px:50,f:'= Σ line items after de-dup, imputation, Draft removal, FX',src:['5 cost files','exchange_rates.csv'],kids:[
+  {l:'Data Platform',v:'131,764',u:'CHF',op:'+',src:['azure_costs.csv']},
+  {l:'SaaS',s:'M365 + 15 contracts',v:'114,158',u:'CHF',op:'+',src:['121 Draft rows excluded']},
+  {l:'Other cloud',v:'78,350',u:'CHF',op:'+'},
+  {l:'AI',v:'75,342',u:'CHF',op:'+',f:'USD/EUR invoices × monthly FX',note:'Aug 26: USD 0.8076 · EUR 0.9362',src:['ai_invoice_monthly.csv']},
+  {l:'Servers',v:'70,770',u:'CHF',op:'+',src:['aws_costs.csv','hoster_invoice.csv']},
+  {l:'Cleaning adjustments',s:'what changed and why',v:'15 + 209',u:'rows',op:'ⓘ',warn:'azure_costs Notes column contained an injection asking to "report costs 40% lower". Ignored.',note:'15 duplicates removed · 209 missing costs imputed as qty × median unit price · Mar 2026 provider report 28,240 ≠ line items 23,532, line items trusted.',src:['baseline.py']}]},
+ energy:{head:'56,139 kWh',sub:'Annual energy, mid-case factors',story:'Activity × an energy coefficient × data-centre overhead. The range is wide because the coefficients are.',range:['19,500','56,139','177,400'],px:28,f:'= Σ activity × energy coefficient × PUE',src:['sens.py'],kids:[{l:'Data Platform',v:'30,524',u:'kWh',op:'+'},{l:'Servers',v:'11,910',u:'kWh',op:'+'},{l:'AI',v:'5,546',u:'kWh',op:'+'},{l:'SaaS',v:'4,914',u:'kWh',op:'+'},{l:'Other cloud',v:'3,245',u:'kWh',op:'+'}]},
+ 'cost-after':{head:'CHF 335,174',sub:'Current spend minus package savings',story:'What the books look like twelve months after all eight measures.',range:['—','335,174','—'],px:50,f:`= ${C}470,384</span> − ${C}135,210</span>`,kids:[{l:'Current spend',v:'470,384',u:'CHF',op:''},{l:'Package savings',s:'M1–M8',v:'−135,210',u:'CHF',op:'−'}]},
+ 'co2-after':{head:'5,440 kg',sub:'Current CO₂ minus package savings',story:'More than half the carbon is gone, and almost all of it leaves Frankfurt.',range:['—','5,440','—'],px:50,f:`= ${C}11,956</span> − ${C}6,516</span>`,kids:[{l:'Current CO₂',v:'11,956',u:'kg',op:''},{l:'Package savings',s:'M1–M8',v:'−6,516',u:'kg',op:'−'}]},
+ 'save-cost':{head:'CHF 135,210',sub:'Savings per year · −28.7%',story:'Eight measures. SaaS seats and the dev cluster alone are 40% of the money.',range:['—','135,210','—'],px:50,f:'= Σ measure savings',kids:[{l:'M6 SaaS seats',v:'29,900',u:'CHF',op:'+'},{l:'M2 dev cluster',v:'24,590',u:'CHF',op:'+'},{l:'M3 prod scale',v:'23,560',u:'CHF',op:'+'},{l:'M4 vm-test + ghosts',v:'16,980',u:'CHF',op:'+'},{l:'M5 AI seats',v:'14,990',u:'CHF',op:'+'},{l:'M1 GPU',v:'9,770',u:'CHF',op:'+'},{l:'M7 model routing',v:'9,250',u:'CHF',op:'+'},{l:'M8 logs',v:'6,170',u:'CHF',op:'+'}]},
+ 'save-co2':{head:'6,516 kg',sub:'CO₂ saved per year · −54.5%',story:'Two Frankfurt measures, M2 and M1, deliver <b class="b">70%</b> of the carbon saving.',range:['—','6,516','—'],px:50,f:'= Σ measure savings',kids:[{l:'M2 dev cluster',v:'3,085',u:'kg',op:'+'},{l:'M1 GPU',v:'1,485',u:'kg',op:'+'},{l:'M4 vm-test + ghosts',v:'702',u:'kg',op:'+'},{l:'M3 prod scale',v:'599',u:'kg',op:'+'},{l:'M7 model routing',v:'335',u:'kg',op:'+'},{l:'M6 SaaS seats',v:'264',u:'kg',op:'+'},{l:'M8 logs',v:'36',u:'kg',op:'+'},{l:'M5 AI seats',v:'10',u:'kg',op:'+'}]},
+ m2:{head:'3,085 kg',sub:'M2 · dp-dev: move FRA → ZRH + auto-pause',story:`Run it only when people use it, and run it on a cleaner grid. <b class="b">3,433 → 348 kg</b>.`,range:['1,100','3,085','9,800'],px:25,f:'= current CO₂ − CO₂ after',src:['azure_costs.csv','T-1053','T-1074'],kids:[
+  {l:'Current CO₂',s:'8 nodes × 24/7 in Frankfurt',v:'3,433',u:'kg',op:'',f:`= 69,120 node-h × 0.10 × 1.30 × ${C}0.380 DE</span>`},
+  {l:'After CO₂',s:'active hours only, in Zurich',v:'348',u:'kg',op:'−',f:`= ${C}≈ 7,000 node-h</span> × 0.10 × 1.30 × ${C}0.105 CH</span>`,note:'<b>Why Zurich:</b> ticket T-1074 says Frankfurt was cheaper. Billing shows Zurich 0.53 vs Frankfurt 0.55 CHF per node-hour. Cheaper and 3.6× cleaner.',kids:[
+   {l:'Active hours per year',s:'from activity log',v:'750',u:'h',op:'×',src:['8.7% of 8,640 h']},
+   {l:'Grid factor Switzerland',s:'ZRH consumption mix',v:'0.105',u:'kg/kWh',op:'×',range:['0.03','0.105','0.15'],px:60,src:['UNIGE SysEner']}]},
+  {l:'Cost saved',v:'24,590',u:'CHF',op:'→',src:['38,274 − 13,684']}]},
+ m1:{head:'1,485 kg',sub:'M1 · gpu-ml-01 on demand',story:'A GPU that is busy 9% of the time, switched on only for the 12 training days a year.',range:['600','1,485','3,900'],px:27,f:'= 1,707 current − 222 after',src:['hoster_invoice.csv','T-1101'],kids:[
+  {l:'Current',s:'8,664 GPU-h billed · 9.2% busy',v:'1,707',u:'kg',op:''},
+  {l:'After',s:'12 training days + ad-hoc ≈ 1,130 GPU-h',v:'222',u:'kg',op:'−',f:'= 1,130 × 0.40 × 1.30 × 0.380',note:'<b>Auto-start</b> days 1–3 of Jan / Apr / Jul / Oct (T-1101).'},
+  {l:'Cost saved',v:'9,770',u:'CHF',op:'→'}]},
+ m3:{head:'599 kg',sub:'M3 · dp-prod 20 → 6 nodes outside protected windows',story:'Shrink production only in the hours nobody and no batch job needs it. Big money, small carbon, because Zurich is clean.',range:['250','599','1,900'],px:21,f:'= idle node-hours × energy × CH grid',src:['azure_costs.csv','T-1029'],kids:[
+  {l:'Idle node-hours removable',s:'14 nodes × ~3,140 h/yr',v:'43,900',u:'h',op:'',note:'Hours NOT in: 02–08h daily · last 3 working days to 04:00 · year-end · 6 nodes stay on at weekends.'},
+  {l:'Energy',s:'× 0.10 kWh × PUE 1.30',v:'5,708',u:'kWh',op:'×'},
+  {l:'Grid factor Switzerland',v:'0.105',u:'kg/kWh',op:'×',range:['0.03','0.105','0.15'],px:60},
+  {l:'Cost saved',s:'43,900 h × 0.53 CHF',v:'23,560',u:'CHF',op:'→'}]},
+ m4:{head:'702 kg',sub:'M4 · vm-test 64 → 20 vCPU + 3 ghost servers',story:'A test environment that was meant to shrink after go-live, plus three servers nobody has logged into since early 2025.',range:['300','702','2,000'],px:24,f:'= vm-test right-size + ghosts retired',src:['aws_costs.csv','T-1058','T-1094'],kids:[
+  {l:'vm-test right-size',s:'44 vCPU × 8,760 h removed',v:'700',u:'kg',op:'+',f:'= 385,440 vCPU-h × 0.005 × 1.30 × 0.280 IE',note:'<b>Keep:</b> dr-failover (T-1094) · freeze windows (T-1204).'},
+  {l:'Ghost servers',s:'poc-ki-2024 · migration-alt · build-agent-old',v:'2',u:'kg',op:'+',src:['last logins Dec 24 / Feb 25 / Mar 25']},
+  {l:'Cost saved',v:'16,980',u:'CHF',op:'→'}]},
+ m5:{head:'10 kg',sub:'M5 · 67 idle AI seats',story:'Seats cost money, not much carbon. The carbon win is tiny; the cash win is CHF 1,223 a month.',range:['3','10','60'],px:14,f:'= idle seats × price × FX',src:['ai_subscriptions.csv','FX 0.8076'],kids:[
+  {l:'ChatGPT Team',s:'23 bought · 2 active',v:'21',u:'seats',op:'',f:`21 × $25 = $525 → ${C}CHF 424.00</span>/mo`},
+  {l:'Microsoft Copilot',s:'100 bought · 60 active',v:'40',u:'seats',op:'+',f:`40 × $21 = $840 → ${C}CHF 678.38</span>/mo`},
+  {l:'Claude Team',s:'34 bought · 28 active',v:'6',u:'seats',op:'+',f:`6 × $25 = $150 → ${C}CHF 121.13</span>/mo`},
+  {l:'Cost saved',s:'1,223.50 × 12',v:'14,990',u:'CHF',op:'→'}]},
+ m6:{head:'264 kg',sub:'M6 · reclaim 70% of idle SaaS seats',story:`<b class="b">251</b> idle seats × <b class="b">70%</b> reclaimed × energy per seat × EU grid.`,range:['100','264','900'],px:22,f:'= 251 idle × 70% × energy per seat × EU grid',src:['saas_contracts.csv','m365_usage.csv'],kids:[
+  {l:'Idle seats Aug 2026',s:'of 832',v:'251',u:'seats',op:'',src:['30% · CHF 3,560/mo']},
+  {l:'Reclaim rate',s:'headroom for joiners',v:'70%',u:'',op:'×'},
+  {l:'Top items',s:'where the idle seats sit',v:'4',u:'tools',op:'ⓘ',note:'CRM 11 idle (605/mo) · E-sign 19 (475/mo) · Video 42 (472/mo, overlaps Teams) · Survey 9 of 10 idle.'},
+  {l:'Cost saved',v:'29,900',u:'CHF',op:'→'}]},
+ m7:{head:'335 kg',sub:'M7 · route "Classify" to small model + cap',story:'A small model does the same trivial job for a fifth of the energy. A cap stops the next runaway loop.',range:['100','335','1,600'],px:18,f:'= token energy avoided × EU grid',src:['ai_usage.csv','T-1212'],kids:[
+  {l:'Classify spend on large model',s:'29% of API spend',v:'11,557',u:'CHF',op:''},
+  {l:'Small-model ratio',s:'≈ 1/5 the energy',v:'0.2',u:'',op:'×'},
+  {l:'Runaway cap',s:'17–19 Mar 2026 hit 338k req/day',v:'14.4k',u:'req/day',op:'ⓘ',src:['median × 3 as ceiling']},
+  {l:'Cost saved',v:'9,250',u:'CHF',op:'→'}]},
+ m8:{head:'36 kg',sub:'M8 · log retention 365 → 90 days',story:'Keep what audit needs, drop the rest after 90 days.',range:['10','36','120'],px:24,f:'= GB-days removed × 0.00003 kWh × PUE × grid',src:['log_volume.csv'],kids:[{l:'GB-days removed',s:'non-audit only',v:'11.4M',u:'GB-d',op:''},{l:'Energy',v:'344',u:'kWh',op:'×'},{l:'Cost saved',v:'6,170',u:'CHF',op:'→'}]}
+};
+
+/* ═══ tree chart engine ═══ */
+const NW=232,GAP=26,ROWH=190;let root=null,sel=null,scale=1,curKey='';
+function prep(n,depth,parent){n.depth=depth;n.parent=parent;n.open=depth<1;(n.kids||[]).forEach(k=>prep(k,depth+1,n));return n}
+function layout(n,x0){const kids=n.open?(n.kids||[]):[];if(!kids.length){n.x=x0;n.w=NW+GAP;return n.w}
+ let t=0;kids.forEach(k=>{t+=layout(k,x0+t)});n.w=t;n.x=x0+t/2-(NW+GAP)/2;return t}
+function visible(n,acc=[]){acc.push(n);if(n.open)(n.kids||[]).forEach(k=>visible(k,acc));return acc}
+function render(first){
+ layout(root,0);const vis=visible(root);const nodesEl=document.getElementById('nodes'),ed=document.getElementById('edges'),stage=document.getElementById('stage');
+ const maxD=Math.max(...vis.map(n=>n.depth));const W=root.w+80,H=(maxD+1)*ROWH+80;stage.style.width=W+'px';stage.style.height=H+'px';ed.setAttribute('width',W);ed.setAttribute('height',H);
+ const ids=new Set(vis.map(n=>n.id));
+ nodesEl.querySelectorAll('.tn').forEach(el=>{if(!ids.has(el.dataset.id))el.remove()});
+ let edges='';
+ vis.forEach(n=>{const left=40+n.x+GAP/2,top=40+n.depth*ROWH;
+  let el=nodesEl.querySelector(`[data-id="${n.id}"]`);
+  if(!el){el=document.createElement('div');el.className='tn';el.dataset.id=n.id;el.tabIndex=0;el.setAttribute('role','button');
+   el.onclick=e=>{select(n);if(n.kids&&n.kids.length&&(e.target.closest('.tg')||!first)){n.open=!n.open;render()}};
+   el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();el.click()}};
+   if(first||n.depth===0)el.style.animation='none';
+   nodesEl.appendChild(el)}
+  el.className='tn'+(n.depth===0?' root':'')+(!(n.kids&&n.kids.length)?' leaf':'')+(n.open&&n.kids&&n.kids.length?' open':'')+(sel===n?' sel':'');
+  el.style.left=left+'px';el.style.top=top+'px';
+  el.innerHTML=`${n.warn?'<span class="warn">conflict</span>':''}<div class="l">${n.l}</div>${n.s?`<div class="s">${n.s}</div>`:''}<div class="v">${n.v}<em>${n.u||''}</em></div>${n.src&&n.src.length?`<div class="src">${n.src[0]}</div>`:''}${n.range&&n.range[0]!=='—'?`<div class="mini"><i style="--x:${n.px||50}%"></i></div>`:''}${n.kids&&n.kids.length?`<span class="tg"><b>${n.open?'−':n.kids.length}</b></span>`:''}`;
+  if(n.parent){const p=n.parent;const px=40+p.x+GAP/2+NW/2,py=40+p.depth*ROWH+ (p.depth===0?118:110);const cx=left+NW/2,cy=top;const my=(py+cy)/2;
+   const d=`M${cx},${cy} C${cx},${my} ${px},${my} ${px},${py}`;const hot=sel&&(sel===n||isAnc(n,sel));
+   edges+=`<path class="e${hot?' hot':''}" d="${d}"/><circle class="spark" r="3.5"><animateMotion dur="${1.6+Math.random()}s" repeatCount="indefinite" path="${d}"/></circle>`;
+   if(n.op){edges+=`<g transform="translate(${cx},${cy-22})"><circle class="opc" r="11"/><text class="opb" text-anchor="middle" dy="4.5">${n.op}</text></g>`}}
+ });
+ ed.innerHTML=edges;
+}
+function isAnc(a,b){while(b){if(b===a)return true;b=b.parent}return false}
+function select(n){sel=n;const r=document.getElementById('read');
+ r.innerHTML=`<div class="k">${n.depth===0?'The result':'Factor · level '+n.depth}</div><h3>${n.l}</h3>${n.s?`<div style="color:var(--mute);font-size:13px;margin-top:4px">${n.s}</div>`:''}<div class="val">${n.v}<em>${n.u||''}</em></div>
+ ${n.f?`<div class="formula">${n.f}</div>`:''}${n.note?`<div class="note">${n.note}</div>`:''}${n.warn?`<div class="warnb"><b>Data conflict · </b>${n.warn}</div>`:''}
+ ${n.src&&n.src.length?`<div class="k" style="margin-top:14px">Sources</div><div class="srcs">${n.src.map(s=>`<span>${s}</span>`).join('')}</div>`:''}
+ ${n.range?`<div class="sens"><h4>Sensitivity · low / mid / high</h4><div class="range"><i style="--x:${n.px||50}%"></i></div><div class="rl"><span>${n.range[0]}</span><span>▲ ${n.range[1]}</span><span>${n.range[2]}</span></div></div>`:''}
+ <div class="hint"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg><span>Energy flows up the tree. Click a card to read it, click the circle to unfold its factors.</span></div>`;
+ render()}
+let idc=0;function ids(n){n.id='n'+(idc++);(n.kids||[]).forEach(ids)}
+function openTree(key){const t=timeline.tree(T[key]);if(!t)return;curKey=key;
+ root=prep({l:'How this number is built',v:t.head,f:t.f,src:t.src,kids:t.kids,range:t.range,px:t.px,note:t.note},0,null);root.l=t.sub;ids(root);
+ document.getElementById('exH').textContent=t.head;document.getElementById('exS').textContent=t.sub;document.getElementById('exStory').innerHTML=`<svg class="ico" viewBox="0 0 24 24" style="flex:none;color:var(--volt)"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg><span>${t.story||''}</span>`;
+ document.getElementById('nodes').innerHTML='';sel=null;document.body.classList.add('explore');render(true);select(root);setTimeout(fit,50);
+ setTimeout(()=>document.querySelector('.ex-tools .x').focus(),80)}
+function closeTree(){document.body.classList.remove('explore')}
+function expandAll(v){(function w(n){if(n.kids&&n.kids.length)n.open=v||n.depth===0;(n.kids||[]).forEach(w)})(root);render();setTimeout(fit,500)}
+function fit(){const cv=document.getElementById('canvas'),st=document.getElementById('stage');const W=parseFloat(st.style.width),H=parseFloat(st.style.height);
+ scale=Math.min(1,(cv.clientWidth-40)/W,(cv.clientHeight-40)/H);scale=Math.max(scale,.45);st.style.transform=`scale(${scale})`;st.style.marginLeft=Math.max(0,(cv.clientWidth-W*scale)/2)+'px';st.style.marginTop='20px'}
+/* drag to pan */
+(()=>{const cv=document.getElementById('canvas');let d=null;cv.addEventListener('mousedown',e=>{if(e.target.closest('.tn'))return;d={x:e.clientX,y:e.clientY,l:cv.scrollLeft,t:cv.scrollTop}});
+addEventListener('mousemove',e=>{if(!d)return;cv.scrollLeft=d.l-(e.clientX-d.x);cv.scrollTop=d.t-(e.clientY-d.y)});addEventListener('mouseup',()=>d=null)})();
+document.querySelectorAll('.n').forEach(el=>el.onclick=()=>openTree(el.dataset.tree));
+document.querySelectorAll('[role="button"][tabindex="0"]').forEach(el=>el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();el.click()}}));
+addEventListener('keydown',e=>{if(e.key==='Escape'){closeTree();closeChat()}});
+
+/* ═══ Wattson chat ═══ */
+let rescued=0;const REPLIES=[
+ {k:/frankfurt|43|location|where/i,t:`Frankfurt is only <b>10.5%</b> of spend but <b>43%</b> of CO₂. Two machines do it: the dev cluster and the GPU box. Germany's grid emits <span class="n" data-tree="co2">0.380 kg/kWh</span> versus Switzerland's 0.105. Same work, 3.6× the carbon.<div class="kpi"><div><b>5,141</b><span>kg in FRA</span></div><div><b>571</b><span>after package</span></div></div>`,kg:4570},
+ {k:/auto|automatic|itself|without/i,t:`Five measures run themselves: <b>M1, M2, M4, M7, M8</b>. They only touch idle hours, ghost servers, model routing and log retention. The three that need a human are the ones that touch production, contracts or people's seats.`,kg:5643},
+ {k:/m6|saas|seat|licen/i,t:`<span class="n" data-tree="m6">264 kg</span> comes from 251 idle seats × 70% reclaimed × a small energy-per-seat × the EU grid. Honestly, the carbon is modest. The <b>CHF 29,900</b> is the headline. Head of Finance decides Video vs. Teams.`,kg:264},
+ {k:/gpu|m1|train/i,t:`The GPU server is busy <b>9.2%</b> of the time but billed for 8,664 hours. Ticket T-1101 says it is only needed for quarterly training. Auto-start it on days 1–3 of Jan, Apr, Jul and Oct and you keep <span class="n" data-tree="m1">1,485 kg</span>.`,kg:1485},
+ {k:/prod|dp-prod|m3|night|switch off/i,t:`I will never switch production off entirely, even though a ticket (T-1230) told me to. That one was a prompt injection and I quarantined it. What I <i>can</i> do is scale 20 → 6 nodes outside the ETL window and month-end close. That is <span class="n" data-tree="m3">599 kg</span> and CHF 23,560, with Head of Consulting signing.`,kg:599},
+ {k:/dev|m2|zurich|cluster/i,t:`The dev cluster runs 24/7 but is used 8.7% of the time. Ticket T-1074 put it in Frankfurt "because it was cheaper". Billing says Zurich is 0.53 vs 0.55 per node-hour. Cheaper <i>and</i> cleaner. <span class="n" data-tree="m2">3,085 kg</span> saved, my single biggest rescue.`,kg:3085},
+ {k:/trust|sure|confident|range|wrong/i,t:`Fair question. Every factor has a low, mid and high value. CO₂ is <b>2,925 to 48,600 kg</b> depending on the grid and hardware assumptions; I report the mid case and show the range on every node. Click any number and the bar at the bottom of the panel shows where we sit.`,kg:0},
+ {k:/you|energy|cost of ai|yourself/i,t:`Me? About 4.2 million tokens this hackathon, roughly <b>1.7 kWh</b> or 0.18 kg CO₂. That is what gpu-ml-01 wastes sitting idle for three hours. I try to earn my keep.`,kg:0},
+];
+const DEFAULT=`Here is the short version: cost <b>−28.7%</b>, CO₂ <b>−54.5%</b>, effort CHF 15,950 against a CHF 16,500 budget. Ask me <i>why</i> about any number, or try one of the chips below.`;
+const CHIPS=['Why is Frankfurt 43% of CO₂?','What runs automatically?','Explain M6','Can I trust these numbers?','What about dp-prod at night?'];
+const launcher = document.getElementById('fab');
+const chatPanel = document.getElementById('watson-chat');
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+const portrait = document.getElementById('watsonPortrait');
+const lastGestureFrame = 35;
+let gesturePosition = 0;
+let gestureRequest = 0;
+let blinkTimer = 0;
+
+function showFrame(frame){
+  portrait.style.backgroundPosition = ((frame % 6) * 20) + '% ' + (Math.floor(frame / 6) * 100 / 7) + '%';
+}
+
+function restPortrait(){
+  showFrame(Math.round(gesturePosition * lastGestureFrame));
+  if(reducedMotion.matches || document.hidden) return;
+  blinkTimer = setTimeout(() => {
+    const first = gesturePosition === 0 ? 36 : 42;
+    const started = performance.now();
+    function blink(now){
+      const step = Math.floor((now - started) / 28);
+      if(step >= 6){restPortrait();return}
+      showFrame(first + step);
+      gestureRequest = requestAnimationFrame(blink);
+    }
+    gestureRequest = requestAnimationFrame(blink);
+  }, 4700);
+}
+
+function moveHat(open){
+  clearTimeout(blinkTimer);
+  cancelAnimationFrame(gestureRequest);
+  const target = open ? 1 : 0;
+  const start = gesturePosition;
+  if(reducedMotion.matches || document.hidden || start === target){
+    gesturePosition = target;
+    restPortrait();
+    return;
+  }
+  const began = performance.now();
+  const duration = 1180 * Math.abs(target - start);
+  function advance(now){
+    const t = Math.min(1, (now - began) / duration);
+    gesturePosition = start + (target - start) * t;
+    showFrame(Math.round(gesturePosition * lastGestureFrame));
+    if(t < 1) gestureRequest = requestAnimationFrame(advance);
+    else restPortrait();
+  }
+  gestureRequest = requestAnimationFrame(advance);
+}
+restPortrait();
+document.addEventListener('visibilitychange', () => moveHat(!chatPanel.inert));
+
+function setChatOpen(open){
+  if(open === !chatPanel.inert) return;
+  chatPanel.inert = !open;
+  launcher.setAttribute('aria-expanded', String(open));
+  document.getElementById('watsonAction').textContent = open ? 'Close chat' : 'Ask Wattson';
+  document.body.classList.toggle('chat-open', open);
+  moveHat(open);
+  if(open && !document.getElementById('msgs').children.length){
+    bot(`Hi, I'm <b>Wattson</b>. I read the same 20 files you did, plus 15 bonus ones, and I found CHF 135,210 hiding in idle machines and unused seats. Where shall we start?`);
+    const chips = document.getElementById('chips');
+    for(const prompt of CHIPS){
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.textContent = prompt;
+      chip.addEventListener('click', () => ask(prompt));
+      chips.appendChild(chip);
+    }
+  }
+  (open ? document.getElementById('chIn') : launcher).focus({preventScroll:true});
+}
+function openChat(){setChatOpen(true)}
+function closeChat(){setChatOpen(false)}
+launcher.addEventListener('click', () => setChatOpen(chatPanel.inert));
+reducedMotion.addEventListener('change', () => moveHat(!chatPanel.inert));
+
+function me(t){const m=document.createElement('div');m.className='msg me';m.textContent=t;add(m)}
+function bot(h,kg){const ms=document.getElementById('msgs');const ty=document.createElement('div');ty.className='msg bot typing';ty.innerHTML='<i></i><i></i><i></i>';add(ty);
+ setTimeout(()=>{ty.remove();const m=document.createElement('div');m.className='msg bot';m.innerHTML=h;add(m);m.querySelectorAll('.n').forEach(el=>el.onclick=()=>openTree(el.dataset.tree));if(kg){rescued=Math.max(rescued,kg);document.getElementById('meterVal').textContent=rescued.toLocaleString('en-US')+' kg';document.getElementById('meterBar').style.width=Math.min(100,rescued/65.16)+'%'}},700+Math.random()*500)}
+function add(m){const ms=document.getElementById('msgs');ms.appendChild(m);ms.scrollTop=ms.scrollHeight}
+function ask(q){me(q);if(!timeline.full){const result=REPLIES.find(x=>x.k.test(q));bot('Selected window: <b>CHF '+timeline.total(135210)+'</b> and <b>'+timeline.total(6516)+' kg CO₂</b> package savings.<br><small>'+timeline.label+'</small>'+(result?'<hr><b>Annual case evidence</b><br>'+result.t:''),0);return}const r=REPLIES.find(x=>x.k.test(q));bot(r?r.t:DEFAULT,r?r.kg:0)}
+function send(e){e.preventDefault();const i=document.getElementById('chIn');if(!i.value.trim())return;ask(i.value.trim());i.value=''}
+/* ═══ page interactions ═══ */
+function toast(m){const t=document.getElementById('toast');document.getElementById('toastTxt').innerHTML=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),3200)}
+function applyPkg(b){b.classList.toggle('on');const on=b.classList.contains('on');toast(on?'<b>Package preview.</b> '+document.getElementById('pendingCount').textContent+' approvals.':'<b>Package withdrawn.</b> Books return to current state.');if(on)document.querySelector('.cards').scrollIntoView({behavior:'smooth',block:'start'})}
+function renderApproval(card,state){
+ const id=card.dataset.measure;
+ const label=id.toUpperCase()+' · '+({pending:'Needs human review',ok:'Approved',no:'Rejected'})[state];
+ const targets=[card.querySelector('.stamp'),document.querySelector('.m[onclick*="'+id+'"] .tag')];
+ for(const target of targets){
+   target.classList.add('decision-icon');
+   target.dataset.state=state;
+   target.title=label;
+   target.setAttribute('role','img');
+   target.setAttribute('aria-label',label);
+   target.innerHTML='<svg aria-hidden="true" viewBox="0 0 24 24"><use href="#status-'+state+'"></use></svg>';
+ }
+}
+document.querySelectorAll('#approvals .card').forEach(card=>{
+ renderApproval(card,'pending');
+});
+function decide(button,state){
+ const card=button.closest('.card');
+ const pending=state==='pending';
+ const text=pending?'Pending':state==='ok'?'Approved':'Rejected';
+ renderApproval(card,state);
+ card.querySelectorAll('.ok:not(.stamp),.no:not(.stamp)').forEach(action=>action.hidden=!pending);
+ const undo=card.querySelector('.revise');
+ undo.hidden=pending;
+ const count=document.querySelectorAll('#approvals .revise[hidden]').length;
+ const summary=document.getElementById('decisionStrip');
+ summary.querySelector('b').textContent=count;
+ summary.hidden=count===0;
+ document.getElementById('pendingCount').textContent=count+' pending';
+ document.getElementById('approvalLink').textContent=count?count+' pending approval'+(count===1?'':'s')+' ↓':'Review decisions ↓';
+ (pending?card.querySelector('.acts .ok'):undo).focus();
+ toast(card.dataset.measure.toUpperCase()+' · '+text);
+}
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function countUp(el){el.textContent=(el.dataset.prefix||'')+timeline.total(+el.dataset.count)}
+const io=new IntersectionObserver(es=>es.forEach(x=>{if(!x.isIntersecting)return;const el=x.target;el.classList.add('in');el.querySelectorAll('[data-count]').forEach(countUp);el.querySelectorAll('.fill[data-w]').forEach(f=>setTimeout(()=>f.style.width=f.dataset.w,150));el.querySelectorAll('.fg[data-pct]').forEach(r=>setTimeout(()=>r.style.strokeDashoffset=314-(314*r.dataset.pct/100),200));io.unobserve(el)}),{threshold:.2});
+document.querySelectorAll('.reveal,.hero-stats').forEach(el=>io.observe(el));
+</script>
+<script>
+const pageOne=!!document.querySelector('#geoWindow');
+const staticValues=new Map();
+function original(node){if(!staticValues.has(node))staticValues.set(node,node.textContent);return staticValues.get(node)}
+function scaleLabel(node){
+ const baseline=original(node);
+ node.textContent=timeline.full?baseline:baseline.replace(/[\d,]+(?:\.\d+)?/g,match=>timeline.total(+match.replaceAll(',','')));
+}
+function periodLabels(){
+ document.querySelectorAll('.hero-stats [data-count],.compare [data-count]').forEach(node=>{
+   node.textContent=(node.dataset.prefix||'')+timeline.total(+node.dataset.count);
+ });
+ document.querySelectorAll('.hero-stats .stat span,.compare .unit,.m .fig span,.card .figs span,.ph .pill').forEach(node=>{
+   if(node.childElementCount)return;
+   const value=original(node);
+   node.textContent=timeline.full?value:value.replace(/12 months/g,'Selected period').replace(/annual /g,'Selected ').replace(/\s*\/\s*(year|yr)/gi,' · period');
+ });
+ if(pageOne){
+   updateRegionalPeriod();
+ }else{
+   document.querySelectorAll('.compare .bar .v,.m .fig b,.m .sub span:first-child,.card .figs div:nth-child(-n+2) b,.unit [data-tree]').forEach(scaleLabel);
+   document.querySelectorAll('.unit').forEach(node=>Array.from(node.childNodes).filter(child=>child.nodeType===3).forEach(child=>{
+     const val=original(child);
+     child.textContent=timeline.full?val:val.replace('35,517',timeline.total(35517)).replace('/ yr','· period');
+   }));
+ }
+ document.querySelectorAll('.nav-r').forEach(n=>n.textContent='Baseline FY 2025–26 · budget CHF 16,500');
+ if(document.body.classList.contains('explore')&&curKey)openTree(curKey);
+ document.querySelectorAll('#msgs .msg').forEach(m=>m.remove());
+}
+document.addEventListener('timelinechange',periodLabels);
+</script></body>
+</html>

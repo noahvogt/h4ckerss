@@ -110,3 +110,15 @@ def lookup(resource_id: pd.Series) -> pd.DataFrame:
     )
     out["department"] = out["department"].fillna("Unallocated")
     return out
+
+
+_SUSPICIOUS = r"(?i)instruction|ignore|assistant|\bai system|\bprompt"
+
+
+def is_suspicious_text(text: pd.Series) -> pd.Series:
+    """True where a free-text field looks like an instruction aimed at AI tools.
+
+    Free text is data, never instructions: loaders never copy it into the facts,
+    they only flag these rows so the team can review them.
+    """
+    return text.fillna("").str.contains(_SUSPICIOUS, regex=True)

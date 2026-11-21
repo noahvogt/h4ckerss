@@ -7,6 +7,7 @@ from pathlib import Path
 
 import pytest
 
+from scripts.ai_footprint.claude import import_claude
 from scripts.ai_footprint.codex import import_codex
 from scripts.ai_footprint.records import COLUMNS, Window, read_csv, reconcile
 
@@ -162,6 +163,62 @@ def test_increment_before_observed_reset_is_not_counted_twice(tmp_path):
     assert usage(rows) == [(100, 50, 10), (10, 5, 1), (5, 1, 1)]
 
 
+def reply(timestamp, request, uncached=2, read=100, created=50, output=10, model="claude-test", text="private"):
+    return {
+        "type": "assistant", "timestamp": timestamp, "requestId": request, "sessionId": "synthetic-session",
+        "message": {"id": "msg_" + request, "model": model, "content": [{"type": "text", "text": text}], "usage": {
+            "input_tokens": uncached, "cache_read_input_tokens": read,
+            "cache_creation_input_tokens": created, "output_tokens": output,
+        }},
+    }
+
+
+def claude_usage(rows):
+    return sorted(((row.input_tokens, row.cached_input_tokens, row.output_tokens, row.requests) for row in rows), key=lambda counts: [-1 if value is None else value for value in counts])
+
+
+def test_claude_counts_each_response_once_across_blocks_and_resumed_files(tmp_path):
+    (tmp_path / "project").mkdir()
+    session(
+        tmp_path / "project" / "first.jsonl",
+        {"type": "user", "timestamp": "2026-11-20T09:00:00Z", "message": {"content": "never export this prompt"}},
+        reply("2026-11-20T09:00:01Z", "req_a", text="thinking"),
+        reply("2026-11-20T09:00:02Z", "req_a", text="tool call"),
+        reply("2026-11-20T09:00:03Z", "req_b", uncached=1, read=0, created=0, output=4),
+        reply("2026-11-20T09:00:04Z", "req_synthetic", 0, 0, 0, 0, model="<synthetic>"),
+        '{"broken":',
+    )
+    # A resumed session copies earlier responses into a new transcript.
+    session(tmp_path / "project" / "resumed.jsonl",
+            reply("2026-11-20T10:00:00Z", "req_a"), reply("2026-11-20T10:00:01Z", "req_c", output=7))
+    rows, warnings = import_claude(tmp_path, "Noah", Window())
+    assert claude_usage(rows) == [(1, 0, 4, 1), (152, 100, 7, 1), (152, 100, 10, 1)]
+    assert all(row.tool == "Claude Code" and row.model == "claude-test" for row in rows)
+    assert min(row.timestamp for row in rows).isoformat() == "2026-11-20T09:00:01+00:00"
+    assert warnings["unreadable or truncated JSONL lines skipped"] == 1
+    rows, outside, duplicates = reconcile([*rows, *rows], Window())
+    assert (len(rows), outside, duplicates) == (3, 0, 3)
+    assert all(row.evidence_reference.startswith("claude:") for row in rows)
+    assert not any(secret in repr(rows) for secret in ("req_a", "synthetic-session", "private", "never export"))
+
+
+def test_claude_streamed_counts_period_and_missing_fields(tmp_path):
+    partial = reply("2026-11-21T09:00:02Z", "req_b")
+    del partial["message"]["usage"]["cache_creation_input_tokens"]
+    path = session(
+        tmp_path / "transcript.jsonl",
+        reply("2026-11-19T22:59:59Z", "req_before"),
+        reply("2026-11-21T09:00:00Z", "req_a", output=1),
+        reply("2026-11-21T09:00:01Z", "req_a", output=25),
+        partial,
+        reply("2026-11-22T23:00:00Z", "req_after"),
+    )
+    rows, warnings = import_claude(path, "Noah", Window())
+    assert claude_usage(rows) == [(None, 100, 10, 1), (152, 100, 25, 1)]
+    assert warnings["transcript lines of one response disagreed; used the largest counts"] == 1
+    assert warnings["responses with incomplete input counts exported without input"] == 1
+
+
 def run(*args):
     return subprocess.run(
         [sys.executable, "-m", "scripts.ai_footprint", *map(str, args)],
@@ -203,6 +260,18 @@ def test_cli_template_manual_combine_and_summary(tmp_path):
     report = run("summary", combined, "--grid", "CH")
     assert report.returncode == 0, report.stderr
     assert "| Location-based CO₂e (kg) | 7.64085e-06 | 2.41299e-05 | 7.23897e-05 |" in report.stdout
+
+
+def test_cli_import_claude(tmp_path):
+    source, exported = session(tmp_path / "transcript.jsonl", reply("2026-11-20T09:00:01Z", "req_a")), tmp_path / "claude.csv"
+    result = run("import-claude", "--member", "Noah", "--transcripts", source, "-o", exported)
+    assert result.returncode == 0, result.stderr
+    assert "1 usage rows selected" in result.stderr
+    [row] = read_csv(exported)
+    assert (row.tool, row.input_tokens, row.cached_input_tokens, row.output_tokens, row.requests) == (
+        "Claude Code", 152, 100, 10, 1)
+    assert row.measurement_method == "claude_jsonl" and "private" not in exported.read_text()
+    assert run("import-claude", "--member", "Noah", "--transcripts", source, "-o", source).returncode == 2
 
 
 @pytest.mark.parametrize("bad_count", ["12%", "-1", "1.5"])

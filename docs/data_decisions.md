@@ -18,3 +18,12 @@ How we cleaned each source and why. One line per decision.
 - One injected instruction in `Notes` (vm-app, 2026-04-15) ignored and flagged.
 - Days without a row (48 in total) are missing data, not idle days: idle resources still get a row with quantity 0 (e.g. gpu-ml), and the gaps never hit two resources on the same day.
 - September 2026 is a partial month (data until 2026-09-06).
+
+## aws_costs.csv
+
+- 5 exact duplicate rows dropped: one per resource, all on 2025-12-03, identical in every column (re-export, same pattern as Azure).
+- All costs in USD → CHF with the monthly rate.
+- 86 usage rows without cost: estimated the same way as Azure (`cost estimated for N days`).
+- Support fee (`support`) is a monthly charge: cost only (`usage_kind` none), no day count. The missing September 2025 fee is estimated from the other months (CHF 900, like every other month).
+- Tags: no department or tool disagrees with the mapping; empty tags (959 rows) are covered by the mapping.
+- `sandbox` (test account, cost center 9100) kept as department `Test account`. It runs only on some days (gaps are real non-use here, not missing data). 16 rows are marked "please exclude" in the source: noted as `source marks rows for exclusion (kept)`. Whether the baseline excludes the test account is decided in #4, not by a remark in the data.

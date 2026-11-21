@@ -273,7 +273,7 @@ def build_catalogue() -> pd.DataFrame:
             "gpu-ml", "pause", gpu_kept, "gpu pause",
             f"Running {gpu_kept * HOURS_PER_YEAR:,.0f} of {HOURS_PER_YEAR:,} h. Average GPU load is 6 % outside "
             f"the four training weeks (about 43 % in them).",
-            "server_metrics_weekly.csv, azure_costs.csv, it_tickets.csv (T-1035, T-1101)",
+            "server_metrics_weekly.csv, azure_costs.csv, it_tickets.csv (T-1035, T-1101); docs/answers/q2_gpu_on_demand.md",
             "Training days 1-3 of each quarter stay protected (rule R04).",
         ),
         _usage_measure(

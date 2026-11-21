@@ -20,6 +20,31 @@ uv run python -m app.measures.catalogue   # rebuild data/derived/measures.csv (m
 uv run python -m app.measures.package     # best package under target and budget -> submission/measures_package.csv
 ```
 
+The FastAPI app also serves the frontend:
+
+- `http://127.0.0.1:8000/` -> baseline page
+- `http://127.0.0.1:8000/package.html` -> package page
+- `http://127.0.0.1:8000/forecast.html` -> forecast page
+- `http://127.0.0.1:8000/integrations.html` -> integrations page
+
+The frontend checks the API at startup. If an endpoint is unavailable, or a frontend
+demo feature has no one-to-one backend contract yet, it keeps the existing mocked data
+and shows that in the API status panel.
+
+Approval/rejection choices are saved by the backend in
+`data/state/approval_decisions.json`, so the Package page restores them after refresh.
+
+Wattson can call an LLM through the backend. Set `OPENAI_API_KEY` in your shell or in a
+local, ignored `.env` file at the repo root or under `backend/`:
+
+```sh
+OPENAI_API_KEY=sk-...
+WATTSON_MODEL=gpt-5
+```
+
+The browser never receives the key. Without a key, `/api/wattson/chat` returns a local
+fallback answer so the UI still works.
+
 ### API for the frontend
 
 Same numbers as the files in `submission/`. Details and response schemas at `/docs`.
@@ -32,6 +57,7 @@ Same numbers as the files in `submission/`. Details and response schemas at `/do
 | `GET /api/measures` | all measures, also blocked ones, each with its own savings |
 | `GET /api/rules/explain?resource_id=…&change=…` | explain box (every measure has its `explain_url`) |
 | `GET /api/rules/contradictions` | contradicting sources and which one we trust |
+| `POST /api/wattson/chat` | LLM-backed Wattson chat using current UI context, backend summaries, and source metadata; falls back locally without `OPENAI_API_KEY` |
 
 Unknown values are `null`, never 0. CORS is open, so a page served from another port can call the API.
 

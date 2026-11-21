@@ -118,8 +118,36 @@ When calling the export functions directly, supply calculated facts from the val
 
 The `pue_multiplier_*` columns show the scenario multiplier for a matched energy factor. Facility-inclusive AI factors use 1. Rows with no energy factor have blank multipliers. PUE research provenance is present where the factor calls for PUE. Grid unit labels are retained from the research CSV. Missing CSV fields are blank, with the status and coverage fields providing their meaning. Use the stable fact key for individual audits or filter by the dimensions of an aggregate row.
 
+## Official submission
+
+The [case instructions](../data/provided/README.md#submission-baseline-assumptions-and-package-of-measures) require two completed tables alongside the prototype. The [baseline and assumptions template](../data/provided/template_baseline_and_assumptions.csv) has one row per parameter, including three annual totals, factor ranges and provenance, and a shared-cost allocation rule. The separate [measures package template](../data/provided/template_measures_package.csv) has one row per measure and belongs to the measures workstream.
+
+From the repository root, generate the official baseline CSV and the supplementary frontend and audit evidence:
+
+```sh
+cd backend
+uv run python -m app.pipeline.submission_export
+uv run python -m app.pipeline.baseline_export
+```
+
+| Deliverable | Generated path |
+|---|---|
+| Official baseline and assumptions | `submission/template_baseline_and_assumptions.csv` |
+| Supplementary frontend bundle | `out/baseline/baseline.json` |
+| Supplementary per-fact audit | `out/baseline/baseline_details.csv` |
+
+Both commands accept `--output-dir PATH` and use the same checked-in facts, research, and calculation pipeline. The official adapter preserves the template's eight columns, their order, its 17 parameters, and its unit labels. CHF per year has one net value in `value_mid`. Facility kWh per year and location-based emissions have low, mid, and high modeled subtotals. The emissions value is in kg CO₂e per year, with the original template label `kg CO2 per year` retained. The EU grid range and its provenance appear in the location-based emissions assumptions because the template has no separate EU row. Unavailable values and unimplemented bonus fields remain blank.
+
+The allocation row describes the existing fact attribution, including subscription cost centers, gateway source departments, and the master resource mapping for cloud and hoster costs. The research proposal for an FTE-based redistribution was not applied. Energy and emissions totals carry their coverage and partial-usage counts. Use the audit CSV to trace the known subtotals to the underlying facts and assumptions.
+
+Run `uv run pytest tests/test_submission_export.py tests/test_baseline_export.py` from `backend/` to check the official filename, schema, units, provenance, scenario order, blank fields, and reproducibility. The tests also parse strict JSON, check unique audit fact keys and cost-only rows, and reconcile the annual totals with monthly and dimension breakdowns.
+
+The baseline adapter runs independently of the measures package builder. That builder is absent from this checkout. The measures workstream supplies the completed measures table, savings comparisons, and target validation.
+
+Before submission, review the coverage caveats and the allocation rule, obtain the completed measures table, and upload both official tables with the prototype to the event platform. Compare any proposed savings against the same period, scenarios, and accounting boundary, and review coverage gaps before assessing the 40% reduction target. The baseline export establishes no reduction claim.
+
 ## Limitations and planned work
 
 Energy values use researched proxies. The storage factor assumes logical GB-days, and the GPU factor models the board. Energy and emissions cover only supported kinds and reported usage. The Swiss grid factor uses a consumption mix including imports. The German, Irish, and mixed EU factors use generation-based proxies, and the mixed EU factor represents the region rather than individual providers.
 
-Automatic frontend loading and the official submission-template export are separate work.
+Automatic frontend loading and coverage-aware map labels are separate work.

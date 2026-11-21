@@ -40,3 +40,51 @@ How we cleaned each source and why. One line per decision.
 - 189 rows without cost center: the master data supplies it. Where the source has a cost center, it always matches the master data.
 - One injected instruction in `Remark` (st-proj, July 2026) ignored and flagged.
 - All hoster services (Log storage, Storage, Web hosting/CDN) are `cloud`; an unknown service name stops the load (same rule as Azure and AWS).
+
+## AI usage
+
+- The provided `ai_usage.csv` contains 52,856 data rows. The loader removes 87
+  exact duplicate rows before aggregation, leaving 52,769 records. Rows are
+  removed only when every CSV field matches; records sharing a date, model, or
+  resource remain distinct when any other field differs.
+- Input and output tokens are aggregated independently. `usage_qty` is the sum
+  of known input and output values. Cached input tokens are already part of
+  `tokens_in`, so they are retained as a separate detail metric but not added a
+  second time.
+- Missing token values are not replaced with zero, estimated, or otherwise
+  invented. If only some input or output values are missing, the known partial
+  total is returned and the `note` explicitly flags incomplete usage with the
+  number of missing input and output values and the phrase `known tokens only`.
+  If all input and output values are missing in a group, `usage_qty` remains
+  missing and the note explains that usage is unavailable.
+- Detail rows preserve input, cached-input, and output token totals along with
+  missing-value counts.
+
+## AI and SaaS subscriptions
+
+- Subscription facts use the canonical resource IDs from
+  `mapping_departments_tools.csv`: ChatGPT Team uses `sub-chatgpt`, Claude Team
+  uses `sub-claude`, Microsoft Copilot uses `sub-copilot`, Microsoft 365 uses
+  `saas-m365`, and all other SaaS contracts use `saas-other`. These exact,
+  deterministic mappings replace product/provider-derived IDs. Facts sharing a
+  canonical ID, month, and cost-center allocation are aggregated, while detail
+  rows retain their original product, provider, and contract fields.
+- The master mapping supplies the canonical resource identity only.
+  Subscription departments continue to come from each source row's
+  `cost_center`, including when several departments use the same subscription.
+- AI subscription usage is measured as `messages_30d` (`usage_kind: messages`),
+  because messages are the agreed driver for AI subscription energy and CO₂
+  calculations. SaaS subscription usage remains purchased licences
+  (`usage_kind: seat_month`), matching its seat-based service. Licence counts
+  remain available in AI detail data for unused-seat calculations.
+- Missing AI message counts are never estimated or replaced with zero. Known
+  message counts are summed and flagged as partial when other counts are
+  missing; if all are missing, usage remains unavailable and is flagged in
+  `note`.
+- Subscription costs use the shared monthly CHF conversion helper. Invalid
+  dates, unsupported currencies, and absent exchange rates raise errors rather
+  than being silently converted into plausible-looking values.
+- Cost centers are read as strings and mapped through the shared department
+  helper. Missing or unknown cost centers map to `Unallocated` and are noted.
+- Draft subscriptions remain in detail data but are excluded from billed facts
+  and unused-seat calculations.

@@ -29,3 +29,14 @@ How we cleaned each source and why. One line per decision.
 - Support fee (`support`) is a monthly charge: cost only (`usage_kind` none), no day count. The fee for September 2025 is missing in the source; it is estimated from the other months' fees (CHF 900, exactly like every other month) and noted as `monthly fee estimated from other months`. A missing fee is not a missing usage price, so it gets its own label.
 - Tags: no department or tool disagrees with the mapping; empty tags (959 rows) are covered by the mapping.
 - `sandbox` (test account, cost center 9100) kept as department `Test account`. It runs only on some days (gaps are real non-use here, not missing data). 16 rows are marked "please exclude" in the source: noted as `source marks rows for exclusion (kept)`. Whether the baseline excludes the test account is decided in #4, not by a remark in the data.
+
+## hoster_invoice.csv
+
+- No resource key: each `Item` label is matched to the master data by tool name (`Web hosting and CDN` → `web-cdn`, `Logging and monitoring` → `logs`, `Project file storage` → `st-proj`). An unknown label stops the load instead of being guessed.
+- Dates are `DD.MM.YYYY`; amounts are already CHF.
+- 3 exact duplicate rows dropped: one per item, all on 2026-06-01 (re-export, same pattern as Azure and AWS).
+- 35 rows without amount: estimated the same way as Azure (`cost estimated for N days`).
+- No region in the file: the hoster runs in Zurich (`extra/data_center_locations.csv`: Swiss Hoster, Switzerland (Zurich), used by the SME).
+- 189 rows without cost center: the master data supplies it. Where the source has a cost center, it always matches the master data.
+- One injected instruction in `Remark` (st-proj, July 2026) ignored and flagged.
+- All hoster services (Log storage, Storage, Web hosting/CDN) are `cloud`; an unknown service name stops the load (same rule as Azure and AWS).

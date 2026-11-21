@@ -93,7 +93,7 @@ def lookup(resource_id: pd.Series) -> pd.DataFrame:
     """
     m = mapping()[["tool", "department", "cost_center"]]
     out = (
-        m.reindex(resource_id.str.strip()).set_index(resource_id.index).astype("string")
+        m.reindex(resource_id.astype("string").str.strip()).set_index(resource_id.index).astype("string")
     )
     out["department"] = out["department"].fillna("Unallocated")
     return out

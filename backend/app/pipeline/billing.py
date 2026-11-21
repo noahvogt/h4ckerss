@@ -95,7 +95,7 @@ def monthly_facts(
     """
     daily = estimate_missing_costs(daily[DAILY_COLUMNS])
     keys = ["month", "resource_id", "service", "unit", "region"]
-    g = daily.groupby(keys, as_index=False).agg(
+    g = daily.groupby(keys, as_index=False, dropna=False).agg(  # never drop rows silently
         usage_qty=("quantity", "sum"),
         # Sum of the known days; all missing -> stays missing. A partial total is
         # marked "cost incomplete" below, so it never looks complete.

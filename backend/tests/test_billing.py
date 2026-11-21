@@ -90,3 +90,10 @@ def test_monthly_fee_estimate_is_labelled_as_fee():
     facts = monthly_facts(df, "test.csv", UNITS, count_days=False).set_index("month")
     assert facts.loc[pd.Timestamp("2025-09-01"), "note"] == "monthly fee estimated from other months"
     assert facts.loc[pd.Timestamp("2025-09-01"), "cost_chf"] == pytest.approx(900.0)
+
+
+def test_rows_without_resource_id_are_kept():
+    df = daily([(None, "GB-day", "2025-09-01", 1000, 1.0)])
+    fact = monthly_facts(df, "test.csv", UNITS).iloc[0]
+    assert fact["cost_chf"] == pytest.approx(1.0)
+    assert fact["department"] == "Unallocated"

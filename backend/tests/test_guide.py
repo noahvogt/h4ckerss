@@ -113,7 +113,10 @@ def test_shared_chat_is_served_with_baseline_and_package_pages():
         assert page.status_code == 200
         assert 'src="assets/WattsOn_guide.js"' in page.text
         assert "WattsON Guide" in page.text
+        assert '<input id="guide-diagnostics" type="checkbox" autocomplete="off">' in page.text
+        assert '<p class="guide-mode">\n    <span id="guide-mode" role="status">' in page.text
     assert client.get("/assets/WattsOn_guide.js").status_code == 200
+    assert ".guide-diagnostics[hidden] {\n  display: none;" in client.get("/assets/WattsOn_guide.css").text
 
 
 @pytest.mark.parametrize("question", ["", "  ", "a" * 701])

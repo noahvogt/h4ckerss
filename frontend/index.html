@@ -382,7 +382,10 @@ body.chat-open .chat{transform:none;opacity:1;visibility:visible;pointer-events:
     <div><h2 id="watson-name">WattsON Guide</h2><span class="role"><i aria-hidden="true"></i>Baseline, savings and safeguards</span></div>
     <button class="dialog-close x" type="button" onclick="closeChat()" aria-label="Close chat"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   </div>
-  <p class="guide-mode" id="guide-mode" role="status">Connecting to WattsON Guide…</p>
+  <p class="guide-mode">
+    <span id="guide-mode" role="status">Connecting to WattsON Guide…</span>
+    <label class="guide-diagnostics-toggle" title="Diagnostics"><input id="guide-diagnostics" type="checkbox" autocomplete="off"> Diagnostics</label>
+  </p>
   <div class="ch-msgs" id="msgs" role="log" aria-label="Guide conversation"></div>
   <div class="chips" id="chips"></div>
   <form class="ch-in"><input id="chIn" required maxlength="700" placeholder="Ask about the baseline or a measure…" autocomplete="off" aria-label="Message Wattson"><button type="submit" aria-label="Send"><svg class="ico" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></form>

@@ -6,6 +6,7 @@
   const messages = chat.querySelector("#msgs");
   const chips = chat.querySelector("#chips");
   const mode = chat.querySelector("#guide-mode");
+  const diagnostics = chat.querySelector("#guide-diagnostics");
   let examplesLoaded = false;
   let loadingExamples = false;
   let pending = false;
@@ -74,6 +75,42 @@
     message.append(disclosure);
   }
 
+  function addDiagnostics(message, {usage, estimated_cost_usd}) {
+    const report = document.createElement("div");
+    report.className = "guide-diagnostics";
+    report.hidden = !diagnostics.checked;
+    report.setAttribute("role", "group");
+    report.setAttribute("aria-label", "Response diagnostics");
+    if (usage) {
+      const format = value => value.toLocaleString("en-US", {maximumSignificantDigits: 4});
+      const energy = usage.energy_kwh_mid == null ? "unavailable" : `${format(usage.energy_kwh_mid)} kWh`;
+      let emissions = "unavailable";
+      if (usage.co2e_kg_mid != null) {
+        emissions = `${format(usage.co2e_kg_mid)} kg CO₂e`;
+        if (usage.grid_location) emissions += ` (${usage.grid_location} grid)`;
+      } else if (usage.energy_kwh_mid == null) {
+        emissions = "unavailable without an energy estimate";
+      } else if (!usage.grid_location) {
+        emissions = "unavailable without a deployment grid";
+      }
+      const cost = estimated_cost_usd == null ? "unavailable" : `USD ${format(estimated_cost_usd)}`;
+      const lines = [
+        `Provider-reported tokens · ${usage.input_tokens?.toLocaleString("en-US") ?? "unknown"} input, ${usage.output_tokens?.toLocaleString("en-US") ?? "unknown"} output`,
+        `Modeled inference energy (mid) · ${energy}`,
+        `Modeled inference CO₂e (mid) · ${emissions}`,
+        `Estimated API cost · ${cost}`,
+      ];
+      for (const text of lines) {
+        const line = document.createElement("p");
+        line.textContent = text;
+        report.append(line);
+      }
+    } else {
+      report.textContent = "Provider diagnostics unavailable for this reply.";
+    }
+    message.append(report);
+  }
+
   function showAnswer(result) {
     const message = append(result.answer);
     addSources(message, result.sources);
@@ -82,33 +119,7 @@
       notice.textContent = result.notice;
       message.append(notice);
     }
-    if (result.usage) {
-      const usage = result.usage;
-      const report = document.createElement("small");
-      report.className = "guide-usage";
-      const format = value => value == null ? "unknown" :
-        value.toLocaleString("en-US", {maximumSignificantDigits: 4});
-      let qualifier = ". Deployment grid unknown.";
-      if (usage.grid_location) {
-        qualifier = ` (${usage.grid_location} grid).`;
-      } else if (usage.energy_kwh_mid == null) {
-        qualifier = ". A footprint estimate requires both token counts and compatible factors.";
-      }
-      report.textContent = `Provider tokens: ${usage.input_tokens ?? "unknown"} input, ${usage.output_tokens ?? "unknown"} output. ` +
-        `Modeled inference: ${format(usage.energy_kwh_mid)} kWh and ${format(usage.co2e_kg_mid)} kg CO₂e` + qualifier;
-      message.append(report);
-    } else if (result.mode === "ai") {
-      const report = document.createElement("small");
-      report.textContent = "Provider token counts and inference footprint are unavailable for this reply.";
-      message.append(report);
-    }
-    if (result.usage) {
-      const cost = document.createElement("small");
-      cost.className = "guide-usage";
-      cost.textContent = result.estimated_cost_usd == null ? "Estimated API cost unavailable." :
-        `Estimated API cost: USD ${result.estimated_cost_usd.toLocaleString("en-US", {maximumSignificantDigits: 4})}.`;
-      message.append(cost);
-    }
+    addDiagnostics(message, result);
     messages.scrollTop += message.getBoundingClientRect().top - messages.getBoundingClientRect().top - 12;
   }
 
@@ -168,6 +179,12 @@
       loadingExamples = false;
     }
   }
+
+  diagnostics.addEventListener("change", () => {
+    for (const report of messages.querySelectorAll(".guide-diagnostics")) {
+      report.hidden = !diagnostics.checked;
+    }
+  });
 
   form.addEventListener("submit", event => {
     event.preventDefault();

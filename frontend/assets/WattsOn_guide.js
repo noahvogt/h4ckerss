@@ -22,30 +22,61 @@
     return message;
   }
 
+  function calculationPath(value) {
+    if (typeof value !== "string" || !value.startsWith("/api/")) return null;
+    const url = new URL(value, location.href);
+    return url.origin === location.origin && url.pathname.startsWith("/api/") ?
+      url.pathname + url.search : null;
+  }
+
+  function addSources(message, sources) {
+    const references = new Map();
+    for (const source of sources) {
+      const reference = source.reference?.trim();
+      if (reference) {
+        references.set(reference, references.get(reference) ?? calculationPath(source.api_url));
+      }
+    }
+    if (!references.size) return;
+
+    const disclosure = document.createElement("details");
+    disclosure.className = "guide-sources";
+    const summary = document.createElement("summary");
+    summary.textContent = `Sources and calculations (${references.size})`;
+    const list = document.createElement("ul");
+    for (const [reference, apiPath] of references) {
+      const item = document.createElement("li");
+      const label = document.createElement("span");
+      label.className = "guide-source-label";
+      label.textContent = reference.split("/").pop() || reference;
+      label.title = reference;
+      item.append(label);
+      if (apiPath) {
+        const link = document.createElement("a");
+        link.href = apiPath;
+        link.target = "_blank";
+        link.rel = "noopener";
+        link.textContent = "API calculations";
+        link.setAttribute("aria-label", `API calculations for ${label.textContent}`);
+        item.append(" ", link);
+      }
+      list.append(item);
+    }
+    disclosure.append(summary, list);
+    disclosure.addEventListener("toggle", () => {
+      if (!disclosure.open) return;
+      const viewport = messages.getBoundingClientRect();
+      const bounds = disclosure.getBoundingClientRect();
+      if (bounds.bottom > viewport.bottom) {
+        messages.scrollTop += Math.min(bounds.bottom - viewport.bottom + 8, bounds.top - viewport.top);
+      }
+    });
+    message.append(disclosure);
+  }
+
   function showAnswer(result) {
     const message = append(result.answer);
-    if (result.sources.length) {
-      const sources = document.createElement("details");
-      sources.className = "guide-sources";
-      const summary = document.createElement("summary");
-      summary.textContent = `Sources and calculations (${result.sources.length})`;
-      const list = document.createElement("ul");
-      for (const source of result.sources) {
-        const item = document.createElement("li");
-        item.textContent = source.reference;
-        if (source.api_url?.startsWith("/api/")) {
-          const link = document.createElement("a");
-          link.href = source.api_url;
-          link.target = "_blank";
-          link.rel = "noopener";
-          link.textContent = "Open API evidence";
-          item.append(" · ", link);
-        }
-        list.append(item);
-      }
-      sources.append(summary, list);
-      message.append(sources);
-    }
+    addSources(message, result.sources);
     if (result.notice) {
       const notice = document.createElement("small");
       notice.textContent = result.notice;

@@ -301,24 +301,11 @@ body.chat-open .chat{transform:none;opacity:1;visibility:visible;pointer-events:
 @media(max-height:570px){
   .ch-top{padding-block:7px}.chat .chips{flex-wrap:nowrap;overflow-x:auto}.chips button{white-space:nowrap}
 }
-.ch-meter{display:flex;gap:10px;align-items:center;padding:10px 16px;background:#F3FCE1;border-bottom:1px solid var(--line);font-size:11px;color:var(--ink2);font-weight:600}
-.ch-meter .bar{flex:1;height:6px;border-radius:999px;background:#0f1a1412;overflow:hidden}
-.ch-meter .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--eco),var(--volt));transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
-.ch-meter b{font-family:'JetBrains Mono';color:var(--eco-d)}
 .ch-msgs{min-height:0;flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
 .msg{max-width:86%;padding:11px 14px;border-radius:16px;font-size:13.5px;line-height:1.5;animation:msg .35s cubic-bezier(.2,.9,.2,1) both}
 @keyframes msg{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .msg.bot{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:4px;box-shadow:var(--shadow)}
 .msg.me{align-self:flex-end;background:var(--ink);color:#fff;border-bottom-right-radius:4px}
-.msg .n{text-decoration-color:var(--volt-d);font-weight:700}
-.msg .kpi{display:flex;gap:8px;margin-top:8px}
-.msg .kpi div{flex:1;padding:8px 10px;border-radius:10px;background:var(--bg);border:1px solid var(--line)}
-.msg .kpi b{display:block;font-family:'JetBrains Mono';font-size:15px;color:var(--eco-d)}
-.msg .kpi span{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);font-weight:700}
-.msg.typing{display:flex;gap:4px;padding:14px 16px}
-.msg.typing i{width:7px;height:7px;border-radius:50%;background:var(--mute);animation:dot 1s infinite}
-.msg.typing i:nth-child(2){animation-delay:.15s}.msg.typing i:nth-child(3){animation-delay:.3s}
-@keyframes dot{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-5px);opacity:1}}
 .chips{display:flex;gap:6px;padding:10px 12px 0;flex-wrap:wrap;background:#fff;border-top:1px solid var(--line)}
 .chips button{font-size:11.5px;font-weight:600;padding:7px 11px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink2);transition:.2s}
 .chips button:hover{background:var(--volt);border-color:var(--volt)}
@@ -336,7 +323,10 @@ body.chat-open .chat{transform:none;opacity:1;visibility:visible;pointer-events:
 
 .crumbs a{display:flex;text-decoration:none}.crumbs a:hover span{background:#eaf1d9}.atlas-hero{padding:36px 0 28px;grid-template-columns:1.4fr 1fr;align-items:center}.atlas-hero h1{font-size:clamp(42px,5.5vw,80px)}.atlas-hero .stat{padding:14px 18px}.stat button{display:block;font:700 28px 'JetBrains Mono',monospace;letter-spacing:-.04em;color:var(--eco-d);background:transparent;border:0}.stat .n:hover{background:var(--volt)}.atlas-grid{display:grid;grid-template-columns:minmax(0,1.95fr) minmax(290px,1fr);gap:18px;align-items:start}.geo-card,.region{min-width:0;margin:0;border:1px solid var(--line);border-radius:var(--r);background:white;box-shadow:var(--shadow);overflow:hidden}.geo-head,.geo-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 22px}.geo-head h2{font-size:23px;letter-spacing:-.04em}.modes{display:flex;background:var(--bg);border:1px solid var(--line);border-radius:30px;padding:3px}.modes button,.geo-foot button{background:none;border:0;padding:9px 14px;font-weight:700;font-size:12px;border-radius:20px}.modes [aria-pressed=true]{background:var(--ink);color:var(--volt)}.map-window{height:clamp(350px,29vw,440px);position:relative;isolation:isolate;overflow:hidden;background:#e4ece7}.map-window iframe,.map-window svg,#pins{position:absolute;inset:0;width:100%;height:100%;border:0}.map-window iframe{pointer-events:none}.map-window.free iframe{pointer-events:auto}.map-window.free #pins,.map-window.free svg{display:none}#pins{pointer-events:none}.map-pin,.hq{position:absolute;transform:translate(-50%,-50%);display:grid;place-items:center}.map-pin{width:44px;height:44px;background:transparent;border:0;pointer-events:auto}.disc{position:absolute;width:var(--size);height:var(--size);border-radius:50%;background:var(--tint);border:2px solid var(--color);transition:width .28s,height .28s;box-shadow:0 0 0 2px #ffffffaa}.disc:after{content:'';display:block;width:7px;height:7px;border:1.5px solid white;border-radius:50%;background:var(--color);position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}.map-pin[aria-pressed=true] .disc{outline:1.5px dashed var(--color);outline-offset:4px}.pin-text,.hq-label{position:absolute;white-space:nowrap;background:white;border:1px solid var(--line2);box-shadow:0 3px 10px #20342326;border-radius:10px;padding:4px 8px;font:700 12px 'Plus Jakarta Sans',system-ui;color:var(--ink)}.map-pin[aria-pressed=true] .pin-text{background:var(--ink);color:white}.pin-text small{display:block;font:500 10px 'JetBrains Mono',monospace}.pin-FRA .pin-text,.pin-DUB .pin-text{bottom:calc(24px + var(--size)/2)}.pin-ZRH .pin-text{top:calc(24px + var(--size)/2);left:16px}.hq{background:var(--ink);width:13px;height:13px;border:3px solid var(--volt);border-radius:3px}.hq-label{right:15px;top:4px;color:var(--volt);background:var(--ink);border:0;text-align:right}.hq-label small{display:block;color:white;font:9px 'JetBrains Mono',monospace}.geo-foot{font-size:12px;color:var(--mute);padding:9px 16px}.geo-foot button{border:1px solid var(--line);color:var(--ink)}.region{padding:22px 24px;background:linear-gradient(155deg,#fff 48%,#f2f9e4);border-color:#cfdfa9}.region h2{font-size:38px;letter-spacing:-.06em;line-height:1.1;margin:12px 0 3px}.country,.scope{font-size:12px;color:var(--mute)}.regional-total{margin:16px 0 8px;display:flex;align-items:baseline;gap:7px}.regional-total strong{font:700 38px/1 'JetBrains Mono',monospace;letter-spacing:-.065em}.regional-total small{color:var(--mute);font-weight:600}.track{height:7px;background:#e2e8df;border-radius:10px;margin-bottom:5px}.track i{display:block;height:100%;background:var(--accent);border-radius:inherit;transition:width .35s}.region h3{font-size:15px;margin:19px 0 7px}.region details{border-top:1px solid var(--line);padding:8px 0}.region summary{cursor:pointer;font-size:13px;font-weight:700}.region summary b{float:right;font:600 12px 'JetBrains Mono',monospace}.workload{display:flex;justify-content:space-between;align-items:baseline;gap:6px;font-size:12px;color:var(--mute);padding:5px 0 1px 13px}.workload small{white-space:nowrap;font:11px 'JetBrains Mono',monospace}.scope{margin:13px 4px}.scope i{display:inline-block;width:8px;height:8px;background:var(--eu);border-radius:100%;margin-right:4px}.go{text-decoration:none}.cta{margin-top:24px}.cta h3{font-size:23px}.sr{position:absolute;clip-path:inset(50%);width:1px;height:1px;overflow:hidden}.explorer{visibility:hidden}body.explore .explorer{visibility:visible}@media(max-width:930px){.atlas-hero{grid-template-columns:1fr;gap:18px}.hero-stats{grid-template-columns:repeat(4,1fr)}.nav-r{display:none}.atlas-grid{grid-template-columns:minmax(0,1.5fr) minmax(250px,1fr)}.wrap{padding-inline:20px}}@media(max-width:730px){.atlas-grid{grid-template-columns:1fr}.hero-stats{grid-template-columns:1fr 1fr}.wrap{padding-inline:14px}.crumbs span{padding:7px 9px;font-size:10px}.crumbs .future{display:none}.geo-head{padding:14px}.geo-head h2{font-size:18px}.geo-foot{flex-wrap:wrap}.region{padding:20px}.atlas-hero{padding:22px 0}.atlas-hero h1{margin:15px 0}.map-window{height:345px}.cta{padding:20px}.go{justify-self:start}footer{flex-wrap:wrap;gap:12px}.ex-top{flex-wrap:wrap;padding:10px}.ex-top .h{font-size:22px}.ex-tools{gap:4px}.ex-tools button{padding:0 8px}}
 .region{background:#fff;padding:22px}.regionTabs{display:flex;gap:3px;border-radius:12px;padding:4px;background:#f0f4ed;margin:16px 0}.regionTabs button{flex:1;padding:9px 3px;border:0;border-radius:9px;background:none;font-size:12px;font-weight:700;color:var(--mute)}.regionTabs [aria-pressed=true]{background:var(--ink);color:var(--volt)}#insights{font-size:13px;color:var(--ink2)}#insights h4,#books h3{font-size:14px;margin:15px 0 5px}.region .advice h3{font-size:18px;letter-spacing:-.035em;line-height:1.25;margin:7px 0 12px}.waste{padding:0 0 14px}.waste .ph{color:#985619}.waste p{margin-top:5px}.advice{padding:15px;background:linear-gradient(125deg,#f4fae8,#fbfdf6);border:1px solid #c9dfad;border-radius:15px}.advice .ph{color:#40651a;font-size:10px}.savings{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:8px 0}.savings b,.savings span{display:block}.savings b{font:700 16px 'JetBrains Mono',monospace}.savings span,.advice p,#insights small,.fine{font-size:11px;color:var(--mute)}.proof{border:0;background:none;text-decoration:underline;text-underline-offset:4px;color:var(--eco-d);font-weight:700;margin-top:8px}.region .insight summary{display:flex;justify-content:space-between;align-items:center;gap:8px}.insight summary:after{content:'+';font:18px monospace}.insight[open] summary:after{content:'−'}.region .insight summary b{margin-left:auto;color:#466240;max-width:49%;text-align:right;font-size:11px}.insight p{margin:8px 0 4px}.region .insight small{word-break:break-word}.region [hidden],.geo-card [hidden]{display:none!important}.map-tools{position:absolute;z-index:2;top:12px;right:12px;display:flex;gap:3px;background:#fff;border:1px solid var(--line2);border-radius:12px;padding:3px;box-shadow:var(--shadow)}.map-tools button{font:700 16px system-ui;background:white;color:var(--ink);border:0;border-radius:8px;min-width:36px;height:36px}.map-tools button:first-child{font-size:11px;padding-inline:8px}.map-tools button:hover:enabled{background:var(--volt)}.map-tools button:disabled{color:#a8afa8}.sitePin{position:absolute;transform:translate(-50%,-50%);width:44px;height:44px;border:0;background:transparent;pointer-events:auto}.sitePin i{display:block;width:15px;height:15px;margin:auto;border-radius:50%;background:var(--ink);border:3px solid white;box-shadow:0 0 0 2px var(--ink)}.sitePin[aria-pressed=true] i{background:var(--volt)}.sitePin span{position:absolute;left:50%;bottom:32px;transform:translateX(-50%);padding:5px 9px;background:white;color:var(--ink);border-radius:8px;box-shadow:var(--shadow);font:700 11px system-ui;white-space:nowrap}.point-1 span{bottom:auto;top:32px}.sitePin[aria-pressed=true] span{background:var(--ink);color:var(--volt)}.site-info{margin:0 18px 6px;padding:12px 14px;background:#f2f6ec;border-radius:12px;font-size:12px}.site-info strong{display:block;font-size:16px}.site-info .ph{font-size:9px}.geo-foot{flex-wrap:wrap}.map-links{display:flex;gap:5px;align-items:center;flex-wrap:wrap}.geo-foot .focus-btn{background:var(--ink);color:var(--volt)}.scope{clear:both}.area-switch{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 18px 0}.area-switch button{background:white;color:var(--ink);border:1px solid var(--line);padding:7px 12px;border-radius:16px;font-size:12px;font-weight:650}.area-switch [aria-pressed=true]{background:#eaf3d8;border-color:#9abc76}.fine{margin-bottom:10px}.package-goals{display:flex;gap:10px;flex-wrap:wrap;margin-top:9px}.package-goals span{border:1px solid #617160;padding:4px 8px;border-radius:8px;color:white;font-size:11px}.site-info p{margin-top:3px}.map-window{touch-action:pan-y}.atlas-grid{align-items:start}.region:focus{outline:none}@media(min-width:1000px){.atlas-hero{padding:24px 0}.atlas-hero h1{font-size:clamp(44px,4.8vw,72px)}}.site-metrics{font:600 11px/1.6 "JetBrains Mono",monospace;color:var(--eco-d);padding-top:5px}</style>
-<link rel="stylesheet" href="assets/WattsOn_timeline.css"><script src="assets/WattsOn_timeline.js"></script></head>
+<link rel="stylesheet" href="assets/WattsOn_timeline.css"><script src="assets/WattsOn_timeline.js"></script>
+<link rel="stylesheet" href="assets/WattsOn_guide.css">
+<script defer src="assets/WattsOn_guide.js"></script>
+</head>
 <body>
 <canvas id="gl"></canvas>
 <svg width="0" height="0" style="position:absolute"><defs>
@@ -398,13 +388,13 @@ body.chat-open .chat{transform:none;opacity:1;visibility:visible;pointer-events:
 </button>
 <div class="chat" id="watson-chat" role="dialog" aria-labelledby="watson-name" inert>
   <div class="ch-top">
-    <div><h2 id="watson-name">Wattson</h2><span class="role"><i aria-hidden="true"></i>GreenOps detective</span></div>
+    <div><h2 id="watson-name">WattsON Guide</h2><span class="role"><i aria-hidden="true"></i>Baseline, savings and safeguards</span></div>
     <button class="dialog-close x" type="button" onclick="closeChat()" aria-label="Close chat"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   </div>
-  <div class="ch-meter"><span>Share of annual emissions</span><div class="bar"><i id="meterBar"></i></div><b id="meterVal">0%</b></div>
-  <div class="ch-msgs" id="msgs"></div>
+  <p class="guide-mode" id="guide-mode" role="status">Connecting to WattsON Guide…</p>
+  <div class="ch-msgs" id="msgs" role="log" aria-label="Guide conversation"></div>
   <div class="chips" id="chips"></div>
-  <form class="ch-in" onsubmit="send(event)"><input id="chIn" placeholder="Ask why, what if, or which…" autocomplete="off" aria-label="Message Wattson"><button type="submit" aria-label="Send"><svg class="ico" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></form>
+  <form class="ch-in"><input id="chIn" required maxlength="700" placeholder="Ask about the baseline or a measure…" autocomplete="off" aria-label="Message Wattson"><button type="submit" aria-label="Send"><svg class="ico" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></form>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"><b>●</b><span id="toastTxt"></span></div>
 
@@ -556,8 +546,6 @@ document.querySelectorAll('[role="button"][tabindex="0"]').forEach(el=>el.addEve
 addEventListener('keydown',e=>{if(e.key==='Escape'){closeTree();closeChat()}});
 
 /* ═══ Wattson chat ═══ */
-const CHIPS=['Explain regional waste','Which seats are idle?','What is the grid impact?','What needs approval?'];
-
 const launcher = document.getElementById('fab');
 const chatPanel = document.getElementById('watson-chat');
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
@@ -618,43 +606,13 @@ function setChatOpen(open){
   document.getElementById('watsonAction').textContent = open ? 'Close chat' : 'Ask Wattson';
   document.body.classList.toggle('chat-open', open);
   moveHat(open);
-  if(open && !document.getElementById('msgs').children.length){
-    bot('Basel directs operations across three cloud regions. Which one would you like to inspect?');
-    const chips = document.getElementById('chips');
-    for(const prompt of CHIPS){
-      const chip = document.createElement('button');
-      chip.type = 'button';
-      chip.textContent = prompt;
-      chip.addEventListener('click', () => ask(prompt));
-      chips.appendChild(chip);
-    }
-  }
+  if (open) window.wattsOnGuide.open();
   (open ? document.getElementById('chIn') : launcher).focus({preventScroll:true});
 }
-function openChat(){setChatOpen(true)}
 function closeChat(){setChatOpen(false)}
 launcher.addEventListener('click', () => setChatOpen(chatPanel.inert));
 reducedMotion.addEventListener('change', () => moveHat(!chatPanel.inert));
 
-function me(t){const m=document.createElement('div');m.className='msg me';m.textContent=t;add(m)}
-function bot(h,kg){const ms=document.getElementById('msgs');const ty=document.createElement('div');ty.className='msg bot typing';ty.innerHTML='<i></i><i></i><i></i>';add(ty);
- setTimeout(()=>{ty.remove();const m=document.createElement('div');m.className='msg bot';m.innerHTML=h;add(m);m.querySelectorAll('.n').forEach(el=>el.onclick=()=>openTree(el.dataset.tree));if(kg){const pct=100*kg/(11956*timeline.share);document.getElementById('meterVal').textContent=pct.toFixed(1)+'%';document.getElementById('meterBar').style.width=pct+'%'}},700+Math.random()*500)}
-function add(m){const ms=document.getElementById('msgs');ms.appendChild(m);ms.scrollTop=ms.scrollHeight}
-function ask(q){
- me(q);
- const named=regions.find(r=>q.toLowerCase().includes(r.name.toLowerCase()));
- if(named)chooseRegion(named,true);
- const region=active,p=profiles[region.code],topics=topicRows(region);
- let row=/discount|price break/i.test(q)?5:/saas/i.test(q)?4:/agent/i.test(q)?3:/token/i.test(q)?2:/seat|subscription/i.test(q)?1:-1;
- let message;
- if(row>=0)message=topics[row][1]+'. '+topics[row][2]+'<br><small>Illustrative allocation · '+topics[row][3]+'</small>';
- else if(/protect|risk|approval|limit/i.test(q))message=p.guard+' Decision owner: '+p.owner+'.<br><small>'+p.sources+'</small>';
- else if(/grid|carbon|energy|impact/i.test(q))message=format(region.energy)+' kWh × '+p.rate+' kg/kWh ≈ '+format(region.co2)+' kg CO₂. See Evidence for the grid-factor range.<br><small>Regional baseline · location-based mid-case</small>';
- else if(/waste|recommend|idle|why|show|cost|frankfurt|zurich|dublin/i.test(q))message=p.signal+' '+p.action+'<br><small>'+p.sources+'</small>';
- else message='I can explain this region’s recorded waste, subscriptions, tokens, agents, discounts, grid impact or safeguards. Which would you like to inspect?';
- bot('<b>'+region.name+'</b> · '+message,region.co2)
-}
-function send(e){e.preventDefault();const i=document.getElementById('chIn');if(!i.value.trim())return;ask(i.value.trim());i.value=''}
 /* ═══ page interactions ═══ */
 function toast(m){const t=document.getElementById('toast');document.getElementById('toastTxt').innerHTML=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),3200)}
 const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -936,7 +894,6 @@ function periodLabels(){
  }
  document.querySelectorAll('.nav-r').forEach(n=>n.textContent='Baseline FY 2025–26 · budget CHF 16,500');
  if(document.body.classList.contains('explore')&&curKey)openTree(curKey);
- document.querySelectorAll('#msgs .msg').forEach(m=>m.remove());
 }
 document.addEventListener('timelinechange',periodLabels);
 </script></body>

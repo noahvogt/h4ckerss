@@ -88,15 +88,18 @@ then start the backend from `backend/`.
 uv run uvicorn app.main:app --env-file .env
 ```
 
-The backend uses the official OpenAI Python SDK. OpenAI receives the question and curated
-calculation summaries with source references, then selects an evidence-backed answer.
+The backend uses the Responses endpoint through the official OpenAI Python SDK. OpenAI
+receives the question and curated calculation summaries with source references, then
+selects an evidence-backed answer.
 The server renders the figures and citations. Missing credentials and API errors produce
-a visible notice and a deterministic demo reply.
+a visible notice and a deterministic demo reply. For a failed request, check the backend
+terminal for the exception type, HTTP status and recognized OpenAI error code. Environment
+variables inherited by Uvicorn take precedence over `.env`.
 
 | Backend setting | Default and behavior |
 |---|---|
 | `OPENAI_MODEL` | `gpt-4.1-mini` |
-| `OPENAI_MAX_OUTPUT_TOKENS` | `32` completion tokens, configurable from 1 to 4096 |
+| `OPENAI_MAX_OUTPUT_TOKENS` | `32` output tokens, configurable from 16 to 4096 |
 | `OPENAI_PRICES_USD_PER_1M` | Optional comma-separated input, cached input, and output rates in USD per million tokens. Supply this for estimates with a custom model. |
 
 Each question is limited to 700 characters. The complete text sent to OpenAI, including the

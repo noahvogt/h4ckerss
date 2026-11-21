@@ -1,4 +1,4 @@
-.time-host{position:relative;z-index:4}.time-filter{display:flex;align-items:center;gap:10px;margin:5px 0 0;font:500 12px system-ui;color:#25372c}.time-filter summary{list-style:none;cursor:pointer;display:flex;gap:9px;align-items:center;padding:9px 14px;border-radius:14px;border:1px solid #cdd9c9;background:#fff;font-weight:700}.time-filter summary::-webkit-details-marker{display:none}.time-filter summary span{font-size:19px;line-height:1}.time-filter summary:after{content:'⌄'}.time-filter output{font-weight:500;color:#4d6354}.time-filter>small{color:#506652}.time-settings{border:1px solid #ccd8c9;padding:12px 15px;border-radius:14px;background:white;box-shadow:0 12px 30px #214c2516;margin-top:5px}.time-presets,.time-fields{display:flex;gap:7px;flex-wrap:wrap;align-items:end}.time-presets button,.time-fields button{border:1px solid #cbd6c7;border-radius:10px;padding:7px 12px;background:#f4f7f1;color:#203323;font:650 12px system-ui}.time-fields{margin-top:10px}.time-fields label{display:grid;gap:3px}.time-fields input{max-width:100%;padding:7px;border-radius:7px;border:1px solid #bbcbb7;font:inherit;color:inherit;background:white}.time-fields button{background:#203323;color:#d2f739}.time-settings p{max-width:66ch;margin-top:5px;font-size:11px}.time-error{color:#a72c19}.time-error:empty{display:none}.ex-time{background:#f7f9f5;padding:0 20px 6px}.ex-time form{margin:2px 0}.time-filter:has(details[open])>small{display:none}
+.time-host{position:relative;z-index:4}.time-filter{display:flex;align-items:center;gap:10px;margin:5px 0 0;font:500 var(--text-label) var(--font-ui);color:#25372c}.time-filter summary{list-style:none;cursor:pointer;display:flex;gap:9px;align-items:center;padding:9px 14px;border-radius:14px;border:1px solid #cdd9c9;background:#fff;font-weight:700}.time-filter summary::-webkit-details-marker{display:none}.time-filter summary span{font-size:19px;line-height:1}.time-filter summary:after{content:'⌄'}.time-filter output{font-weight:500;color:#4d6354}.time-filter>small{color:#506652}.time-settings{border:1px solid #ccd8c9;padding:12px 15px;border-radius:14px;background:white;box-shadow:0 12px 30px #214c2516;margin-top:5px}.time-presets,.time-fields{display:flex;gap:7px;flex-wrap:wrap;align-items:end}.time-presets button,.time-fields button{border:1px solid #cbd6c7;border-radius:10px;padding:7px 12px;background:#f4f7f1;color:#203323;font:650 var(--text-label) var(--font-ui)}.time-fields{margin-top:10px}.time-fields label{display:grid;gap:3px}.time-fields input{max-width:100%;padding:7px;border-radius:7px;border:1px solid #bbcbb7;font:inherit;color:inherit;background:white}.time-fields button{background:#203323;color:#d2f739}.time-settings p{max-width:66ch;margin-top:5px;font-size:11px}.time-error{color:#a72c19}.time-error:empty{display:none}.ex-time{background:#f7f9f5;padding:0 20px 6px}.ex-time form{margin:2px 0}.time-filter:has(details[open])>small{display:none}
 .atlas-grid{display:block;position:relative}.geo-card .map-window{height:clamp(430px,42vw,670px)}.region[hidden]{display:none!important}.atlas-grid>.region{position:absolute;z-index:5;top:98px;left:22px;width:min(360px,35%);padding:0;border:1px solid #cbd8b3;border-radius:26px;box-shadow:0 18px 55px #16382330;overflow:visible;background:white}.atlas-grid>.region:before,.atlas-grid>.region:after{content:'';position:absolute;background:white;border:1px solid #cbd8b3;border-radius:100%;pointer-events:none}.atlas-grid>.region:before{width:19px;height:16px;right:-15px;bottom:23px}.atlas-grid>.region:after{width:8px;height:7px;right:-27px;bottom:16px}.region-scroll{padding:18px;max-height:min(63vh,470px);overflow:auto;overscroll-behavior:contain;border-radius:26px}.cloud-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.cloud-head span{font-size:10px;text-transform:uppercase;font-weight:800;letter-spacing:.12em;color:#47642e}.cloud-head button{border:1px solid #d4dbd0;background:white;border-radius:50%;width:34px;height:34px;font-size:18px}.cloud-thought{font-size:19px;line-height:1.25;letter-spacing:-.025em;margin:8px 0}.cloud-meta{font-size:11px;color:#536752}.more-region{margin-top:12px;border:0;border-radius:20px;padding:9px 14px;font-weight:700;color:#d6f73e;background:#203323}.regional-body{padding-top:15px}.region [hidden]{display:none!important}.geo-card .map-window{border-block:1px solid #d6e0d4}.map-window .map-tools{z-index:2}
 @media(max-width:740px){.time-filter{display:block}.time-filter summary{flex-wrap:wrap;gap:5px}.time-filter summary output{font-size:11px}.time-filter>small{display:none}.time-fields label{min-width:0}.geo-card .map-window{height:440px}.atlas-grid>.region{position:fixed;left:10px;right:10px;bottom:10px;top:auto;width:auto;z-index:45}.region-scroll{max-height:52dvh}.atlas-grid>.region:before,.atlas-grid>.region:after{display:none}.time-settings{padding:10px}.ex-time{padding:0 8px 5px}}/* Keep the regional ledger at the map and the advice beside its speaker. */
 .atlas-grid>.region::before,.atlas-grid>.region::after{content:none}
@@ -24,11 +24,31 @@
  .watson-thought::before{right:-12px;bottom:46px;width:13px;height:12px}
  .watson-thought::after{right:-19px;bottom:39px;width:6px;height:6px}
 }
+footer{
+ margin-top:clamp(96px,9vw,128px);padding:0 16px max(12px,env(safe-area-inset-bottom));
+ color:var(--mute);font-size:12px;font-weight:600;line-height:1.4;text-align:center;
+}
+@media(max-width:425px){
+ :root.footer-in-view{--watson-foot:max(40px,calc(env(safe-area-inset-bottom) + 28px))}
+}
+
+:root{
+ --font-ui:'Plus Jakarta Sans',system-ui,sans-serif;
+ --font-data:'JetBrains Mono',ui-monospace,monospace;
+ --text-label:.75rem;
+ --text-copy:.875rem;
+ --text-section:1.25rem;
+ --text-title:clamp(1.375rem,2.2vw,1.875rem);
+ --text-kpi:1.5rem;
+}
 .atlas-summary{margin:13px 0 16px}
 .atlas-summary .hero-stats{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.atlas-summary.baseline-summary .hero-stats{grid-template-columns:repeat(3,minmax(0,1fr))}
 .atlas-summary .stat{padding:10px 16px}
-.atlas-summary .stat b,.atlas-summary .stat button{font-size:24px}
-.geo-head h1{font-size:clamp(21px,2.1vw,30px);letter-spacing:-.045em;line-height:1.15;margin:4px 0 0}
+.atlas-summary .stat b,.atlas-summary .stat button{font-family:var(--font-data);font-size:var(--text-kpi);font-variant-numeric:tabular-nums}
+.atlas-summary .stat span{display:block;font-family:var(--font-ui);font-size:var(--text-label);letter-spacing:.035em;line-height:1.35}
+.geo-head h1,.maphead h1{font-size:var(--text-title);letter-spacing:-.045em;line-height:1.15;margin:4px 0 0;text-wrap:balance}
+.geo-head .ph,.maphead .ph{font-size:var(--text-label);letter-spacing:.08em}
 .map-stage{display:grid;isolation:isolate;background:#e6eee6}
 .map-stage>.map-window,.map-stage>.region{grid-area:1/1}
 .map-stage>.map-window{height:auto;min-height:clamp(480px,56vh,690px)}
@@ -57,38 +77,48 @@
  .atlas-summary .hero-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
  .atlas-summary .stat{padding:7px 12px}
  .atlas-summary .stat button,.atlas-summary .stat b{font-size:19px}
- .atlas-summary .stat span{font-size:9px}
+ .atlas-summary.baseline-summary .stat{padding-inline:9px}
+ .atlas-summary.baseline-summary .stat button{font-size:clamp(15px,4.7vw,19px)}
  #insights[data-view="Workloads"],#insights[data-view="Evidence"]{display:block}
  .region-summary h2{font-size:27px}
  .region-summary .regional-total strong{font-size:24px}
 }
-.wrap>nav{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px}
+.wrap>nav{
+ --nav-gutter:36px;
+ display:grid;grid-template-columns:minmax(0,1fr) max-content minmax(0,1fr);gap:12px;
+ min-height:90px;margin-inline:calc(var(--nav-gutter) - var(--page-gutter));
+}
 .wrap>nav .crumbs{justify-self:center}
-.nav-period{min-width:0;justify-self:end;display:grid;justify-items:end;gap:3px}
+.wrap>nav .crumbs span{font-size:var(--text-label)}
+.wrap>nav>.year{align-self:start}
+.nav-period{min-width:0;max-width:100%;justify-self:end;display:grid;grid-template-columns:minmax(0,1fr);justify-items:end;gap:3px}
 .nav-period .nav-r{font-size:10px}
 .nav-period .time-filter,.ex-time .time-filter{margin:0;justify-content:flex-end}
 .nav-period .time-filter>small,.ex-time .time-filter>small{display:none}
 .nav-period .time-settings,.ex-time .time-settings{position:absolute;right:0;top:100%;width:min(475px,calc(100vw - 40px));max-height:65dvh;overflow:auto}
 .nav-period .time-host,.ex-time{position:relative}
+.nav-period .time-host,.nav-period .time-filter details{min-width:0;max-width:100%}
 .ex-time .time-filter{display:flex}
-.nav-period .time-filter summary{flex-wrap:nowrap}
-.nav-period output{max-width:24ch;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-@media(max-width:800px){
- .wrap>nav{grid-template-columns:1fr auto;row-gap:8px;padding-block:9px}
+.nav-period .time-filter summary{flex-wrap:nowrap;white-space:nowrap}
+.nav-period output{min-width:0;max-width:24ch;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:1040px){
+ .wrap>nav{
+  --nav-gutter:20px;
+  grid-template-columns:minmax(0,1fr) auto;row-gap:8px;padding-block:9px;
+  min-height:0;container-type:inline-size;
+ }
  .wrap>nav .crumbs{grid-column:1/-1;grid-row:2;justify-self:start}
- .wrap>nav .nav-period{grid-column:2;grid-row:1}
+ .wrap>nav :is(.nav-period,.year){grid-column:2;grid-row:1}
+ .wrap>nav>.year{align-self:center}
  .nav-period .nav-r{display:none}
  .nav-period output{max-width:15ch}
- .nav-period .time-settings,.ex-time .time-settings{width:min(420px,calc(100vw - 36px))}
+ .nav-period .time-settings{width:min(420px,100cqw)}
 }
+@media(max-width:800px){.ex-time .time-settings{width:min(420px,calc(100vw - 36px))}}
 @media(max-width:520px){
  .nav-period output{display:none}
  .nav-period details[open] output{display:block;position:absolute;right:0;top:100%;z-index:1;margin:14px 12px 0;max-width:calc(100vw - 58px);font-size:11px}
  .nav-period details[open] .time-settings{padding-top:32px}
-}
-@media(max-width:800px){
- .wrap>nav{container-type:inline-size}
- .nav-period .time-settings{width:min(420px,100cqw)}
 }
 .time-settings .time-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
 .time-settings .time-fields label{min-width:0}
@@ -111,7 +141,7 @@
 }
 .cta .go:hover{background:#e7ecf3;box-shadow:0 3px 10px #29344716}
 .go .sw::after,.go.on .sw::after{background:#536072}
-.wrap .crumbs .on,.regionTabs button[aria-pressed=true],.modes button[aria-pressed=true],.geo-foot .focus-btn,.card .acts .ok,.ch-in button{
+.wrap .crumbs .on,.regionTabs button[aria-pressed=true],.modes button[aria-pressed=true],.card .acts .ok,.ch-in button{
  background:var(--summary-tint);color:var(--summary-ink);box-shadow:inset 0 0 0 1px #aeb9c8;border-color:var(--summary-border);
 }
 .ex-story>.ico{color:var(--summary-muted)!important}
@@ -134,29 +164,24 @@
 .ch-top .x:hover,.ch-in button:hover,.chips button:hover{background:#e6ebf1;color:var(--summary-ink);border-color:#aeb9c8}
 .ch-top .x:focus-visible,.fab:focus-visible{outline-color:#465d79}
 .ch-msgs{background:#f6f7f9}
+.ch-top .role,.chips button{font-size:var(--text-label)}
+.msg{font-size:var(--text-copy)}
 .msg.me{background:#e7edf4;color:var(--summary-ink);border:1px solid #d0d9e4}
 .msg.bot{box-shadow:0 1px 4px #2631420a}
 @media(max-width:540px){
+ :root{--chat-foot:calc(var(--watson-foot) + 54px)}
+ .fab{width:auto;height:44px}
+ .fab .watson-bezel{display:none}
+ .fab .watson-label{position:static;min-height:44px}
+ .wrap>nav{--nav-gutter:14px}
  .wrap>nav .crumbs{max-width:100%;gap:1px}
- .wrap>nav .crumbs span{font-size:clamp(8px,2.35vw,10px);letter-spacing:0;padding:7px clamp(3px,1.5vw,8px);white-space:nowrap}
+ .wrap>nav .crumbs span{letter-spacing:0;text-transform:none;padding:7px clamp(3px,1.5vw,8px);white-space:nowrap}
 }
 .logo .brand-wordmark{display:block;width:108px;height:44px;object-fit:contain}
 @media(max-width:540px){.logo .brand-wordmark{width:88px;height:36px}}
-.geo-foot #openGoogleMaps{display:inline-flex;align-items:center;min-height:36px;padding:8px 14px;border:1px solid var(--line2);border-radius:20px;background:#fff;color:var(--ink);font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap}
-.geo-foot #openGoogleMaps:hover{background:#f0f6e8;border-color:#9dbd8b}
-.maps-dialog{width:min(1140px,calc(100vw - 28px));height:min(780px,calc(100dvh - 28px));max-width:none;max-height:none;padding:0;border:1px solid #cbd8d0;border-radius:20px;background:#fff;box-shadow:0 25px 90px #10231855;overflow:hidden}
-.maps-dialog::backdrop{background:#10231880;backdrop-filter:blur(4px)}
-.maps-dialog[open]{display:grid;grid-template-rows:auto minmax(0,1fr) auto}
-.maps-dialog-head,.maps-dialog-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px}
-.maps-dialog-head{border-bottom:1px solid #e3e9e2}
-.maps-dialog-head small{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:#5e6b64;font-weight:700}
-.maps-dialog-head h2{margin:2px 0;font-size:21px;letter-spacing:-.04em}
-.maps-dialog-head button{width:38px;height:38px;border:1px solid #cdd6cf;border-radius:50%;background:#fff;font-size:22px}
-.maps-dialog iframe{display:block;width:100%;height:100%;border:0}
-.maps-dialog-foot{border-top:1px solid #e3e9e2}
-.maps-dialog-foot a{color:#175c36;font-size:12px;font-weight:700;text-decoration:none}
-/* The embedded basemap is display-only. Keep its visible launch control interactive. */
-#geoWindow .map-launch{position:absolute;top:6px;left:6px;z-index:2;display:inline-flex;align-items:center;min-height:40px;padding:0 14px;background:white;color:#1559ae;border-radius:4px;box-shadow:0 1px 5px #34433840;font:600 14px/1.3 system-ui;text-decoration:none;pointer-events:auto}
+/* Clip the display-only controls on the left edge and retain Google's attribution. */
+#googleMap{left:-140px;width:calc(100% + 140px)}
+#geoWindow .map-launch{position:absolute;top:6px;left:6px;z-index:2;display:inline-flex;align-items:center;min-height:40px;padding:0 14px;background:white;color:#1559ae;border-radius:4px;box-shadow:0 1px 5px #34433840;font:600 var(--text-copy)/1.3 var(--font-ui);text-decoration:none;pointer-events:auto}
 #geoWindow .map-launch:hover{text-decoration:underline}
 
 /* Shared dismissal control for native dialogs, inspectors and Wattson panels. */

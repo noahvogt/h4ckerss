@@ -6,6 +6,7 @@ requires-python = ">=3.12"
 dependencies = [
     "fastapi[standard]>=0.115",
     "holidays>=0.108",
+    "openai>=2,<3",
     "pandas>=2.2",
 ]
 

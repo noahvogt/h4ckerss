@@ -86,6 +86,7 @@ def health() -> Health:
     return Health(status="ok", data_found=(DATA_DIR / "README.md").exists())
 
 
+<<<<<<< HEAD
 @app.get("/api/approvals")
 def approval_decisions() -> ApprovalDecisions:
     """Saved frontend approval/rejection choices for demo persistence."""
@@ -122,3 +123,6 @@ def frontend_page(page_name: str) -> FileResponse:
     if not page.exists():
         raise HTTPException(404, "frontend page not found")
     return FileResponse(page)
+=======
+app.mount("/", StaticFiles(directory=DATA_DIR.parents[1] / "frontend", html=True), name="frontend")
+>>>>>>> a00853595de676dcc3bdfc30a7dc0cbf4836066b

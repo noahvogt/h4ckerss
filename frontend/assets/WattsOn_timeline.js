@@ -147,3 +147,11 @@ const timeline = (() => {
   });
   return api;
 })();
+
+document.addEventListener('DOMContentLoaded',()=>{
+  const footer=document.querySelector('.wrap > footer');
+  if(!footer)return;
+  new IntersectionObserver(([entry])=>{
+    document.documentElement.classList.toggle('footer-in-view',entry.isIntersecting);
+  }).observe(footer);
+});

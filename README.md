@@ -19,3 +19,17 @@ uv run python -m app.pipeline.build   # rebuild data/derived/facts.csv from data
 uv run python -m app.measures.catalogue   # rebuild data/derived/measures.csv (measures with effort and CHF savings)
 uv run python -m app.measures.package     # best package under target and budget -> submission/measures_package.csv
 ```
+
+## Baseline submission
+
+From `backend/`, generate the official baseline table and the supplementary evidence:
+
+```sh
+uv run python -m app.pipeline.submission_export
+uv run python -m app.pipeline.baseline_export
+uv run pytest tests/test_submission_export.py tests/test_baseline_export.py
+```
+
+The official output is [submission/template_baseline_and_assumptions.csv](submission/template_baseline_and_assumptions.csv). The supplementary JSON and audit CSV are written to `out/baseline/`. The baseline records annual CHF, kWh, and kg CO₂e, with partial physical coverage disclosed in the table. See the [methodology and validation notes](docs/baseline_calculation.md#official-submission).
+
+For the final submission, review the baseline caveats and upload the prototype and both completed official tables. Obtain the measures table and its savings validation from the measures workstream.

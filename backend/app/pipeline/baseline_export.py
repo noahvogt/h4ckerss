@@ -117,14 +117,19 @@ def export_baseline(
     return json_path, csv_path
 
 
+def load_calculated_baseline() -> tuple[pd.DataFrame, ResearchFactors]:
+    """Run the shared pipeline on the checked-in baseline inputs."""
+    baseline = select_baseline_facts(read_facts())
+    factors = load_factors()
+    return calculate_emissions(calculate_energy(baseline, factors), factors), factors
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     args = parser.parse_args()
 
-    baseline = select_baseline_facts(read_facts())
-    factors = load_factors()
-    facts = calculate_emissions(calculate_energy(baseline, factors), factors)
+    facts, factors = load_calculated_baseline()
     for path in export_baseline(facts, factors, args.output_dir):
         print(f"written: {path}")
 

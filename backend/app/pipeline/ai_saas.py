@@ -39,6 +39,16 @@ DETAIL_COLUMNS = [
     "note",
 ]
 
+AI_SUBSCRIPTION_RESOURCES = {
+    "ChatGPT Team": ("sub-chatgpt", "ChatGPT Team (subscription)"),
+    "Claude Team": ("sub-claude", "Claude Team (subscription)"),
+    "Microsoft Copilot": ("sub-copilot", "Microsoft Copilot (subscription)"),
+}
+SAAS_SUBSCRIPTION_RESOURCES = {
+    "Microsoft 365": ("saas-m365", "Microsoft 365 (licences)"),
+}
+OTHER_SAAS_RESOURCE = ("saas-other", "Other SaaS contracts")
+
 
 def _notes(*parts: str) -> str:
     return "; ".join(part for part in parts if part)
@@ -249,13 +259,26 @@ def _subscription_facts(
     if billed.empty:
         return empty()
 
-    billed["resource_id"] = (
-        f"{category}-subscription:"
-        + billed["product"].astype("string")
-        + ":"
-        + billed["provider"].astype("string")
+    if category == "ai":
+        unknown_products = sorted(
+            set(billed["product"].dropna()) - set(AI_SUBSCRIPTION_RESOURCES)
+        )
+        if unknown_products or billed["product"].isna().any():
+            raise ValueError(
+                "unknown or missing AI subscription product: "
+                f"{unknown_products or 'empty values'}"
+            )
+        resources = billed["product"].map(AI_SUBSCRIPTION_RESOURCES)
+    else:
+        resources = billed["product"].map(SAAS_SUBSCRIPTION_RESOURCES)
+        resources = resources.apply(
+            lambda resource: resource
+            if isinstance(resource, tuple)
+            else OTHER_SAAS_RESOURCE
+        )
+    billed[["resource_id", "tool"]] = pd.DataFrame(
+        resources.tolist(), index=billed.index
     )
-    billed["tool"] = billed["product"]
     keys = ["month", "resource_id", "tool", "department", "cost_center"]
     is_ai = category == "ai"
     usage_column = "messages_30d" if is_ai else "licences_purchased"

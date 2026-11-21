@@ -1,6 +1,7 @@
 import pandas as pd
 import pytest
 
+from app.pipeline import common
 from app.pipeline.ai_saas import (
     calculate_unused_ai_seats,
     load_ai_saas,
@@ -42,7 +43,7 @@ def _data_dir(tmp_path, *, missing_tokens_out=False, missing_usd_rate=False):
         [
             {
                 "month": "2026-08-01",
-                "product": "AI Team",
+                "product": "ChatGPT Team",
                 "provider": "OpenAI",
                 "cost_center": "4000",
                 "licences_purchased": 4,
@@ -58,7 +59,7 @@ def _data_dir(tmp_path, *, missing_tokens_out=False, missing_usd_rate=False):
             },
             {
                 "month": "2026-08-01",
-                "product": "AI Team",
+                "product": "ChatGPT Team",
                 "provider": "OpenAI",
                 "cost_center": "4100",
                 "licences_purchased": 10,
@@ -161,6 +162,7 @@ def test_loads_valid_monthly_facts_and_keeps_ai_cost_in_chf(tmp_path):
     assert ai_usage["location"] == "EU"
 
     ai_subscription = facts.loc[facts["source"].eq("ai_subscriptions.csv")].iloc[0]
+    assert ai_subscription["resource_id"] == "sub-chatgpt"
     assert ai_subscription["cost_chf"] == 80
     assert ai_subscription["usage_kind"] == "messages"
     assert ai_subscription["usage_qty"] == 12
@@ -171,6 +173,104 @@ def test_loads_valid_monthly_facts_and_keeps_ai_cost_in_chf(tmp_path):
     assert saas_facts["usage_qty"].tolist() == [3, 2]
     assert facts["location"].eq("EU").all()
     assert not facts["note"].str.contains("Draft", na=False).any()
+
+
+def test_subscription_facts_use_canonical_ids_and_preserve_allocations(tmp_path):
+    path = _data_dir(tmp_path)
+    ai_template = pd.read_csv(path / "ai_subscriptions.csv").iloc[0].to_dict()
+    ai_rows = [
+        ai_template,
+        ai_template | {"messages_30d": 8, "amount": 50},
+        ai_template
+        | {
+            "cost_center": "4100",
+            "messages_30d": 3,
+            "amount": 25,
+        },
+        ai_template
+        | {
+            "product": "Claude Team",
+            "provider": "Anthropic",
+            "messages_30d": 7,
+            "amount": 40,
+        },
+        ai_template
+        | {
+            "product": "Microsoft Copilot",
+            "provider": "Microsoft",
+            "messages_30d": 9,
+            "amount": 60,
+        },
+    ]
+    _write_csv(path / "ai_subscriptions.csv", ai_rows)
+
+    saas_template = pd.read_csv(path / "saas_contracts.csv").iloc[0].to_dict()
+    saas_rows = [
+        saas_template
+        | {
+            "contract": "Microsoft 365",
+            "provider": "Microsoft",
+            "licences_purchased": 6,
+            "amount": 90,
+        },
+        saas_template
+        | {"contract": "CRM platform", "licences_purchased": 3, "amount": 50},
+        saas_template
+        | {"contract": "Time tracking", "licences_purchased": 2, "amount": 20},
+        saas_template
+        | {
+            "contract": "Password manager",
+            "cost_center": "4200",
+            "licences_purchased": 4,
+            "amount": 30,
+        },
+    ]
+    _write_csv(path / "saas_contracts.csv", saas_rows)
+
+    facts = load_ai_saas(path)
+    subscriptions = facts.loc[
+        facts["source"].isin(["ai_subscriptions.csv", "saas_contracts.csv"])
+    ]
+    assert set(subscriptions["resource_id"]).issubset(set(common.mapping().index))
+    assert set(subscriptions["resource_id"]) == {
+        "sub-chatgpt",
+        "sub-claude",
+        "sub-copilot",
+        "saas-m365",
+        "saas-other",
+    }
+
+    chatgpt = subscriptions.loc[subscriptions["resource_id"].eq("sub-chatgpt")]
+    assert set(zip(chatgpt["cost_center"], chatgpt["department"], strict=True)) == {
+        ("4000", "Consulting"),
+        ("4100", "Sales"),
+    }
+    consulting_chatgpt = chatgpt.loc[chatgpt["cost_center"].eq("4000")].iloc[0]
+    assert consulting_chatgpt["usage_qty"] == 20
+    assert consulting_chatgpt["cost_chf"] == 120
+
+    other_sales = subscriptions.loc[
+        subscriptions["resource_id"].eq("saas-other")
+        & subscriptions["cost_center"].eq("4100")
+    ].iloc[0]
+    assert other_sales["usage_qty"] == 5
+    assert other_sales["cost_chf"] == 63
+    assert other_sales["department"] == "Sales"
+
+    ai_details = load_ai_subscription_details(path)
+    saas_details = load_saas_subscription_details(path)
+    assert set(ai_details["product"]) == {
+        "ChatGPT Team",
+        "Claude Team",
+        "Microsoft Copilot",
+    }
+    assert set(saas_details["product"]) == {
+        "Microsoft 365",
+        "CRM platform",
+        "Time tracking",
+        "Password manager",
+    }
+    assert set(saas_details["provider"]) == {"Microsoft", "Vendor"}
 
 
 def test_preserves_monthly_ai_details_without_counting_cached_tokens_twice(tmp_path):
@@ -282,7 +382,7 @@ def test_reads_cost_centers_as_strings_and_notes_missing_centers(tmp_path):
     subscriptions.to_csv(path / "ai_subscriptions.csv", index=False)
 
     details = load_ai_subscription_details(path)
-    valid = details.loc[details["product"].eq("AI Team")].iloc[0]
+    valid = details.loc[details["product"].eq("ChatGPT Team")].iloc[0]
     unallocated = details.loc[
         details["product"].eq("Unallocated product")
     ].iloc[0]
@@ -309,7 +409,7 @@ def test_ai_subscription_messages_sum_known_values_and_flag_partial_usage(tmp_pa
     facts = load_ai_saas(path)
     ai_fact = facts.loc[
         facts["source"].eq("ai_subscriptions.csv")
-        & facts["resource_id"].str.endswith("AI Team:OpenAI")
+        & facts["resource_id"].eq("sub-chatgpt")
     ].iloc[0]
 
     assert ai_fact["usage_kind"] == "messages"
@@ -330,7 +430,7 @@ def test_all_missing_ai_subscription_messages_keep_nan_and_are_flagged(tmp_path)
     facts = load_ai_saas(path)
     ai_fact = facts.loc[
         facts["source"].eq("ai_subscriptions.csv")
-        & facts["resource_id"].str.endswith("AI Team:OpenAI")
+        & facts["resource_id"].eq("sub-chatgpt")
     ].iloc[0]
 
     assert ai_fact["usage_kind"] == "messages"
@@ -350,7 +450,7 @@ def test_preserves_seat_details_but_excludes_drafts_from_billing_and_unused_seat
     assert draft["licences_active_30d"] == 2
     assert len(saas_details.loc[saas_details["contract_status"].eq("Draft")]) == 1
 
-    ai_team = unused.loc[unused["product"].eq("AI Team")].iloc[0]
+    ai_team = unused.loc[unused["product"].eq("ChatGPT Team")].iloc[0]
     assert ai_team["licences_purchased"] == 4
     assert ai_team["licences_active_30d"] == 1
     assert ai_team["licences_unused"] == 3

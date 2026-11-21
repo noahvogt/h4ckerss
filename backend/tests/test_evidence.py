@@ -36,3 +36,21 @@ def test_possible_off_hours_match_the_answer():
     assert off["days"].tolist() == [112, 199, 36, 18]
     assert off["off_hours"].tolist() == [2016, 1194, 0, 0]
     assert off["off_hours"].sum() == 3210
+
+
+def test_off_schedule_never_hits_a_job_run():
+    from app.limits.evidence import off_schedule_conflicts, off_windows
+
+    windows = off_windows()
+    assert len(windows) == 311
+    assert sum((b - a).total_seconds() for a, b in windows) / 3600 == 3210
+    checked, conflicts = off_schedule_conflicts()
+    assert checked == 1487 and conflicts.empty  # baseline year plus 2025-08-31
+
+
+def test_business_use_on_working_days_fits_before_20h():
+    from app.limits.evidence import business_hours
+
+    b = business_hours().round(2)
+    assert b.loc["workday", "other_h"] == 6.06  # about 6 h of interactive use
+    assert b.loc["workday", "other_h_max"] == 9.07  # < 10 h office day 08:00-18:00

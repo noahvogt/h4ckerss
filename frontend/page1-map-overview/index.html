@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f5f6f2">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="overview.css">
+  <script defer src="geographic-map.js"></script>
+  <script defer src="overview.js"></script>
+  <title>WattsON | Map overview</title>
+</head>
+<body>
+  <header class="topbar">
+    <div class="frame masthead">
+      <span class="wordmark">WattsON</span>
+      <span class="data-badge" id="data-badge">Illustrative data</span>
+    </div>
+  </header>
+  <main class="frame">
+    <div class="heading">
+      <h1>Company digital footprint</h1>
+      <p class="muted" id="baseline-period">Baseline · Sep 2025 – Aug 2026</p>
+    </div>
+    <dl id="annual-totals" class="totals" aria-label="Company digital services baseline"></dl>
+    <section class="map" aria-labelledby="map-title">
+      <div class="map-heading">
+        <div>
+          <h2 id="map-title">Headquarters and deployment regions</h2>
+          <p>Basel HQ shows the company total. Other bubbles show individual deployment regions.</p>
+          <p id="waste-legend" class="waste-legend" hidden><span class="waste-chip" aria-hidden="true">!</span> Waste identified</p>
+        </div>
+      </div>
+      <div class="map-stage" id="map-stage">
+        <div id="geographic-map" class="geographic-map" aria-label="Geographic map of deployment regions" role="region"></div>
+        <div class="schematic">
+          <canvas id="map-arrows" aria-hidden="true"></canvas>
+          <button type="button" class="basel" id="basel-marker" data-location="company" aria-label="Basel HQ, company overview" aria-controls="region-detail" aria-expanded="false"><span class="bubble" aria-hidden="true"></span><span class="basel-label"><strong>Basel HQ</strong><span class="hq-value">Company total</span></span></button>
+          <button type="button" class="marker dublin" data-location="IE" aria-controls="region-detail" aria-expanded="false"><span class="bubble" aria-hidden="true"></span><span class="marker-label">Dublin</span></button>
+          <button type="button" class="marker frankfurt" data-location="DE" aria-controls="region-detail" aria-expanded="false"><span class="bubble" aria-hidden="true"></span><span class="marker-label">Frankfurt</span></button>
+          <button type="button" class="marker zurich" data-location="CH" aria-controls="region-detail" aria-expanded="false"><span class="bubble" aria-hidden="true"></span><span class="marker-label">Zurich</span></button>
+        </div>
+        <div class="map-legend">
+          <p id="category-label">Company by category</p>
+          <ul id="category-summary" class="category-summary" aria-labelledby="category-label"></ul>
+          <p id="metric-label">Size bubbles by</p>
+          <div class="options" role="group" aria-labelledby="metric-label">
+            <button type="button" data-metric="co2_kg" aria-pressed="true">CO₂</button>
+            <button type="button" data-metric="energy_kwh" aria-pressed="false">kWh</button>
+            <button type="button" data-metric="cost_chf" aria-pressed="false">Cost</button>
+          </div>
+        </div>
+        <section id="region-detail" class="detail" aria-labelledby="detail-title" hidden>
+          <div class="detail-heading">
+            <h2 id="detail-title"></h2>
+            <button type="button" class="detail-close" id="close-detail" aria-label="Close details">×</button>
+          </div>
+          <p id="detail-period" class="muted"></p>
+          <p id="detail-note" class="muted" hidden></p>
+          <dl id="region-totals" class="totals region-totals" aria-label="Selected totals"></dl>
+          <p id="company-share" class="muted"></p>
+          <p id="hq-coverage" class="hq-coverage muted" hidden><strong>Basel office</strong> · Office electricity and equipment are outside this baseline.</p>
+          <div class="options" role="group" aria-label="Group results by">
+            <button type="button" data-group="tool" aria-pressed="true">By tool</button>
+            <button type="button" data-group="department" aria-pressed="false">By department</button>
+          </div>
+          <p id="group-note" class="muted" hidden></p>
+          <section id="drivers" class="drivers" aria-labelledby="drivers-title" hidden>
+            <h3 id="drivers-title"></h3>
+            <p id="drivers-share-label" class="muted"></p>
+            <ul id="driver-list"></ul>
+          </section>
+          <section id="case-evidence" class="case-evidence" aria-labelledby="case-evidence-title" hidden>
+            <h3 id="case-evidence-title"></h3>
+            <p id="case-evidence-finding"></p>
+            <p id="case-evidence-constraint" class="muted" hidden></p>
+            <details id="case-evidence-sources">
+              <summary>Sources</summary>
+              <p class="muted">ALTYCA case data</p>
+              <ul id="case-evidence-source-list"></ul>
+            </details>
+          </section>
+          <div class="table-scroll" tabindex="0" role="region" aria-label="Breakdown">
+            <table>
+              <thead><tr><th scope="col" id="group-heading">Department</th><th scope="col">CHF</th><th scope="col">kWh</th><th scope="col">kg CO₂</th></tr></thead>
+              <tbody id="breakdown"></tbody>
+            </table>
+          </div>
+          <p id="coverage-note" class="muted coverage"></p>
+        </section>
+      </div>
+      <p id="map-caption" class="map-caption"></p>
+      <p id="map-status" class="map-caption" role="status"></p>
+      <div class="other-regions" role="group" id="other-regions" aria-labelledby="off-map-label" hidden>
+        <p id="off-map-label" class="map-caption">Included in company totals, without a specific city</p>
+        <button type="button" data-region="EU" aria-controls="region-detail" aria-expanded="false" hidden>EU (mixed)</button>
+        <button type="button" data-region="unknown" aria-controls="region-detail" aria-expanded="false" hidden>Unknown location</button>
+      </div>
+    </section>
+    <details class="data-import" id="data-import" hidden>
+      <summary>Developer tools</summary>
+      <label for="data-file">Import baseline JSON</label>
+      <input type="file" id="data-file" accept=".json,application/json">
+      <p id="import-status" role="status">Showing example figures for the frontend walkthrough.</p>
+    </details>
+  </main>
+</body>
+</html>

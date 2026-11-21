@@ -3,8 +3,8 @@ import pytest
 
 from app.measures.catalogue import build_catalogue
 from app.measures.package import (
-    BUDGET_CHF, OUTPUT, TEMPLATE_COLUMNS, Co2Inputs, _targets, attribute, baseline_cost_chf, eligible,
-    evaluate, recommend, search, to_template,
+    BUDGET_CHF, CO2_TARGET, OUTPUT, TEMPLATE_COLUMNS, Co2Inputs, _targets, attribute, baseline_cost_chf,
+    co2_inputs, eligible, evaluate, recommend, search, sensitivity, to_template,
 )
 from app.pipeline.common import DATA_DIR
 
@@ -32,21 +32,54 @@ def test_same_resource_measures_are_combined_not_added(cat, baseline):
     assert attribute(both)["savings_chf"].sum() == pytest.approx(expected)
 
 
-def test_recommended_package_meets_cost_target_within_budget(baseline):
-    rows, best, ranked = recommend()
-    assert best["within_budget"] and best["meets_cost_target"]
+@pytest.fixture(scope="module")
+def recommended():
+    return recommend()
+
+
+def test_co2_inputs_come_from_the_baseline_calculation():
+    co2 = co2_inputs()
+    assert co2.total_kg == pytest.approx(4203.96, abs=0.01)  # = template_baseline_and_assumptions.csv
+    assert co2.resource_kg["dp-dev"] == pytest.approx(1303.65, abs=0.01)
+    assert co2.grid["DE"] == pytest.approx(0.339236)
+    assert pd.isna(co2.resource_kg["saas-other"])  # no energy factor: unknown, not 0
+    assert co2.resource_kg["support"] == 0  # only fees: a known 0
+    assert not co2.complete()  # partial coverage in #4
+    assert sum(v for v in co2.resource_kg.values() if not pd.isna(v)) == pytest.approx(co2.total_kg)
+
+
+def test_recommended_package_meets_both_targets_within_budget(recommended):
+    rows, best, ranked = recommended
+    assert best["within_budget"] and best["meets_cost_target"] and best["meets_co2_target"]
     assert best["effort_chf"] <= BUDGET_CHF
-    assert best["savings_chf"] == pytest.approx(132_850, abs=1)
-    assert best["cost_reduction"] == pytest.approx(0.282, abs=0.001)
-    assert best["effort_person_days"] == 13
-    assert best["needs_approval"] == []
-    assert best["targets"] == "pending" and best["meets_co2_target"] is None  # CO2 not known yet
+    assert best["savings_chf"] == pytest.approx(126_912, abs=1)
+    assert best["cost_reduction"] == pytest.approx(0.270, abs=0.001)
+    assert best["co2_reduction"] == pytest.approx(0.459, abs=0.001)
+    assert best["effort_person_days"] == 15
+    assert best["needs_approval"] == [] and best["co2_unknown"] == []
+    assert best["targets"] == "met_known_baseline"  # -40 % proven on the known part of the baseline only
+    assert "M-dp-dev-relocate" in best["measures"]  # only worth it because of CO2
     assert rows["savings_chf"].sum() == pytest.approx(best["savings_chf"])
+    assert rows["savings_co2_kg"].sum() == pytest.approx(best["savings_co2_kg"])
     assert len(ranked) > 1  # alternatives exist for the trade-off view
 
 
-def test_needs_human_only_in_the_variant_with_approvals():
-    _, safe, _ = recommend()
+def test_without_co2_the_package_would_be_chosen_on_chf_only(cat, baseline):
+    best = search(cat, baseline).iloc[0]
+    assert best["savings_chf"] == pytest.approx(132_850, abs=1) and best["effort_person_days"] == 13
+    assert "M-dp-dev-relocate" not in best["measures"] and best["targets"] == "pending"
+
+
+def test_co2_target_holds_in_all_scenarios(recommended):
+    _, best, _ = recommended
+    result = sensitivity(best["measures"])
+    assert list(result) == ["low", "mid", "high"]
+    assert all(r["co2_reduction"] >= CO2_TARGET for r in result.values())
+    assert result["high"]["co2_reduction"] == pytest.approx(0.406, abs=0.001)  # the tightest
+
+
+def test_needs_human_only_in_the_variant_with_approvals(recommended):
+    _, safe, _ = recommended
     _, with_human, _ = recommend(include_needs_human=True)
     assert "M-sub-chatgpt" not in safe["measures"]
     assert with_human["needs_approval"] == ["M-sub-chatgpt"]
@@ -162,20 +195,27 @@ def test_zero_co2_baseline_leaves_the_target_undecided(cat, baseline):
     assert result["co2_reduction"] is None and result["meets_co2_target"] is None
 
 
-def test_template_has_the_submission_columns():
+def test_template_has_the_submission_columns(recommended):
     template = pd.read_csv(DATA_DIR / "template_measures_package.csv", encoding="utf-8-sig", nrows=0)
     assert TEMPLATE_COLUMNS == list(template.columns)
-    rows, _, _ = recommend()
-    out = to_template(rows)
-    assert list(out.columns) == TEMPLATE_COLUMNS
-    assert out.loc[out["measure_id"] == "M-dp-prod-schedule", "risks_and_exceptions"].iat[0].count("R0") >= 1
+    rows, best, _ = recommended
+    out = to_template(rows).set_index("measure_id")
+    assert list(out.reset_index().columns) == TEMPLATE_COLUMNS
+    assert out.loc["M-dp-prod-schedule", "risks_and_exceptions"].count("R0") >= 1
+    # kWh and CO2 filled: usage measures save both, a relocation only CO2, seats nothing
+    assert out.loc["M-dp-dev-pause", ["savings_energy_kwh_per_year", "savings_co2_kg_location_based"]].gt(0).all()
+    assert out.loc["M-dp-dev-relocate", "savings_energy_kwh_per_year"] == 0
+    assert out.loc["M-dp-dev-relocate", "savings_co2_kg_location_based"] > 0
+    assert out.loc["M-saas-other", ["savings_energy_kwh_per_year", "savings_co2_kg_location_based"]].eq(0).all()
+    assert "no change in energy use" in out.loc["M-saas-other", "assumptions_and_sources"]
+    assert out["savings_co2_kg_location_based"].sum() == pytest.approx(best["savings_co2_kg"], abs=len(out))
 
 
-def test_committed_package_is_up_to_date():
+def test_committed_package_is_up_to_date(recommended):
     """Fix: cd backend && uv run python -m app.measures.package"""
-    rows, _, _ = recommend()
+    rows, _, _ = recommended
     committed = pd.read_csv(OUTPUT).set_index("measure_id").sort_index()
     expected = to_template(rows).set_index("measure_id").sort_index()
-    pd.testing.assert_series_equal(
-        committed["savings_cost_chf_per_year"], expected["savings_cost_chf_per_year"], check_dtype=False
-    )
+    columns = ["effort_person_days", "savings_cost_chf_per_year", "savings_energy_kwh_per_year",
+               "savings_co2_kg_location_based"]
+    pd.testing.assert_frame_equal(committed[columns], expected[columns], check_dtype=False)

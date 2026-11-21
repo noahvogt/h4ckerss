@@ -146,7 +146,7 @@ The allocation row describes the existing fact attribution, including subscripti
 
 Run `uv run pytest tests/test_submission_export.py tests/test_baseline_export.py` from `backend/` to check the official filename, schema, units, provenance, scenario order, blank fields, and reproducibility. The tests also parse strict JSON, check unique audit fact keys and cost-only rows, and reconcile the annual totals with monthly and dimension breakdowns.
 
-The baseline adapter runs independently of the measures package builder. That builder is absent from this checkout. The measures workstream supplies the completed measures table, savings comparisons, and target validation.
+The measures package builder (`uv run python -m app.measures.package`) uses the same calculated facts: it sums kWh and kg CO₂e per resource for each scenario, chooses the package against the −25 % cost and −40 % CO₂ targets, and writes `submission/measures_package.csv`. Its CO₂ reduction is measured against the known subtotal above, so it reports the target as met on the known baseline only while coverage is partial.
 
 Before submission, review the coverage caveats and the allocation rule, obtain the completed measures table, and upload both official tables with the prototype to the event platform. Compare any proposed savings against the same period, scenarios, and accounting boundary, and review coverage gaps before assessing the 40% reduction target. The baseline export establishes no reduction claim.
 

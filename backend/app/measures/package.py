@@ -11,10 +11,10 @@ alternatives show the trade-offs.
 - Measures on the same resource are combined, not added: cost after = baseline cost x
   product of the cost_factors; usage after = product of the usage_factors, at the last
   location. Per-measure savings are attributed in that order, so rows add up exactly.
-- CO2 is optional until the calculation (#4) is merged: pass Co2Inputs with the
-  baseline-year CO2 per resource and the grid intensity per location. Without it the
-  package is chosen on CHF and effort, and the CO2 target is reported as "pending",
-  never as met.
+- CO2 comes from the baseline calculation (#4, app.pipeline): co2_inputs() sums each
+  resource's kg CO2e and kWh for a scenario (mid by default; low/high for sensitivity).
+  search() and evaluate() also work without CO2 (co2=None): then the package is chosen on
+  CHF and effort, and the CO2 target is reported as "pending", never as met.
 - Unknown is not zero (as in #4): a resource missing from Co2Inputs (or NaN) has unknown
   CO2, so a measure that changes its energy has unknown CO2 savings (None), and the
   package total is a lower bound. Only measures that do not change energy use
@@ -26,13 +26,16 @@ alternatives show the trade-offs.
 """
 
 from dataclasses import dataclass
+from functools import cache
 from itertools import combinations
 
 import pandas as pd
 
 from app.measures.catalogue import PERSON_DAY_CHF, build_catalogue
+from app.pipeline.baseline_export import load_calculated_baseline
 from app.pipeline.build import BASELINE, read_facts
 from app.pipeline.common import DATA_DIR
+from app.pipeline.summary import summarize_baseline
 
 BUDGET_CHF = 16_500
 COST_TARGET = 0.25
@@ -74,6 +77,34 @@ _TARGET_RANK = {"met": 0, "met_known_baseline": 1, "pending": 2, "not_met": 3}
 def _known(value) -> float | None:
     """A number, or None if missing/NaN (unknown is not zero)."""
     return None if value is None or value != value else float(value)
+
+
+SCENARIOS = ("low", "mid", "high")
+
+
+@cache
+def co2_inputs(scenario: str = "mid") -> Co2Inputs:
+    """Baseline-year CO2 and kWh per resource from the calculation (#4).
+
+    Resources whose facts are all cost-only (fees, credits) have a known 0. Resources
+    without any calculated value (no energy factor, e.g. SaaS seats) stay NaN = unknown.
+    The baseline counts as complete only if #4 reports complete emissions coverage.
+    """
+    if scenario not in SCENARIOS:
+        raise ValueError(f"unknown scenario {scenario!r}, expected one of {SCENARIOS}")
+    facts, factors = load_calculated_baseline()
+    by_resource = summarize_baseline(facts, by="resource_id").set_index("resource_id")
+    annual = summarize_baseline(facts).iloc[0]
+    inapplicable = by_resource["emissions_coverage"].eq("inapplicable")
+    kg = by_resource[f"co2e_kg_{scenario}"].mask(inapplicable, 0.0)
+    kwh = by_resource[f"energy_kwh_{scenario}"].mask(by_resource["energy_coverage"].eq("inapplicable"), 0.0)
+    return Co2Inputs(
+        resource_kg=kg.astype(float).to_dict(),
+        total_kg=float(annual[f"co2e_kg_{scenario}"]),
+        grid=factors.grid[f"value_{scenario}"].astype(float).to_dict(),
+        resource_kwh=kwh.astype(float).to_dict(),
+        baseline_complete=annual["emissions_coverage"] == "complete",
+    )
 
 
 def baseline_cost_chf() -> float:
@@ -214,13 +245,24 @@ def search(cat: pd.DataFrame, baseline_chf: float, co2: Co2Inputs | None = None,
 
 
 def recommend(co2: Co2Inputs | None = None, include_needs_human: bool = False) -> tuple[pd.DataFrame, dict, pd.DataFrame]:
-    """(measure rows of the best package, its summary, ranked alternatives)."""
+    """(measure rows of the best package, its summary, ranked alternatives).
+
+    Uses the baseline CO2 (mid scenario) unless other Co2Inputs are given."""
+    co2 = co2 or co2_inputs()
     cat = build_catalogue()
     baseline = baseline_cost_chf()
     ranked = search(cat, baseline, co2, include_needs_human)
     best = ranked.iloc[0].to_dict()
     rows = attribute(cat[cat["measure_id"].isin(best["measures"])], co2)
     return rows, best, ranked
+
+
+def sensitivity(measures: list[str]) -> dict[str, dict]:
+    """The same package evaluated with the low, mid and high CO2 scenarios."""
+    cat = build_catalogue()
+    selected = cat[cat["measure_id"].isin(measures)]
+    baseline = baseline_cost_chf()
+    return {s: evaluate(selected, baseline, co2_inputs(s)) for s in SCENARIOS}
 
 
 def to_template(rows: pd.DataFrame) -> pd.DataFrame:
@@ -233,6 +275,16 @@ def to_template(rows: pd.DataFrame) -> pd.DataFrame:
             parts.append(f"Needs approval by {r['decided_by']}")
         return " ".join(p for p in parts if p)
 
+    def co2_note(r):
+        if r["energy_effect"] == "none":
+            return " kWh/CO2: no change in energy use, so 0 kWh and 0 kg CO2 saved."
+        if pd.isna(r["savings_co2_kg"]):
+            return " kWh/CO2: unknown, no energy factor for this resource yet."
+        return (" kWh/CO2: baseline-year energy and location-based CO2 of the resource (mid scenario, "
+                "submission/template_baseline_and_assumptions.csv) times the usage change"
+                + (f", relocated from the {r['location']} to the {r['location_after']} grid" if r["energy_effect"] == "location" else "")
+                + ".")
+
     return pd.DataFrame({
         "measure_id": rows["measure_id"],
         "description": rows["title"],
@@ -244,28 +296,38 @@ def to_template(rows: pd.DataFrame) -> pd.DataFrame:
         "savings_co2_kg_location_based": rows["savings_co2_kg"].round(0) if rows["savings_co2_kg"].notna().any() else None,
         "savings_co2_kg_market_based": None,
         "risks_and_exceptions": rows.apply(risks, axis=1),
-        "assumptions_and_sources": rows["assumptions"] + " Sources: " + rows["sources"] + ". Effort: " + rows["effort_why"] + ".",
+        "assumptions_and_sources": rows["assumptions"] + " Sources: " + rows["sources"] + ". Effort: "
+        + rows["effort_why"] + "." + rows.apply(co2_note, axis=1),
     })[TEMPLATE_COLUMNS]
 
 
+def _summary(name: str, r: dict) -> str:
+    return (f"{name}: CHF {r['savings_chf']:,.0f}/year ({r['cost_reduction']:.1%}), "
+            f"CO2 {r['savings_co2_kg']:,.0f} kg ({r['co2_reduction']:.1%}), "
+            f"{r['effort_person_days']:g} PD = CHF {r['effort_chf']:,.0f}; targets: {r['targets']}"
+            + (f"; CO2 unknown for {r['co2_unknown']}" if r["co2_unknown"] else "")
+            + (f"; needs approval: {r['needs_approval']}" if r["needs_approval"] else ""))
+
+
 def main() -> None:
-    rows, best, ranked = recommend()
+    co2 = co2_inputs()
+    rows, best, ranked = recommend(co2)
     baseline = baseline_cost_chf()
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     to_template(rows).to_csv(OUTPUT, index=False)
-    print(f"Baseline year cost: CHF {baseline:,.0f}; target -25 % = CHF {baseline * COST_TARGET:,.0f}; budget CHF {BUDGET_CHF:,}")
+    print(f"Baseline year: CHF {baseline:,.0f}, CO2 {co2.total_kg:,.0f} kg (mid, "
+          f"{'complete' if co2.complete() else 'known part only'}); targets -25 % cost, -40 % CO2; "
+          f"budget CHF {BUDGET_CHF:,}")
     counts = ranked["targets"].value_counts()
     print(f"{len(ranked)} combinations within budget, by target status: "
           + ", ".join(f"{s} {counts.get(s, 0)}" for s in _TARGET_RANK) + "\n")
-    print(rows[["measure_id", "status", "effort_person_days", "savings_chf"]].round(0).to_string(index=False))
-    print(f"\nRecommended: CHF {best['savings_chf']:,.0f}/year ({best['cost_reduction']:.1%}), "
-          f"{best['effort_person_days']:g} PD = CHF {best['effort_chf']:,.0f}; CO2: "
-          + ("pending (#4)" if best["co2_reduction"] is None else
-             f"{best['co2_reduction']:.1%}" + (f" + unknown for {best['co2_unknown']}" if best["co2_unknown"] else ""))
-          + f"; targets: {best['targets']}")
-    with_human = recommend(include_needs_human=True)[1]
-    print(f"With approvals: CHF {with_human['savings_chf']:,.0f}/year ({with_human['cost_reduction']:.1%}), "
-          f"{with_human['effort_person_days']:g} PD, needs approval: {with_human['needs_approval']}")
+    print(rows[["measure_id", "status", "effort_person_days", "savings_chf", "savings_kwh", "savings_co2_kg"]]
+          .round({"savings_chf": 0, "savings_kwh": 0, "savings_co2_kg": 0}).to_string(index=False))
+    print("\n" + _summary("Recommended", best))
+    for scenario, r in sensitivity(best["measures"]).items():
+        print(f"  CO2 {scenario:>4}: {r['savings_co2_kg']:,.0f} of {co2_inputs(scenario).total_kg:,.0f} kg "
+              f"({r['co2_reduction']:.1%}), {r['targets']}")
+    print(_summary("With approvals", recommend(co2, include_needs_human=True)[1]))
     print(f"written: {OUTPUT}")
 
 

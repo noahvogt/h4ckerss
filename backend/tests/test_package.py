@@ -111,12 +111,55 @@ def test_known_shortfall_does_not_meet_the_co2_target(cat, baseline):
     assert result["meets_co2_target"] is False
 
 
-@pytest.mark.parametrize("cost, co2, expected", [
-    (True, True, "met"), (True, None, "pending"), (True, False, "not_met"),
-    (False, True, "not_met"), (False, None, "not_met"),
+@pytest.mark.parametrize("cost, co2, complete, expected", [
+    (True, True, True, "met"), (True, True, False, "met_known_baseline"), (True, None, True, "pending"),
+    (True, False, True, "not_met"), (False, True, True, "not_met"), (False, None, False, "not_met"),
 ])
-def test_package_meets_targets_only_when_both_are_known_to_be_met(cost, co2, expected):
-    assert _targets(cost, co2) == expected
+def test_package_meets_targets_only_when_both_are_known_to_be_met(cost, co2, complete, expected):
+    assert _targets(cost, co2, complete) == expected
+
+
+DP_DEV = {"dp-dev": 10_000}
+GRID = {"CH": 0.09, "DE": 0.34}
+
+
+@pytest.mark.parametrize("complete, kg, expected", [
+    (False, DP_DEV, "met_known_baseline"),  # default: a partial baseline proves nothing for the company
+    (True, DP_DEV, "met"),
+    (True, DP_DEV | {"saas-other": float("nan")}, "met_known_baseline"),  # unknown part: not complete
+])
+def test_co2_target_is_proven_only_on_a_complete_baseline(cat, baseline, complete, kg, expected):
+    co2 = Co2Inputs(resource_kg=kg, total_kg=10_000, grid=GRID, baseline_complete=complete)
+    # every allowed measure: enough CHF; dp-dev pause + relocate save far more than 40 % of 10 t
+    result = evaluate(eligible(cat), baseline, co2)
+    assert result["meets_co2_target"] is True and result["targets"] == expected
+
+
+def test_zero_start_grid_does_not_divide_by_zero(cat, baseline):
+    both = pick(cat, "M-dp-dev-pause", "M-dp-dev-relocate")
+    zero = {"CH": 0.09, "DE": 0.0}
+    rows = attribute(both, Co2Inputs(resource_kg={"dp-dev": 0.0}, total_kg=1_000, grid=zero)).set_index("measure_id")
+    assert rows.loc["M-dp-dev-pause", "savings_co2_kg"] == 0  # same grid: share of the baseline kg
+    assert pd.isna(rows.loc["M-dp-dev-relocate", "savings_co2_kg"])  # kWh not derivable from 0 kg / 0
+    # with kWh known the relocation can be computed: moving to a dirtier grid costs CO2
+    with_kwh = Co2Inputs(resource_kg={"dp-dev": 0.0}, total_kg=1_000, grid=zero, resource_kwh={"dp-dev": 1_000})
+    pause = cat.set_index("measure_id").loc["M-dp-dev-pause", "usage_factor"]
+    moved = attribute(both, with_kwh).set_index("measure_id").loc["M-dp-dev-relocate", "savings_co2_kg"]
+    assert moved == pytest.approx(-1_000 * pause * 0.09)
+
+
+def test_relocation_uses_kwh_when_known_and_agrees_with_kg(cat, baseline):
+    both = pick(cat, "M-dp-dev-pause", "M-dp-dev-relocate")
+    from_kg = evaluate(both, baseline, Co2Inputs(resource_kg=DP_DEV, total_kg=20_000, grid=GRID))
+    from_kwh = evaluate(both, baseline, Co2Inputs(resource_kg=DP_DEV, total_kg=20_000, grid=GRID,
+                                                  resource_kwh={"dp-dev": 10_000 / 0.34}))
+    assert from_kwh["savings_co2_kg"] == pytest.approx(from_kg["savings_co2_kg"])
+
+
+def test_zero_co2_baseline_leaves_the_target_undecided(cat, baseline):
+    co2 = Co2Inputs(resource_kg={"vm-test": 0.0}, total_kg=0.0, grid={"IE": 0.26})
+    result = evaluate(pick(cat, "M-vm-test-downsize"), baseline, co2)
+    assert result["co2_reduction"] is None and result["meets_co2_target"] is None
 
 
 def test_template_has_the_submission_columns():

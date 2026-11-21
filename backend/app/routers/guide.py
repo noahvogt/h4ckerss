@@ -13,7 +13,7 @@ from app.guide_usage import MISSING_KEY_NOTICE, Usage, provider_enabled, route_q
 from app.limits import evidence
 from app.limits.explain import explain
 from app.measures import gpu
-from app.pipeline.ai_saas import calculate_unused_ai_seats
+from app.pipeline.ai_saas import AI_SUBSCRIPTION_RESOURCES, calculate_unused_ai_seats
 from app.pipeline.common import DATA_DIR
 from app.routers import baseline, measures
 
@@ -88,16 +88,22 @@ PACKAGE = Source(reference="submission/measures_package.csv", api_url="/api/pack
 
 
 def _seats() -> tuple[str, list[Source]]:
-    rows = calculate_unused_ai_seats()
+    rows = calculate_unused_ai_seats().sort_values(
+        ["unused_cost_chf", "product", "provider"], ascending=[False, True, True], na_position="last"
+    )
     totals = rows[["licences_purchased", "licences_active_30d", "licences_unused", "unused_cost_chf"]].sum(
         skipna=False, min_count=1
     )
+    # Annualize the displayed CHF subtotal rather than the unrounded cost allocation.
+    monthly_cost = totals["unused_cost_chf"]
+    annual_estimate = round(monthly_cost, 2) * 12 if pd.notna(monthly_cost) else None
     answer = [
         f"In August 2026, Final AI subscription contracts had "
         f"{_number(totals['licences_purchased'], 0)} purchased seats, "
         f"{_number(totals['licences_active_30d'], 0)} active in 30 days, and "
         f"{_number(totals['licences_unused'], 0)} unused. "
-        f"The unused share cost CHF {_number(totals['unused_cost_chf'])} for the month.",
+        f"The unused share cost CHF {_number(monthly_cost)} for the month.",
+        "Review subscriptions in the order below, starting with the highest monthly unused-seat cost.",
     ]
     answer.extend(
         f"• {r.product} ({r.provider}): {_number(r.licences_purchased, 0)} purchased, "
@@ -105,11 +111,14 @@ def _seats() -> tuple[str, list[Source]]:
         f"CHF {_number(r.unused_cost_chf)} per month for unused seats."
         for r in rows.itertuples(index=False)
     )
-    answer.append(
+    answer.extend([
+        f"Annualized savings are estimated at CHF {_number(annual_estimate)} per year, assuming 12 months "
+        "at the displayed August amount and that all unused seats can be cancelled. "
+        "Actual savings depend on contract terms, notice periods, and renewal dates.",
         "For each contract row, unused seats = purchased − active. Apply the August exchange rate "
         "to the billed amount, then allocate that CHF cost by unused ÷ purchased seats. "
         "Drafts are excluded. The seat counts support a cost allocation only."
-    )
+    ])
     return "\n\n".join(answer), _files("ai_subscriptions.csv", "exchange_rates.csv")
 
 
@@ -240,15 +249,36 @@ def _measure(measure_id: str) -> tuple[str, list[Source]] | None:
     return None
 
 
-_TOPICS: dict[str, tuple[str, str, Callable[[], tuple[str, list[Source]]]]] = {
-    "seats": ("unused AI subscription seats and cost for August 2026", r"\bseats?\b|licen[cs]es?|subscription", _seats),
+_TOPICS: dict[str, tuple[str, str | None, Callable[[], tuple[str, list[Source]]]]] = {
+    "seats": ("unused AI subscription seats, priorities and annualized savings from August 2026", None, _seats),
     "gpu": ("on-demand GPU server schedule, utilization, annual savings, effort", r"\bgpu\b", _gpu),
     "production": ("dp-prod production platform nights, weekends, and approval", r"\bproduction\b|dp-prod", _production),
     "drivers": ("largest baseline cost, energy, and emissions drivers", r"\b(drivers?|largest|biggest)\b", _drivers),
-    "package": ("recommended measures package and estimated savings", r"\b(package|recommend\w*|measures?)\b", _package),
+    "package": ("the overall recommended optimization package and its combined savings", None, _package),
     "baseline": ("annual baseline totals and energy and location-based emissions methods",
                  r"\b(baseline|annual totals?|energy|carbon|emissions|grid|pue|co2e?)\b|co₂", _baseline),
 }
+
+_SEAT_TERMS = r"(?:subscriptions?|seats?|licen[cs]es?)"
+_AI_SEAT_SCOPE = rf"\b(?:ai|llms?|artificial intelligence)\s+(?:(?:tools?|assistants?)\s+)?{_SEAT_TERMS}\b"
+_AI_PRODUCT_NAMES = "|".join(re.escape(product.lower()) for product in AI_SUBSCRIPTION_RESOURCES)
+_PACKAGE_SCOPE = (
+    r"\b(?:recommended|optimi[sz]ation|savings|overall)\s+package\b"
+    r"|\bpackage\b[^.!?]*\b(?:sav\w*|measures?|targets?|budget)\b"
+    r"|\b(?:savings|measures?|targets?)\b[^.!?]*\bpackage\b"
+)
+
+
+def _question_scope(question: str) -> str | None:
+    """Select the evidence scope when the request names it explicitly."""
+    if re.search(rf"\b{_SEAT_TERMS}\b", question):
+        if re.search(r"\b(?:saas|microsoft 365|m365|crm)\b", question):
+            return "unsupported"
+        if re.search(_AI_SEAT_SCOPE, question) or re.search(rf"\b(?:{_AI_PRODUCT_NAMES})\b", question):
+            return "seats"
+    if re.search(_PACKAGE_SCOPE, question):
+        return "package"
+    return None
 
 
 @cache
@@ -265,9 +295,13 @@ def ask(body: Question) -> Answer:
     exact_topic = example_topics.get(question)
     measure_id = re.search(r"\bm-[a-z0-9]+(?:-[a-z0-9]+)+\b", question)
     measure = _measure(measure_id[0]) if measure_id else None
-    packets = _evidence_packets().copy() if provider_enabled() else {}
+    scope = "measure" if measure else exact_topic or _question_scope(question)
     if measure:
-        packets["measure"] = measure
+        packets = {"measure": measure}
+    elif scope in _TOPICS:
+        packets = {scope: _TOPICS[scope][2]()}
+    else:
+        packets = _evidence_packets() if scope is None and provider_enabled() else {}
     context = {
         key: {
             "topic": _TOPICS[key][0] if key in _TOPICS else "the requested individual measure",
@@ -277,8 +311,10 @@ def ask(body: Question) -> Answer:
         for key, (answer, sources) in packets.items() if sources
     }
     routed = route_question(body.question, context)
-    local_topic = next((key for key, (_, pattern, _) in _TOPICS.items() if re.search(pattern, question)), None)
-    topic = "measure" if measure else exact_topic or routed.topic or local_topic or "unsupported"
+    local_topic = next(
+        (key for key, (_, pattern, _) in _TOPICS.items() if pattern and re.search(pattern, question)), None
+    )
+    topic = scope or routed.topic or local_topic or "unsupported"
     packet = packets.get(topic)
     if packet is None and topic in _TOPICS:
         packet = _TOPICS[topic][2]()

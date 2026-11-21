@@ -1,0 +1,42 @@
+.guide-mode {
+  flex: none;
+  padding: 8px 16px;
+  background: #f3fce1;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink2);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.guide-answer {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.guide-sources,
+.guide-usage {
+  display: block;
+  margin-top: 10px;
+  color: var(--mute);
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
+.guide-sources summary {
+  color: var(--ink2);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.guide-sources ul {
+  padding-inline-start: 16px;
+}
+
+.guide-sources a {
+  color: var(--elec);
+}
+
+.chat button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}

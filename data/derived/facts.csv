@@ -1,0 +1,1262 @@
+month,category,source,resource_id,tool,department,cost_center,location,usage_kind,usage_qty,cost_chf,note
+2024-11-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),HR,4400,EU,messages,137.0,88.01,
+2024-11-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Marketing,4300,EU,messages,203.0,154.0175,
+2024-11-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Sales,4100,EU,messages,393.0,264.03,
+2024-11-01,ai,ai_usage.csv,ai-agent,Support-Agent,Consulting,,EU,tokens,19208780.0,52.3476,
+2024-11-01,ai,ai_usage.csv,ai-agent2,Other agents,Sales,,EU,tokens,25008403.0,66.8083,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2024-11-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Consulting,,EU,tokens,57476367.0,287.3616,"incomplete token usage: 0 missing input values, 7 missing output values; known tokens only"
+2024-11-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Finance,,EU,tokens,18952760.0,92.9825,"incomplete token usage: 0 missing input values, 10 missing output values; known tokens only"
+2024-11-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,HR,,EU,tokens,10649804.0,52.7057,"incomplete token usage: 0 missing input values, 8 missing output values; known tokens only"
+2024-11-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,IT,,EU,tokens,15883185.0,77.5979,"incomplete token usage: 0 missing input values, 4 missing output values; known tokens only"
+2024-11-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Management,,EU,tokens,8010099.0,38.9858,"incomplete token usage: 0 missing input values, 7 missing output values; known tokens only"
+2024-11-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Marketing,,EU,tokens,24272284.0,119.1172,"incomplete token usage: 0 missing input values, 11 missing output values; known tokens only"
+2024-11-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Sales,,EU,tokens,37741902.0,186.7512,"incomplete token usage: 0 missing input values, 12 missing output values; known tokens only"
+2024-11-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,Consulting,,EU,tokens,1338758.0,5.6285,
+2024-11-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,HR,,EU,tokens,924996.0,3.7429,"incomplete token usage: 0 missing input values, 4 missing output values; known tokens only"
+2024-11-01,ai,ai_usage.csv,ai-marketing,Marketing text analysis,Marketing,,EU,tokens,128271848.0,434.7803,"incomplete token usage: 0 missing input values, 3 missing output values; known tokens only"
+2024-11-01,ai,ai_usage.csv,ai-quote,Quote generator,Sales,,EU,tokens,2618829.0,26.6774,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2024-11-01,ai,ai_usage.csv,ai-report,Report-Agent,Finance,,EU,tokens,2452788.0,7.6051,"incomplete token usage: 0 missing input values, 2 missing output values; known tokens only"
+2024-11-01,cloud,aws_costs.csv,cicd,CI/CD pipelines,IT,4500,IE,runner_min,59852.22,478.03,
+2024-11-01,cloud,aws_costs.csv,net-egress,Data egress,IT,4500,CH,gb_transfer,1610.82,120.82,
+2024-11-01,server,aws_costs.csv,sandbox,Test account,Test account,9100,IE,vcpu_h,126.0,5.06,cost estimated for 1 day; data for 21 of 30 days; source marks rows for exclusion (kept)
+2024-11-01,cloud,aws_costs.csv,st-archive,Legacy project archive,Sales,4100,CH,gb_day,813155.75,567.3,data for 29 of 30 days
+2024-11-01,cloud,aws_costs.csv,st-backup,Backup archive,IT,4500,IE,gb_day,1136040.0,455.41,data for 28 of 30 days
+2024-11-01,cloud,aws_costs.csv,support,Cloud support,IT,4500,CH,none,0.0,900.0,
+2024-11-01,server,aws_costs.csv,vm-test,Test environments,IT,4500,IE,vcpu_h,11520.0,501.52,cost estimated for 1 day
+2024-11-01,cloud,azure_costs.csv,db-fin,Finance database,Finance,4200,CH,vcpu_h,11520.0,1038.31,
+2024-11-01,cloud,azure_costs.csv,dp-dev,Data platform development,IT,4500,DE,node_h,5760.0,3151.5124,
+2024-11-01,cloud,azure_costs.csv,dp-prod,Data platform production,Consulting,4000,CH,node_h,11520.0,6352.46,cost estimated for 1 day
+2024-11-01,cloud,azure_costs.csv,dp-storage,Data platform storage,Consulting,4000,CH,gb_day,525813.84,368.92,data for 29 of 30 days
+2024-11-01,server,azure_costs.csv,gpu-ml,AI compute server (GPU),Consulting,4000,DE,gpu_h,0.0,0.0,
+2024-11-01,cloud,azure_costs.csv,pbi-kap,Power BI capacity,IT,4500,CH,capacity_day,30.0,1979.33,
+2024-11-01,server,azure_costs.csv,vm-app,App server,IT,4500,CH,vcpu_h,34615.85,1801.0933,cost estimated for 1 day
+2024-11-01,cloud,hoster_invoice.csv,logs,Logging and monitoring,IT,4500,CH,gb_day,676311.77,471.98,
+2024-11-01,cloud,hoster_invoice.csv,st-proj,Project file storage,Consulting,4000,CH,gb_day,350952.25,244.5774,cost estimated for 4 days; data for 29 of 30 days
+2024-11-01,cloud,hoster_invoice.csv,web-cdn,Web hosting and CDN,Marketing,4300,CH,gb_transfer,889.26,67.1049,cost estimated for 3 days
+2024-11-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Consulting,4000,EU,seat_month,40.0,440.05,
+2024-11-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Finance,4200,EU,seat_month,12.0,132.015,
+2024-11-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),HR,4400,EU,seat_month,6.0,66.0075,
+2024-11-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),IT,4500,EU,seat_month,16.0,176.02,
+2024-11-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Management,4900,EU,seat_month,6.0,66.0075,
+2024-11-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Marketing,4300,EU,seat_month,12.0,132.015,
+2024-11-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Sales,4100,EU,seat_month,20.0,220.025,
+2024-11-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Consulting,4000,EU,seat_month,288.0,2859.536,
+2024-11-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Finance,4200,EU,seat_month,70.0,1007.872,
+2024-11-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,HR,4400,EU,seat_month,30.0,232.941,
+2024-11-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,IT,4500,EU,seat_month,104.0,1070.1561,
+2024-11-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Management,4900,EU,seat_month,25.0,188.936,
+2024-11-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Marketing,4300,EU,seat_month,68.0,1259.338,
+2024-11-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Sales,4100,EU,seat_month,96.0,1740.5952,
+2024-12-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),HR,4400,EU,messages,111.0,89.12,
+2024-12-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Marketing,4300,EU,messages,269.0,155.96,
+2024-12-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Sales,4100,EU,messages,361.0,267.36,
+2024-12-01,ai,ai_usage.csv,ai-agent,Support-Agent,Consulting,,EU,tokens,18513029.0,50.9758,
+2024-12-01,ai,ai_usage.csv,ai-agent2,Other agents,Sales,,EU,tokens,24214073.0,65.0155,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2024-12-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Consulting,,EU,tokens,54355807.0,272.4162,"incomplete token usage: 0 missing input values, 11 missing output values; known tokens only"
+2024-12-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Finance,,EU,tokens,17193141.0,84.1842,"incomplete token usage: 0 missing input values, 14 missing output values; known tokens only"
+2024-12-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,HR,,EU,tokens,9888172.0,49.3637,"incomplete token usage: 0 missing input values, 6 missing output values; known tokens only"
+2024-12-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,IT,,EU,tokens,14634913.0,71.5524,"incomplete token usage: 0 missing input values, 8 missing output values; known tokens only"
+2024-12-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Management,,EU,tokens,7139919.0,36.2625,"incomplete token usage: 0 missing input values, 11 missing output values; known tokens only"
+2024-12-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Marketing,,EU,tokens,22123417.0,111.1856,"incomplete token usage: 0 missing input values, 8 missing output values; known tokens only"
+2024-12-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Sales,,EU,tokens,34115490.0,172.8242,"incomplete token usage: 0 missing input values, 9 missing output values; known tokens only"
+2024-12-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,Consulting,,EU,tokens,1260932.0,5.4096,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2024-12-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,HR,,EU,tokens,895002.0,3.6841,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2024-12-01,ai,ai_usage.csv,ai-marketing,Marketing text analysis,Marketing,,EU,tokens,137242605.0,471.1328,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2024-12-01,ai,ai_usage.csv,ai-quote,Quote generator,Sales,,EU,tokens,2527002.0,25.3463,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2024-12-01,ai,ai_usage.csv,ai-report,Report-Agent,Finance,,EU,tokens,2409035.0,7.527,
+2024-12-01,cloud,aws_costs.csv,cicd,CI/CD pipelines,IT,4500,IE,runner_min,51052.68,407.05,data for 30 of 31 days
+2024-12-01,cloud,aws_costs.csv,net-egress,Data egress,IT,4500,CH,gb_transfer,1663.18,124.6482,cost estimated for 3 days; data for 30 of 31 days
+2024-12-01,server,aws_costs.csv,sandbox,Test account,Test account,9100,IE,vcpu_h,108.0,4.34,data for 18 of 31 days; source marks rows for exclusion (kept)
+2024-12-01,cloud,aws_costs.csv,st-archive,Legacy project archive,Sales,4100,CH,gb_day,871852.94,608.829,cost estimated for 2 days
+2024-12-01,cloud,aws_costs.csv,st-backup,Backup archive,IT,4500,IE,gb_day,1295439.44,518.52,
+2024-12-01,cloud,aws_costs.csv,support,Cloud support,IT,4500,CH,none,0.0,900.0,
+2024-12-01,server,aws_costs.csv,vm-test,Test environments,IT,4500,IE,vcpu_h,11904.0,525.175,cost estimated for 3 days
+2024-12-01,cloud,azure_costs.csv,db-fin,Finance database,Finance,4200,CH,vcpu_h,11904.0,1073.78,
+2024-12-01,cloud,azure_costs.csv,dp-dev,Data platform development,IT,4500,DE,node_h,5952.0,3273.4876,
+2024-12-01,cloud,azure_costs.csv,dp-prod,Data platform production,Consulting,4000,CH,node_h,11904.0,6553.05,
+2024-12-01,cloud,azure_costs.csv,dp-storage,Data platform storage,Consulting,4000,CH,gb_day,575437.54,401.63,
+2024-12-01,server,azure_costs.csv,gpu-ml,AI compute server (GPU),Consulting,4000,DE,gpu_h,0.0,0.0,data for 30 of 31 days
+2024-12-01,cloud,azure_costs.csv,pbi-kap,Power BI capacity,IT,4500,CH,capacity_day,31.0,2048.035,cost estimated for 1 day
+2024-12-01,server,azure_costs.csv,vm-app,App server,IT,4500,CH,vcpu_h,35840.77,1873.37,
+2024-12-01,cloud,hoster_invoice.csv,logs,Logging and monitoring,IT,4500,CH,gb_day,690090.74,484.12,data for 30 of 31 days
+2024-12-01,cloud,hoster_invoice.csv,st-proj,Project file storage,Consulting,4000,CH,gb_day,383706.46,268.07,
+2024-12-01,cloud,hoster_invoice.csv,web-cdn,Web hosting and CDN,Marketing,4300,CH,gb_transfer,961.11,72.08,
+2024-12-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Consulting,4000,EU,seat_month,40.0,445.6,
+2024-12-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Finance,4200,EU,seat_month,12.0,133.68,
+2024-12-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),HR,4400,EU,seat_month,6.0,66.84,
+2024-12-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),IT,4500,EU,seat_month,16.0,178.24,
+2024-12-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Management,4900,EU,seat_month,6.0,66.84,
+2024-12-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Marketing,4300,EU,seat_month,12.0,133.68,
+2024-12-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Sales,4100,EU,seat_month,20.0,222.8,
+2024-12-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Consulting,4000,EU,seat_month,288.0,2875.1968,
+2024-12-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Finance,4200,EU,seat_month,70.0,1009.012,
+2024-12-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,HR,4400,EU,seat_month,30.0,234.066,
+2024-12-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,IT,4500,EU,seat_month,104.0,1075.3639,
+2024-12-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Management,4900,EU,seat_month,25.0,189.506,
+2024-12-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Marketing,4300,EU,seat_month,68.0,1261.774,
+2024-12-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Sales,4100,EU,seat_month,96.0,1742.4192,
+2025-01-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),HR,4400,EU,messages,128.0,90.92,
+2025-01-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Marketing,4300,EU,messages,233.0,159.11,
+2025-01-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Sales,4100,EU,messages,420.0,272.76,
+2025-01-01,ai,ai_usage.csv,ai-agent,Support-Agent,Consulting,,EU,tokens,20068695.0,56.4948,
+2025-01-01,ai,ai_usage.csv,ai-agent2,Other agents,Sales,,EU,tokens,33299676.0,91.4324,
+2025-01-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Consulting,,EU,tokens,67921389.0,342.6619,"incomplete token usage: 0 missing input values, 6 missing output values; known tokens only"
+2025-01-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Finance,,EU,tokens,21740360.0,111.1905,"incomplete token usage: 0 missing input values, 9 missing output values; known tokens only"
+2025-01-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,HR,,EU,tokens,12888691.0,64.676,"incomplete token usage: 0 missing input values, 3 missing output values; known tokens only"
+2025-01-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,IT,,EU,tokens,18814843.0,93.9085,"incomplete token usage: 0 missing input values, 10 missing output values; known tokens only"
+2025-01-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Management,,EU,tokens,9561682.0,49.2593,"incomplete token usage: 0 missing input values, 5 missing output values; known tokens only"
+2025-01-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Marketing,,EU,tokens,27699830.0,143.597,"incomplete token usage: 0 missing input values, 13 missing output values; known tokens only"
+2025-01-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Sales,,EU,tokens,43611340.0,222.6775,"incomplete token usage: 0 missing input values, 10 missing output values; known tokens only"
+2025-01-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,Consulting,,EU,tokens,1683560.0,7.2628,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2025-01-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,HR,,EU,tokens,1099376.0,4.8577,"incomplete token usage: 0 missing input values, 3 missing output values; known tokens only"
+2025-01-01,ai,ai_usage.csv,ai-marketing,Marketing text analysis,Marketing,,EU,tokens,147454909.0,514.261,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2025-01-01,ai,ai_usage.csv,ai-quote,Quote generator,Sales,,EU,tokens,2999740.0,32.0456,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2025-01-01,ai,ai_usage.csv,ai-report,Report-Agent,Finance,,EU,tokens,2586359.0,8.2473,"incomplete token usage: 0 missing input values, 3 missing output values; known tokens only"
+2025-01-01,cloud,aws_costs.csv,cicd,CI/CD pipelines,IT,4500,IE,runner_min,59810.75,479.26,
+2025-01-01,cloud,aws_costs.csv,net-egress,Data egress,IT,4500,CH,gb_transfer,1698.49,127.8495,cost estimated for 1 day
+2025-01-01,server,aws_costs.csv,sandbox,Test account,Test account,9100,IE,vcpu_h,132.0,5.28,cost estimated for 1 day; data for 22 of 31 days
+2025-01-01,cloud,aws_costs.csv,st-archive,Legacy project archive,Sales,4100,CH,gb_day,874516.93,610.6692,cost estimated for 2 days
+2025-01-01,cloud,aws_costs.csv,st-backup,Backup archive,IT,4500,IE,gb_day,1291378.35,514.2312,cost estimated for 2 days; data for 30 of 31 days
+2025-01-01,cloud,aws_costs.csv,support,Cloud support,IT,4500,CH,none,0.0,900.0,
+2025-01-01,server,aws_costs.csv,vm-test,Test environments,IT,4500,IE,vcpu_h,11904.0,523.36,
+2025-01-01,cloud,azure_costs.csv,db-fin,Finance database,Finance,4200,CH,vcpu_h,11904.0,1072.14,
+2025-01-01,cloud,azure_costs.csv,dp-dev,Data platform development,IT,4500,DE,node_h,5952.0,3269.5952,
+2025-01-01,cloud,azure_costs.csv,dp-prod,Data platform production,Consulting,4000,CH,node_h,11904.0,6556.0,
+2025-01-01,cloud,azure_costs.csv,dp-storage,Data platform storage,Consulting,4000,CH,gb_day,586729.63,409.5,
+2025-01-01,server,azure_costs.csv,gpu-ml,AI compute server (GPU),Consulting,4000,DE,gpu_h,0.0,0.0,cost estimated for 3 days; data for 29 of 31 days
+2025-01-01,cloud,azure_costs.csv,pbi-kap,Power BI capacity,IT,4500,CH,capacity_day,30.0,1980.97,data for 30 of 31 days
+2025-01-01,server,azure_costs.csv,vm-app,App server,IT,4500,CH,vcpu_h,36026.95,1875.64,
+2025-01-01,cloud,hoster_invoice.csv,logs,Logging and monitoring,IT,4500,CH,gb_day,683106.38,477.2578,cost estimated for 2 days; data for 30 of 31 days
+2025-01-01,cloud,hoster_invoice.csv,st-proj,Project file storage,Consulting,4000,CH,gb_day,391114.43,273.4108,cost estimated for 1 day
+2025-01-01,cloud,hoster_invoice.csv,web-cdn,Web hosting and CDN,Marketing,4300,CH,gb_transfer,972.24,73.2193,cost estimated for 1 day
+2025-01-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Consulting,4000,EU,seat_month,40.0,454.6,
+2025-01-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Finance,4200,EU,seat_month,12.0,136.38,
+2025-01-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),HR,4400,EU,seat_month,6.0,68.19,
+2025-01-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),IT,4500,EU,seat_month,16.0,181.84,
+2025-01-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Management,4900,EU,seat_month,6.0,68.19,
+2025-01-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Marketing,4300,EU,seat_month,12.0,136.38,
+2025-01-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Sales,4100,EU,seat_month,20.0,227.3,
+2025-01-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Consulting,4000,EU,seat_month,288.0,2913.8368,
+2025-01-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Finance,4200,EU,seat_month,70.0,1012.072,
+2025-01-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,HR,4400,EU,seat_month,30.0,236.496,
+2025-01-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,IT,4500,EU,seat_month,104.0,1089.1894,
+2025-01-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Management,4900,EU,seat_month,25.0,191.036,
+2025-01-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Marketing,4300,EU,seat_month,68.0,1269.964,
+2025-01-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Sales,4100,EU,seat_month,96.0,1747.3152,
+2025-02-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),HR,4400,EU,messages,109.0,90.4,
+2025-02-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Marketing,4300,EU,messages,272.0,158.2,
+2025-02-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Sales,4100,EU,messages,430.0,271.2,
+2025-02-01,ai,ai_usage.csv,ai-agent,Support-Agent,Consulting,,EU,tokens,20525371.0,57.5938,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2025-02-01,ai,ai_usage.csv,ai-agent2,Other agents,Sales,,EU,tokens,38624175.0,104.503,
+2025-02-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Consulting,,EU,tokens,67204505.0,338.6928,"incomplete token usage: 0 missing input values, 9 missing output values; known tokens only"
+2025-02-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Finance,,EU,tokens,21483376.0,106.8984,"incomplete token usage: 0 missing input values, 9 missing output values; known tokens only"
+2025-02-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,HR,,EU,tokens,12430061.0,62.8382,"incomplete token usage: 0 missing input values, 3 missing output values; known tokens only"
+2025-02-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,IT,,EU,tokens,17997766.0,91.2729,"incomplete token usage: 0 missing input values, 6 missing output values; known tokens only"
+2025-02-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Management,,EU,tokens,8784412.0,44.5343,"incomplete token usage: 0 missing input values, 8 missing output values; known tokens only"
+2025-02-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Marketing,,EU,tokens,26878889.0,137.1409,"incomplete token usage: 0 missing input values, 13 missing output values; known tokens only"
+2025-02-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Sales,,EU,tokens,42143446.0,215.498,"incomplete token usage: 0 missing input values, 10 missing output values; known tokens only"
+2025-02-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,Consulting,,EU,tokens,1529833.0,6.4531,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2025-02-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,HR,,EU,tokens,1083524.0,4.5656,"incomplete token usage: 0 missing input values, 2 missing output values; known tokens only"
+2025-02-01,ai,ai_usage.csv,ai-marketing,Marketing text analysis,Marketing,,EU,tokens,135722964.0,473.6902,
+2025-02-01,ai,ai_usage.csv,ai-quote,Quote generator,Sales,,EU,tokens,2935623.0,29.9212,
+2025-02-01,ai,ai_usage.csv,ai-report,Report-Agent,Finance,,EU,tokens,2420125.0,7.6181,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2025-02-01,cloud,aws_costs.csv,cicd,CI/CD pipelines,IT,4500,IE,runner_min,54123.57,432.32,
+2025-02-01,cloud,aws_costs.csv,net-egress,Data egress,IT,4500,CH,gb_transfer,1619.43,121.9235,cost estimated for 1 day
+2025-02-01,server,aws_costs.csv,sandbox,Test account,Test account,9100,IE,vcpu_h,120.0,4.79,data for 20 of 28 days; source marks rows for exclusion (kept)
+2025-02-01,cloud,aws_costs.csv,st-archive,Legacy project archive,Sales,4100,CH,gb_day,792182.77,551.9861,cost estimated for 1 day
+2025-02-01,cloud,aws_costs.csv,st-backup,Backup archive,IT,4500,IE,gb_day,1240871.3,497.42,
+2025-02-01,cloud,aws_costs.csv,support,Cloud support,IT,4500,CH,none,0.0,900.0,
+2025-02-01,server,aws_costs.csv,vm-test,Test environments,IT,4500,IE,vcpu_h,10752.0,470.71,
+2025-02-01,cloud,azure_costs.csv,db-fin,Finance database,Finance,4200,CH,vcpu_h,10752.0,965.87,cost estimated for 1 day
+2025-02-01,cloud,azure_costs.csv,dp-dev,Data platform development,IT,4500,DE,node_h,5376.0,2953.7806,cost estimated for 1 day
+2025-02-01,cloud,azure_costs.csv,dp-prod,Data platform production,Consulting,4000,CH,node_h,10752.0,5926.28,cost estimated for 2 days
+2025-02-01,cloud,azure_costs.csv,dp-storage,Data platform storage,Consulting,4000,CH,gb_day,540906.6,377.8459,cost estimated for 2 days
+2025-02-01,server,azure_costs.csv,gpu-ml,AI compute server (GPU),Consulting,4000,DE,gpu_h,648.0,844.0166,data for 27 of 28 days
+2025-02-01,cloud,azure_costs.csv,pbi-kap,Power BI capacity,IT,4500,CH,capacity_day,28.0,1848.68,
+2025-02-01,server,azure_costs.csv,vm-app,App server,IT,4500,CH,vcpu_h,32701.01,1697.98,
+2025-02-01,cloud,hoster_invoice.csv,logs,Logging and monitoring,IT,4500,CH,gb_day,652653.49,455.7521,cost estimated for 2 days
+2025-02-01,cloud,hoster_invoice.csv,st-proj,Project file storage,Consulting,4000,CH,gb_day,346602.23,242.22,data for 27 of 28 days
+2025-02-01,cloud,hoster_invoice.csv,web-cdn,Web hosting and CDN,Marketing,4300,CH,gb_transfer,856.45,64.44,data for 27 of 28 days
+2025-02-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Consulting,4000,EU,seat_month,40.0,452.0,
+2025-02-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Finance,4200,EU,seat_month,12.0,135.6,
+2025-02-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),HR,4400,EU,seat_month,6.0,67.8,
+2025-02-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),IT,4500,EU,seat_month,16.0,180.8,
+2025-02-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Management,4900,EU,seat_month,6.0,67.8,
+2025-02-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Marketing,4300,EU,seat_month,12.0,135.6,
+2025-02-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Sales,4100,EU,seat_month,20.0,226.0,
+2025-02-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Consulting,4000,EU,seat_month,288.0,2905.3856,
+2025-02-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Finance,4200,EU,seat_month,70.0,1011.436,
+2025-02-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,HR,4400,EU,seat_month,30.0,235.918,
+2025-02-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,IT,4500,EU,seat_month,104.0,1086.2969,
+2025-02-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Management,4900,EU,seat_month,25.0,190.718,
+2025-02-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Marketing,4300,EU,seat_month,68.0,1268.466,
+2025-02-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Sales,4100,EU,seat_month,96.0,1746.2976,
+2025-03-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),HR,4400,EU,messages,141.0,88.35,
+2025-03-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Marketing,4300,EU,messages,258.0,154.6125,
+2025-03-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Sales,4100,EU,messages,368.0,265.05,
+2025-03-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Consulting,4000,EU,messages,4736.0,954.18,
+2025-03-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Finance,4200,EU,messages,958.0,291.555,
+2025-03-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),HR,4400,EU,messages,223.0,132.525,
+2025-03-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),IT,4500,EU,messages,1782.0,371.07,
+2025-03-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Management,4900,EU,messages,580.0,132.525,
+2025-03-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Marketing,4300,EU,messages,2080.0,291.555,
+2025-03-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Sales,4100,EU,messages,2902.0,477.09,
+2025-03-01,ai,ai_usage.csv,ai-agent,Support-Agent,Consulting,,EU,tokens,25329322.0,69.2291,
+2025-03-01,ai,ai_usage.csv,ai-agent2,Other agents,Sales,,EU,tokens,32201148.0,86.3687,
+2025-03-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Consulting,,EU,tokens,72155820.0,355.8921,"incomplete token usage: 0 missing input values, 10 missing output values; known tokens only"
+2025-03-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Finance,,EU,tokens,23653115.0,116.2505,"incomplete token usage: 0 missing input values, 6 missing output values; known tokens only"
+2025-03-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,HR,,EU,tokens,13625344.0,67.1916,"incomplete token usage: 0 missing input values, 9 missing output values; known tokens only"
+2025-03-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,IT,,EU,tokens,19882056.0,99.3756,"incomplete token usage: 0 missing input values, 6 missing output values; known tokens only"
+2025-03-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Management,,EU,tokens,10516857.0,51.265,"incomplete token usage: 0 missing input values, 6 missing output values; known tokens only"
+2025-03-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Marketing,,EU,tokens,30315953.0,153.9555,"incomplete token usage: 0 missing input values, 12 missing output values; known tokens only"
+2025-03-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Sales,,EU,tokens,46236429.0,234.6637,"incomplete token usage: 0 missing input values, 11 missing output values; known tokens only"
+2025-03-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,Consulting,,EU,tokens,1877317.0,7.7808,
+2025-03-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,HR,,EU,tokens,1253711.0,5.2314,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2025-03-01,ai,ai_usage.csv,ai-marketing,Marketing text analysis,Marketing,,EU,tokens,155867767.0,534.3577,"incomplete token usage: 0 missing input values, 2 missing output values; known tokens only"
+2025-03-01,ai,ai_usage.csv,ai-quote,Quote generator,Sales,,EU,tokens,3394848.0,33.8974,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2025-03-01,ai,ai_usage.csv,ai-report,Report-Agent,Finance,,EU,tokens,2730182.0,8.4265,"incomplete token usage: 0 missing input values, 3 missing output values; known tokens only"
+2025-03-01,cloud,aws_costs.csv,cicd,CI/CD pipelines,IT,4500,IE,runner_min,55912.03,446.3388,cost estimated for 1 day
+2025-03-01,cloud,aws_costs.csv,net-egress,Data egress,IT,4500,CH,gb_transfer,1842.47,137.71,
+2025-03-01,server,aws_costs.csv,sandbox,Test account,Test account,9100,IE,vcpu_h,126.0,5.0,data for 21 of 31 days; source marks rows for exclusion (kept)
+2025-03-01,cloud,aws_costs.csv,st-archive,Legacy project archive,Sales,4100,CH,gb_day,822852.19,579.1982,cost estimated for 1 day; data for 29 of 31 days
+2025-03-01,cloud,aws_costs.csv,st-backup,Backup archive,IT,4500,IE,gb_day,1413758.56,562.7534,cost estimated for 2 days
+2025-03-01,cloud,aws_costs.csv,support,Cloud support,IT,4500,CH,none,0.0,900.0,
+2025-03-01,server,aws_costs.csv,vm-test,Test environments,IT,4500,IE,vcpu_h,11904.0,522.59,
+2025-03-01,cloud,azure_costs.csv,db-fin,Finance database,Finance,4200,CH,vcpu_h,11904.0,1078.45,
+2025-03-01,cloud,azure_costs.csv,dp-dev,Data platform development,IT,4500,DE,node_h,5568.0,3070.5795,data for 29 of 31 days
+2025-03-01,cloud,azure_costs.csv,dp-prod,Data platform production,Consulting,4000,CH,node_h,11520.0,6322.33,data for 30 of 31 days
+2025-03-01,cloud,azure_costs.csv,dp-storage,Data platform storage,Consulting,4000,CH,gb_day,609019.72,429.82,
+2025-03-01,server,azure_costs.csv,gpu-ml,AI compute server (GPU),Consulting,4000,DE,gpu_h,744.0,968.8738,cost estimated for 1 day
+2025-03-01,cloud,azure_costs.csv,pbi-kap,Power BI capacity,IT,4500,CH,capacity_day,31.0,2047.27,
+2025-03-01,server,azure_costs.csv,vm-app,App server,IT,4500,CH,vcpu_h,36270.54,1895.68,
+2025-03-01,cloud,hoster_invoice.csv,logs,Logging and monitoring,IT,4500,CH,gb_day,699234.17,487.67,data for 30 of 31 days
+2025-03-01,cloud,hoster_invoice.csv,st-proj,Project file storage,Consulting,4000,CH,gb_day,406823.21,284.2,
+2025-03-01,cloud,hoster_invoice.csv,web-cdn,Web hosting and CDN,Marketing,4300,CH,gb_transfer,987.28,73.91,
+2025-03-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Consulting,4000,EU,seat_month,40.0,441.75,
+2025-03-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Finance,4200,EU,seat_month,12.0,132.525,
+2025-03-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),HR,4400,EU,seat_month,6.0,66.2625,
+2025-03-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),IT,4500,EU,seat_month,16.0,176.7,
+2025-03-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Management,4900,EU,seat_month,6.0,66.2625,
+2025-03-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Marketing,4300,EU,seat_month,12.0,132.525,
+2025-03-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Sales,4100,EU,seat_month,20.0,220.875,
+2025-03-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Consulting,4000,EU,seat_month,288.0,2890.2976,
+2025-03-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Finance,4200,EU,seat_month,70.0,1010.596,
+2025-03-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,HR,4400,EU,seat_month,30.0,234.473,
+2025-03-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,IT,4500,EU,seat_month,104.0,1082.2994,
+2025-03-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Management,4900,EU,seat_month,25.0,190.298,
+2025-03-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Marketing,4300,EU,seat_month,68.0,1268.396,
+2025-03-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Sales,4100,EU,seat_month,96.0,1744.9536,
+2025-04-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),HR,4400,EU,messages,142.0,83.56,
+2025-04-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Marketing,4300,EU,messages,151.0,146.23,
+2025-04-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Sales,4100,EU,messages,452.0,250.68,
+2025-04-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Consulting,4000,EU,messages,6438.0,902.448,
+2025-04-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Finance,4200,EU,messages,1083.0,275.748,
+2025-04-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),HR,4400,EU,messages,236.0,125.34,
+2025-04-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),IT,4500,EU,messages,2768.0,350.952,
+2025-04-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Management,4900,EU,messages,866.0,125.34,
+2025-04-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Marketing,4300,EU,messages,1988.0,275.748,
+2025-04-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Sales,4100,EU,messages,3084.0,451.224,
+2025-04-01,ai,ai_usage.csv,ai-agent,Support-Agent,Consulting,,EU,tokens,25134509.0,65.2064,
+2025-04-01,ai,ai_usage.csv,ai-agent2,Other agents,Sales,,EU,tokens,33293908.0,84.3913,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2025-04-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Consulting,,EU,tokens,75435159.0,352.1773,"incomplete token usage: 0 missing input values, 9 missing output values; known tokens only"
+2025-04-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Finance,,EU,tokens,24015432.0,110.5019,"incomplete token usage: 0 missing input values, 5 missing output values; known tokens only"
+2025-04-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,HR,,EU,tokens,13546808.0,64.0926,"incomplete token usage: 0 missing input values, 5 missing output values; known tokens only"
+2025-04-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,IT,,EU,tokens,20173460.0,95.3468,"incomplete token usage: 0 missing input values, 10 missing output values; known tokens only"
+2025-04-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Management,,EU,tokens,10289381.0,48.0123,"incomplete token usage: 0 missing input values, 11 missing output values; known tokens only"
+2025-04-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Marketing,,EU,tokens,30900500.0,143.9751,"incomplete token usage: 0 missing input values, 6 missing output values; known tokens only"
+2025-04-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Sales,,EU,tokens,47360844.0,223.626,"incomplete token usage: 0 missing input values, 15 missing output values; known tokens only"
+2025-04-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,Consulting,,EU,tokens,1855910.0,7.4171,"incomplete token usage: 0 missing input values, 4 missing output values; known tokens only"
+2025-04-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,HR,,EU,tokens,1258109.0,4.853,
+2025-04-01,ai,ai_usage.csv,ai-marketing,Marketing text analysis,Marketing,,EU,tokens,161449905.0,516.8739,
+2025-04-01,ai,ai_usage.csv,ai-quote,Quote generator,Sales,,EU,tokens,2923515.0,27.2184,
+2025-04-01,ai,ai_usage.csv,ai-report,Report-Agent,Finance,,EU,tokens,2459420.0,7.1596,
+2025-04-01,cloud,aws_costs.csv,cicd,CI/CD pipelines,IT,4500,IE,runner_min,53504.03,428.46,
+2025-04-01,cloud,aws_costs.csv,net-egress,Data egress,IT,4500,CH,gb_transfer,1701.6,127.28,
+2025-04-01,server,aws_costs.csv,sandbox,Test account,Test account,9100,IE,vcpu_h,120.0,4.84,data for 20 of 30 days
+2025-04-01,cloud,aws_costs.csv,st-archive,Legacy project archive,Sales,4100,CH,gb_day,853794.0,592.73,
+2025-04-01,cloud,aws_costs.csv,st-backup,Backup archive,IT,4500,IE,gb_day,1362419.76,546.5925,cost estimated for 1 day; data for 29 of 30 days
+2025-04-01,cloud,aws_costs.csv,support,Cloud support,IT,4500,CH,none,0.0,900.0,
+2025-04-01,server,aws_costs.csv,vm-test,Test environments,IT,4500,IE,vcpu_h,46080.0,2035.21,
+2025-04-01,cloud,azure_costs.csv,db-fin,Finance database,Finance,4200,CH,vcpu_h,11520.0,1044.24,cost estimated for 1 day
+2025-04-01,cloud,azure_costs.csv,dp-dev,Data platform development,IT,4500,DE,node_h,5760.0,3170.4051,cost estimated for 1 day
+2025-04-01,cloud,azure_costs.csv,dp-prod,Data platform production,Consulting,4000,CH,node_h,11520.0,6320.12,cost estimated for 1 day
+2025-04-01,cloud,azure_costs.csv,dp-storage,Data platform storage,Consulting,4000,CH,gb_day,601869.79,421.0489,cost estimated for 1 day
+2025-04-01,server,azure_costs.csv,gpu-ml,AI compute server (GPU),Consulting,4000,DE,gpu_h,720.0,936.7845,cost estimated for 1 day
+2025-04-01,cloud,azure_costs.csv,pbi-kap,Power BI capacity,IT,4500,CH,capacity_day,30.0,1976.97,
+2025-04-01,server,azure_costs.csv,vm-app,App server,IT,4500,CH,vcpu_h,35355.39,1833.97,
+2025-04-01,cloud,hoster_invoice.csv,logs,Logging and monitoring,IT,4500,CH,gb_day,689934.47,482.19,data for 29 of 30 days
+2025-04-01,cloud,hoster_invoice.csv,st-proj,Project file storage,Consulting,4000,CH,gb_day,401529.66,280.7846,cost estimated for 1 day
+2025-04-01,cloud,hoster_invoice.csv,web-cdn,Web hosting and CDN,Marketing,4300,CH,gb_transfer,912.12,68.19,data for 28 of 30 days
+2025-04-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Consulting,4000,EU,seat_month,41.0,428.245,
+2025-04-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Finance,4200,EU,seat_month,12.0,125.34,
+2025-04-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),HR,4400,EU,seat_month,6.0,62.67,
+2025-04-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),IT,4500,EU,seat_month,16.0,167.12,
+2025-04-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Management,4900,EU,seat_month,6.0,62.67,
+2025-04-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Marketing,4300,EU,seat_month,12.0,125.34,
+2025-04-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Sales,4100,EU,seat_month,20.0,208.9,
+2025-04-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Consulting,4000,EU,seat_month,288.0,2790.304,
+2025-04-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Finance,4200,EU,seat_month,70.0,1002.712,
+2025-04-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,HR,4400,EU,seat_month,30.0,228.136,
+2025-04-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,IT,4500,EU,seat_month,104.0,1046.6586,
+2025-04-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Management,4900,EU,seat_month,25.0,186.356,
+2025-04-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Marketing,4300,EU,seat_month,68.0,1247.508,
+2025-04-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Sales,4100,EU,seat_month,96.0,1732.3392,
+2025-05-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),HR,4400,EU,messages,134.0,82.96,
+2025-05-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Marketing,4300,EU,messages,140.0,145.18,
+2025-05-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Sales,4100,EU,messages,282.0,248.88,
+2025-05-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Consulting,4000,EU,messages,5628.0,895.968,
+2025-05-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Finance,4200,EU,messages,1381.0,273.768,
+2025-05-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),HR,4400,EU,messages,475.0,124.44,
+2025-05-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),IT,4500,EU,messages,2420.0,348.432,
+2025-05-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Management,4900,EU,messages,414.0,124.44,
+2025-05-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Marketing,4300,EU,messages,1469.0,273.768,
+2025-05-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Sales,4100,EU,messages,3044.0,447.984,
+2025-05-01,ai,ai_usage.csv,ai-agent,Support-Agent,Consulting,,EU,tokens,23233413.0,60.0885,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2025-05-01,ai,ai_usage.csv,ai-agent2,Other agents,Sales,,EU,tokens,38737926.0,98.1838,
+2025-05-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Consulting,,EU,tokens,79386550.0,377.4138,"incomplete token usage: 0 missing input values, 17 missing output values; known tokens only"
+2025-05-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Finance,,EU,tokens,25219439.0,117.3154,"incomplete token usage: 0 missing input values, 13 missing output values; known tokens only"
+2025-05-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,HR,,EU,tokens,14319626.0,66.2492,"incomplete token usage: 0 missing input values, 11 missing output values; known tokens only"
+2025-05-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,IT,,EU,tokens,21788381.0,102.8853,"incomplete token usage: 0 missing input values, 4 missing output values; known tokens only"
+2025-05-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Management,,EU,tokens,10557370.0,49.8534,"incomplete token usage: 0 missing input values, 9 missing output values; known tokens only"
+2025-05-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Marketing,,EU,tokens,31542948.0,149.5546,"incomplete token usage: 0 missing input values, 5 missing output values; known tokens only"
+2025-05-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Sales,,EU,tokens,50542649.0,232.6082,"incomplete token usage: 0 missing input values, 5 missing output values; known tokens only"
+2025-05-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,Consulting,,EU,tokens,2000694.0,7.6532,"incomplete token usage: 0 missing input values, 3 missing output values; known tokens only"
+2025-05-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,HR,,EU,tokens,1326622.0,5.1021,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2025-05-01,ai,ai_usage.csv,ai-marketing,Marketing text analysis,Marketing,,EU,tokens,167394737.0,533.7475,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2025-05-01,ai,ai_usage.csv,ai-quote,Quote generator,Sales,,EU,tokens,3309571.0,30.9419,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2025-05-01,ai,ai_usage.csv,ai-report,Report-Agent,Finance,,EU,tokens,2727318.0,7.8361,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2025-05-01,cloud,aws_costs.csv,cicd,CI/CD pipelines,IT,4500,IE,runner_min,55449.98,441.4269,cost estimated for 2 days; data for 30 of 31 days
+2025-05-01,cloud,aws_costs.csv,net-egress,Data egress,IT,4500,CH,gb_transfer,2024.55,151.627,cost estimated for 1 day
+2025-05-01,server,aws_costs.csv,sandbox,Test account,Test account,9100,IE,vcpu_h,120.0,4.83,data for 20 of 31 days; source marks rows for exclusion (kept)
+2025-05-01,cloud,aws_costs.csv,st-archive,Legacy project archive,Sales,4100,CH,gb_day,884906.03,620.53,
+2025-05-01,cloud,aws_costs.csv,st-backup,Backup archive,IT,4500,IE,gb_day,1500038.53,601.0251,cost estimated for 1 day
+2025-05-01,cloud,aws_costs.csv,support,Cloud support,IT,4500,CH,none,0.0,900.0,
+2025-05-01,server,aws_costs.csv,vm-test,Test environments,IT,4500,IE,vcpu_h,46080.0,2040.27,cost estimated for 1 day; data for 30 of 31 days
+2025-05-01,cloud,azure_costs.csv,db-fin,Finance database,Finance,4200,CH,vcpu_h,11904.0,1076.72,cost estimated for 1 day
+2025-05-01,cloud,azure_costs.csv,dp-dev,Data platform development,IT,4500,DE,node_h,5760.0,3165.2377,data for 30 of 31 days
+2025-05-01,cloud,azure_costs.csv,dp-prod,Data platform production,Consulting,4000,CH,node_h,11904.0,6544.59,
+2025-05-01,cloud,azure_costs.csv,dp-storage,Data platform storage,Consulting,4000,CH,gb_day,634537.56,443.37,
+2025-05-01,server,azure_costs.csv,gpu-ml,AI compute server (GPU),Consulting,4000,DE,gpu_h,696.0,904.5661,cost estimated for 1 day; data for 29 of 31 days
+2025-05-01,cloud,azure_costs.csv,pbi-kap,Power BI capacity,IT,4500,CH,capacity_day,31.0,2044.09,cost estimated for 2 days
+2025-05-01,server,azure_costs.csv,vm-app,App server,IT,4500,CH,vcpu_h,36587.12,1892.0725,cost estimated for 1 day
+2025-05-01,cloud,hoster_invoice.csv,logs,Logging and monitoring,IT,4500,CH,gb_day,738055.66,517.0556,cost estimated for 1 day
+2025-05-01,cloud,hoster_invoice.csv,st-proj,Project file storage,Consulting,4000,CH,gb_day,422716.57,295.275,cost estimated for 3 days
+2025-05-01,cloud,hoster_invoice.csv,web-cdn,Web hosting and CDN,Marketing,4300,CH,gb_transfer,1058.64,79.61,
+2025-05-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Consulting,4000,EU,seat_month,41.0,425.17,
+2025-05-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Finance,4200,EU,seat_month,12.0,124.44,
+2025-05-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),HR,4400,EU,seat_month,6.0,62.22,
+2025-05-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),IT,4500,EU,seat_month,16.0,165.92,
+2025-05-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Management,4900,EU,seat_month,6.0,62.22,
+2025-05-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Marketing,4300,EU,seat_month,12.0,124.44,
+2025-05-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Sales,4100,EU,seat_month,20.0,207.4,
+2025-05-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Consulting,4000,EU,seat_month,297.0,2865.7068,
+2025-05-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Finance,4200,EU,seat_month,70.0,1001.824,
+2025-05-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,HR,4400,EU,seat_month,30.0,227.392,
+2025-05-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,IT,4500,EU,seat_month,104.0,1042.6364,
+2025-05-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Management,4900,EU,seat_month,25.0,185.912,
+2025-05-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Marketing,4300,EU,seat_month,68.0,1245.24,
+2025-05-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Sales,4100,EU,seat_month,96.0,1730.9184,
+2025-06-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),HR,4400,EU,messages,154.0,81.45,
+2025-06-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Marketing,4300,EU,messages,133.0,142.5375,
+2025-06-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Sales,4100,EU,messages,318.0,244.35,
+2025-06-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Consulting,4000,EU,messages,4990.0,407.25,
+2025-06-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),IT,4500,EU,messages,2595.0,162.9,
+2025-06-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Marketing,4300,EU,messages,1527.0,122.175,
+2025-06-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Consulting,4000,EU,messages,6681.0,879.66,
+2025-06-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Finance,4200,EU,messages,1160.0,268.785,
+2025-06-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),HR,4400,EU,messages,229.0,122.175,
+2025-06-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),IT,4500,EU,messages,1978.0,342.09,
+2025-06-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Management,4900,EU,messages,489.0,122.175,
+2025-06-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Marketing,4300,EU,messages,1456.0,268.785,
+2025-06-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Sales,4100,EU,messages,2761.0,439.83,
+2025-06-01,ai,ai_usage.csv,ai-agent,Support-Agent,Consulting,,EU,tokens,30565945.0,77.0211,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2025-06-01,ai,ai_usage.csv,ai-agent2,Other agents,Sales,,EU,tokens,39086831.0,96.8141,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2025-06-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Consulting,,EU,tokens,80533254.0,364.7647,"incomplete token usage: 0 missing input values, 6 missing output values; known tokens only"
+2025-06-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Finance,,EU,tokens,26388211.0,115.8941,"incomplete token usage: 0 missing input values, 13 missing output values; known tokens only"
+2025-06-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,HR,,EU,tokens,15078435.0,68.3392,"incomplete token usage: 0 missing input values, 8 missing output values; known tokens only"
+2025-06-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,IT,,EU,tokens,23253555.0,104.5525,"incomplete token usage: 0 missing input values, 11 missing output values; known tokens only"
+2025-06-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Management,,EU,tokens,11567614.0,53.0457,"incomplete token usage: 0 missing input values, 13 missing output values; known tokens only"
+2025-06-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Marketing,,EU,tokens,34438892.0,156.2438,"incomplete token usage: 0 missing input values, 5 missing output values; known tokens only"
+2025-06-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Sales,,EU,tokens,53481893.0,242.6584,"incomplete token usage: 0 missing input values, 10 missing output values; known tokens only"
+2025-06-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,Consulting,,EU,tokens,2173872.0,8.0141,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2025-06-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,HR,,EU,tokens,1366932.0,5.2732,
+2025-06-01,ai,ai_usage.csv,ai-marketing,Marketing text analysis,Marketing,,EU,tokens,158976105.0,499.6665,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2025-06-01,ai,ai_usage.csv,ai-quote,Quote generator,Sales,,EU,tokens,3309214.0,32.696,"incomplete token usage: 0 missing input values, 2 missing output values; known tokens only"
+2025-06-01,ai,ai_usage.csv,ai-report,Report-Agent,Finance,,EU,tokens,2766701.0,7.7965,
+2025-06-01,cloud,aws_costs.csv,cicd,CI/CD pipelines,IT,4500,IE,runner_min,54170.14,430.766,cost estimated for 1 day
+2025-06-01,cloud,aws_costs.csv,net-egress,Data egress,IT,4500,CH,gb_transfer,1891.9,141.5879,cost estimated for 1 day
+2025-06-01,server,aws_costs.csv,sandbox,Test account,Test account,9100,IE,vcpu_h,120.0,4.7,cost estimated for 1 day; data for 20 of 30 days; source marks rows for exclusion (kept)
+2025-06-01,cloud,aws_costs.csv,st-archive,Legacy project archive,Sales,4100,CH,gb_day,858935.03,601.52,
+2025-06-01,cloud,aws_costs.csv,st-backup,Backup archive,IT,4500,IE,gb_day,1446142.64,579.9,data for 29 of 30 days
+2025-06-01,cloud,aws_costs.csv,support,Cloud support,IT,4500,CH,none,0.0,900.0,
+2025-06-01,server,aws_costs.csv,vm-test,Test environments,IT,4500,IE,vcpu_h,46080.0,2025.77,cost estimated for 1 day
+2025-06-01,cloud,azure_costs.csv,db-fin,Finance database,Finance,4200,CH,vcpu_h,11520.0,1035.5,
+2025-06-01,cloud,azure_costs.csv,dp-dev,Data platform development,IT,4500,DE,node_h,5760.0,3177.006,cost estimated for 1 day
+2025-06-01,cloud,azure_costs.csv,dp-prod,Data platform production,Consulting,4000,CH,node_h,11136.0,6112.85,cost estimated for 1 day; data for 29 of 30 days
+2025-06-01,cloud,azure_costs.csv,dp-storage,Data platform storage,Consulting,4000,CH,gb_day,624773.91,438.04,
+2025-06-01,server,azure_costs.csv,gpu-ml,AI compute server (GPU),Consulting,4000,DE,gpu_h,720.0,943.1121,
+2025-06-01,cloud,azure_costs.csv,pbi-kap,Power BI capacity,IT,4500,CH,capacity_day,30.0,1979.49,
+2025-06-01,server,azure_costs.csv,vm-app,App server,IT,4500,CH,vcpu_h,35644.88,1855.26,
+2025-06-01,cloud,hoster_invoice.csv,logs,Logging and monitoring,IT,4500,CH,gb_day,1095892.54,770.9658,cost estimated for 1 day; data for 29 of 30 days
+2025-06-01,cloud,hoster_invoice.csv,st-proj,Project file storage,Consulting,4000,CH,gb_day,417462.43,293.44,
+2025-06-01,cloud,hoster_invoice.csv,web-cdn,Web hosting and CDN,Marketing,4300,CH,gb_transfer,1029.81,77.1,
+2025-06-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Consulting,4000,EU,seat_month,41.0,417.4312,
+2025-06-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Finance,4200,EU,seat_month,12.0,122.175,
+2025-06-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),HR,4400,EU,seat_month,6.0,61.0875,
+2025-06-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),IT,4500,EU,seat_month,16.0,162.9,
+2025-06-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Management,4900,EU,seat_month,6.0,61.0875,
+2025-06-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Marketing,4300,EU,seat_month,12.0,122.175,
+2025-06-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Sales,4100,EU,seat_month,20.0,203.625,
+2025-06-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Consulting,4000,EU,seat_month,297.0,2844.039,
+2025-06-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Finance,4200,EU,seat_month,70.0,1000.3,
+2025-06-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,HR,4400,EU,seat_month,30.0,225.875,
+2025-06-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,IT,4500,EU,seat_month,104.0,1035.671,
+2025-06-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Management,4900,EU,seat_month,25.0,185.15,
+2025-06-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Marketing,4300,EU,seat_month,68.0,1242.02,
+2025-06-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Sales,4100,EU,seat_month,96.0,1728.48,
+2025-07-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),HR,4400,EU,messages,140.0,79.86,
+2025-07-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Marketing,4300,EU,messages,147.0,139.755,
+2025-07-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Sales,4100,EU,messages,317.0,239.58,
+2025-07-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Consulting,4000,EU,messages,6677.0,399.3,
+2025-07-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),IT,4500,EU,messages,2770.0,159.72,
+2025-07-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Marketing,4300,EU,messages,1565.0,119.79,
+2025-07-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Consulting,4000,EU,messages,7210.0,862.488,
+2025-07-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Finance,4200,EU,messages,1260.0,263.538,
+2025-07-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),HR,4400,EU,messages,249.0,119.79,
+2025-07-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),IT,4500,EU,messages,2297.0,335.412,
+2025-07-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Management,4900,EU,messages,524.0,119.79,
+2025-07-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Marketing,4300,EU,messages,2110.0,263.538,
+2025-07-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Sales,4100,EU,messages,2875.0,431.244,
+2025-07-01,ai,ai_usage.csv,ai-agent,Support-Agent,Consulting,,EU,tokens,28289138.0,69.815,
+2025-07-01,ai,ai_usage.csv,ai-agent2,Other agents,Sales,,EU,tokens,52327227.0,124.9479,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2025-07-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Consulting,,EU,tokens,79513946.0,356.3409,"incomplete token usage: 0 missing input values, 4 missing output values; known tokens only"
+2025-07-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Finance,,EU,tokens,24327411.0,110.5856,"incomplete token usage: 0 missing input values, 6 missing output values; known tokens only"
+2025-07-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,HR,,EU,tokens,14152472.0,63.8987,"incomplete token usage: 0 missing input values, 6 missing output values; known tokens only"
+2025-07-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,IT,,EU,tokens,21825770.0,97.0116,"incomplete token usage: 0 missing input values, 14 missing output values; known tokens only"
+2025-07-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Management,,EU,tokens,10777027.0,48.1692,"incomplete token usage: 0 missing input values, 5 missing output values; known tokens only"
+2025-07-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Marketing,,EU,tokens,32303602.0,145.8665,"incomplete token usage: 0 missing input values, 16 missing output values; known tokens only"
+2025-07-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Sales,,EU,tokens,50364683.0,226.2387,"incomplete token usage: 0 missing input values, 6 missing output values; known tokens only"
+2025-07-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,Consulting,,EU,tokens,2039286.0,7.7863,"incomplete token usage: 0 missing input values, 3 missing output values; known tokens only"
+2025-07-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,HR,,EU,tokens,1310662.0,5.0211,"incomplete token usage: 0 missing input values, 2 missing output values; known tokens only"
+2025-07-01,ai,ai_usage.csv,ai-marketing,Marketing text analysis,Marketing,,EU,tokens,174084655.0,532.2967,
+2025-07-01,ai,ai_usage.csv,ai-quote,Quote generator,Sales,,EU,tokens,3117842.0,28.0148,
+2025-07-01,ai,ai_usage.csv,ai-report,Report-Agent,Finance,,EU,tokens,2716723.0,7.4728,
+2025-07-01,cloud,aws_costs.csv,cicd,CI/CD pipelines,IT,4500,IE,runner_min,60423.3,482.5,
+2025-07-01,cloud,aws_costs.csv,net-egress,Data egress,IT,4500,CH,gb_transfer,1941.78,145.1479,cost estimated for 2 days; data for 30 of 31 days
+2025-07-01,server,aws_costs.csv,sandbox,Test account,Test account,9100,IE,vcpu_h,132.0,5.27,data for 22 of 31 days
+2025-07-01,cloud,aws_costs.csv,st-archive,Legacy project archive,Sales,4100,CH,gb_day,890234.38,627.25,
+2025-07-01,cloud,aws_costs.csv,st-backup,Backup archive,IT,4500,IE,gb_day,1591584.08,634.2273,cost estimated for 1 day
+2025-07-01,cloud,aws_costs.csv,support,Cloud support,IT,4500,CH,none,0.0,900.0,
+2025-07-01,server,aws_costs.csv,vm-test,Test environments,IT,4500,IE,vcpu_h,46080.0,2035.46,cost estimated for 1 day; data for 30 of 31 days
+2025-07-01,cloud,azure_costs.csv,db-fin,Finance database,Finance,4200,CH,vcpu_h,11904.0,1079.09,
+2025-07-01,cloud,azure_costs.csv,dp-dev,Data platform development,IT,4500,DE,node_h,5760.0,3161.6692,data for 30 of 31 days
+2025-07-01,cloud,azure_costs.csv,dp-prod,Data platform production,Consulting,4000,CH,node_h,11904.0,6524.47,
+2025-07-01,cloud,azure_costs.csv,dp-storage,Data platform storage,Consulting,4000,CH,gb_day,636777.82,447.67,data for 30 of 31 days
+2025-07-01,server,azure_costs.csv,gpu-ml,AI compute server (GPU),Consulting,4000,DE,gpu_h,720.0,936.3046,cost estimated for 1 day; data for 30 of 31 days
+2025-07-01,cloud,azure_costs.csv,pbi-kap,Power BI capacity,IT,4500,CH,capacity_day,29.0,1913.84,data for 29 of 31 days
+2025-07-01,server,azure_costs.csv,vm-app,App server,IT,4500,CH,vcpu_h,36932.82,1913.56,
+2025-07-01,cloud,hoster_invoice.csv,logs,Logging and monitoring,IT,4500,CH,gb_day,1495119.29,1047.32,data for 30 of 31 days
+2025-07-01,cloud,hoster_invoice.csv,st-proj,Project file storage,Consulting,4000,CH,gb_day,424916.69,299.36,data for 30 of 31 days
+2025-07-01,cloud,hoster_invoice.csv,web-cdn,Web hosting and CDN,Marketing,4300,CH,gb_transfer,1095.52,81.68,
+2025-07-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Consulting,4000,EU,seat_month,41.0,409.2825,
+2025-07-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Finance,4200,EU,seat_month,12.0,119.79,
+2025-07-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),HR,4400,EU,seat_month,6.0,59.895,
+2025-07-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),IT,4500,EU,seat_month,16.0,159.72,
+2025-07-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Management,4900,EU,seat_month,6.0,59.895,
+2025-07-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Marketing,4300,EU,seat_month,12.0,119.79,
+2025-07-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Sales,4100,EU,seat_month,20.0,199.65,
+2025-07-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Consulting,4000,EU,seat_month,297.0,2810.3625,
+2025-07-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Finance,4200,EU,seat_month,70.0,997.732,
+2025-07-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,HR,4400,EU,seat_month,30.0,223.796,
+2025-07-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,IT,4500,EU,seat_month,104.0,1024.0581,
+2025-07-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Management,4900,EU,seat_month,25.0,183.866,
+2025-07-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Marketing,4300,EU,seat_month,68.0,1235.258,
+2025-07-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Sales,4100,EU,seat_month,96.0,1724.3712,
+2025-08-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),HR,4400,EU,messages,120.0,80.71,
+2025-08-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Marketing,4300,EU,messages,165.0,141.2425,
+2025-08-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Sales,4100,EU,messages,233.0,242.13,
+2025-08-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Consulting,4000,EU,messages,6730.0,403.55,
+2025-08-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),IT,4500,EU,messages,1817.0,161.42,
+2025-08-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Marketing,4300,EU,messages,2112.0,121.065,
+2025-08-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Consulting,4000,EU,messages,6677.0,871.668,
+2025-08-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Finance,4200,EU,messages,1119.0,266.343,
+2025-08-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),HR,4400,EU,messages,305.0,121.065,
+2025-08-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),IT,4500,EU,messages,2244.0,338.982,
+2025-08-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Management,4900,EU,messages,845.0,121.065,
+2025-08-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Marketing,4300,EU,messages,1934.0,266.343,
+2025-08-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Sales,4100,EU,messages,2954.0,435.834,
+2025-08-01,ai,ai_usage.csv,ai-agent,Support-Agent,Consulting,,EU,tokens,27448015.0,68.7917,
+2025-08-01,ai,ai_usage.csv,ai-agent2,Other agents,Sales,,EU,tokens,49959201.0,121.8146,"incomplete token usage: 0 missing input values, 3 missing output values; known tokens only"
+2025-08-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Consulting,,EU,tokens,76240606.0,346.0925,"incomplete token usage: 0 missing input values, 8 missing output values; known tokens only"
+2025-08-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Finance,,EU,tokens,23756453.0,108.2815,"incomplete token usage: 0 missing input values, 7 missing output values; known tokens only"
+2025-08-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,HR,,EU,tokens,13967372.0,63.0762,"incomplete token usage: 0 missing input values, 10 missing output values; known tokens only"
+2025-08-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,IT,,EU,tokens,20915116.0,93.9539,"incomplete token usage: 0 missing input values, 6 missing output values; known tokens only"
+2025-08-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Management,,EU,tokens,9830366.0,44.8147,"incomplete token usage: 0 missing input values, 7 missing output values; known tokens only"
+2025-08-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Marketing,,EU,tokens,31022120.0,140.345,"incomplete token usage: 0 missing input values, 7 missing output values; known tokens only"
+2025-08-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Sales,,EU,tokens,49007750.0,220.0522,"incomplete token usage: 0 missing input values, 13 missing output values; known tokens only"
+2025-08-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,Consulting,,EU,tokens,2040905.0,7.9104,"incomplete token usage: 0 missing input values, 3 missing output values; known tokens only"
+2025-08-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,HR,,EU,tokens,1318335.0,4.7745,
+2025-08-01,ai,ai_usage.csv,ai-marketing,Marketing text analysis,Marketing,,EU,tokens,185443089.0,575.6828,
+2025-08-01,ai,ai_usage.csv,ai-quote,Quote generator,Sales,,EU,tokens,2866183.0,27.6177,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2025-08-01,ai,ai_usage.csv,ai-report,Report-Agent,Finance,,EU,tokens,2884298.0,8.0092,"incomplete token usage: 0 missing input values, 4 missing output values; known tokens only"
+2025-08-01,cloud,aws_costs.csv,cicd,CI/CD pipelines,IT,4500,IE,runner_min,55666.47,442.3127,cost estimated for 1 day
+2025-08-01,cloud,aws_costs.csv,net-egress,Data egress,IT,4500,CH,gb_transfer,2222.74,165.8967,cost estimated for 1 day
+2025-08-01,server,aws_costs.csv,sandbox,Test account,Test account,9100,IE,vcpu_h,120.0,4.77,cost estimated for 2 days; data for 20 of 31 days; source marks rows for exclusion (kept)
+2025-08-01,cloud,aws_costs.csv,st-archive,Legacy project archive,Sales,4100,CH,gb_day,892954.51,624.5726,cost estimated for 3 days
+2025-08-01,cloud,aws_costs.csv,st-backup,Backup archive,IT,4500,IE,gb_day,1640227.35,653.8003,cost estimated for 1 day
+2025-08-01,cloud,aws_costs.csv,support,Cloud support,IT,4500,CH,none,0.0,900.0,
+2025-08-01,server,aws_costs.csv,vm-test,Test environments,IT,4500,IE,vcpu_h,47616.0,2088.3,
+2025-08-01,cloud,azure_costs.csv,db-fin,Finance database,Finance,4200,CH,vcpu_h,11904.0,1076.28,
+2025-08-01,cloud,azure_costs.csv,dp-dev,Data platform development,IT,4500,DE,node_h,5952.0,3284.7647,
+2025-08-01,cloud,azure_costs.csv,dp-prod,Data platform production,Consulting,4000,CH,node_h,11904.0,6550.26,
+2025-08-01,cloud,azure_costs.csv,dp-storage,Data platform storage,Consulting,4000,CH,gb_day,673124.81,468.5,
+2025-08-01,server,azure_costs.csv,gpu-ml,AI compute server (GPU),Consulting,4000,DE,gpu_h,720.0,927.8299,cost estimated for 2 days; data for 30 of 31 days
+2025-08-01,cloud,azure_costs.csv,pbi-kap,Power BI capacity,IT,4500,CH,capacity_day,31.0,2044.31,cost estimated for 2 days
+2025-08-01,server,azure_costs.csv,vm-app,App server,IT,4500,CH,none,0.0,-900.0,SLA credit
+2025-08-01,server,azure_costs.csv,vm-app,App server,IT,4500,CH,vcpu_h,37115.68,1937.2251,cost estimated for 1 day
+2025-08-01,cloud,hoster_invoice.csv,logs,Logging and monitoring,IT,4500,CH,gb_day,1570957.94,1103.3,
+2025-08-01,cloud,hoster_invoice.csv,st-proj,Project file storage,Consulting,4000,CH,gb_day,449795.07,314.25,
+2025-08-01,cloud,hoster_invoice.csv,web-cdn,Web hosting and CDN,Marketing,4300,CH,gb_transfer,1108.33,82.89,
+2025-08-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Consulting,4000,EU,seat_month,41.0,413.6388,
+2025-08-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Finance,4200,EU,seat_month,12.0,121.065,
+2025-08-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),HR,4400,EU,seat_month,6.0,60.5325,
+2025-08-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),IT,4500,EU,seat_month,16.0,161.42,
+2025-08-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Management,4900,EU,seat_month,6.0,60.5325,
+2025-08-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Marketing,4300,EU,seat_month,12.0,121.065,
+2025-08-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Sales,4100,EU,seat_month,21.0,211.8638,
+2025-08-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Consulting,4000,EU,seat_month,297.0,2832.7761,
+2025-08-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Finance,4200,EU,seat_month,70.0,999.496,
+2025-08-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,HR,4400,EU,seat_month,30.0,225.103,
+2025-08-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,IT,4500,EU,seat_month,104.0,1032.0037,
+2025-08-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Management,4900,EU,seat_month,25.0,184.748,
+2025-08-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Marketing,4300,EU,seat_month,68.0,1240.242,
+2025-08-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Sales,4100,EU,seat_month,96.0,1727.1936,
+2025-09-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),HR,4400,EU,messages,167.0,79.7,
+2025-09-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Marketing,4300,EU,messages,130.0,139.475,
+2025-09-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Sales,4100,EU,messages,331.0,239.1,
+2025-09-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Consulting,4000,EU,messages,7353.0,398.5,
+2025-09-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),IT,4500,EU,messages,2577.0,159.4,
+2025-09-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Marketing,4300,EU,messages,1880.0,119.55,
+2025-09-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Consulting,4000,EU,messages,6830.0,860.76,
+2025-09-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Finance,4200,EU,messages,1170.0,263.01,
+2025-09-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),HR,4400,EU,messages,511.0,119.55,
+2025-09-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),IT,4500,EU,messages,1963.0,334.74,
+2025-09-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Management,4900,EU,messages,543.0,119.55,
+2025-09-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Marketing,4300,EU,messages,1669.0,263.01,
+2025-09-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Sales,4100,EU,messages,3058.0,430.38,
+2025-09-01,ai,ai_usage.csv,ai-agent,Support-Agent,Consulting,,EU,tokens,38095124.0,94.1157,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2025-09-01,ai,ai_usage.csv,ai-agent2,Other agents,Sales,,EU,tokens,65201182.0,156.607,
+2025-09-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Consulting,,EU,tokens,107911571.0,478.2142,"incomplete token usage: 0 missing input values, 11 missing output values; known tokens only"
+2025-09-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Finance,,EU,tokens,34743967.0,154.0206,"incomplete token usage: 0 missing input values, 9 missing output values; known tokens only"
+2025-09-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,HR,,EU,tokens,19867395.0,88.4746,"incomplete token usage: 0 missing input values, 5 missing output values; known tokens only"
+2025-09-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,IT,,EU,tokens,30266853.0,136.0384,"incomplete token usage: 0 missing input values, 10 missing output values; known tokens only"
+2025-09-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Management,,EU,tokens,14723784.0,66.9951,"incomplete token usage: 0 missing input values, 4 missing output values; known tokens only"
+2025-09-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Marketing,,EU,tokens,44778730.0,200.4183,"incomplete token usage: 0 missing input values, 8 missing output values; known tokens only"
+2025-09-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Sales,,EU,tokens,68248418.0,305.1935,"incomplete token usage: 0 missing input values, 9 missing output values; known tokens only"
+2025-09-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,Consulting,,EU,tokens,2924657.0,11.1368,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2025-09-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,HR,,EU,tokens,1948940.0,7.1928,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2025-09-01,ai,ai_usage.csv,ai-marketing,Marketing text analysis,Marketing,,EU,tokens,179183644.0,549.7556,"incomplete token usage: 0 missing input values, 3 missing output values; known tokens only"
+2025-09-01,ai,ai_usage.csv,ai-quote,Quote generator,Sales,,EU,tokens,4026129.0,37.1622,"incomplete token usage: 0 missing input values, 2 missing output values; known tokens only"
+2025-09-01,ai,ai_usage.csv,ai-report,Report-Agent,Finance,,EU,tokens,2853895.0,7.7865,
+2025-09-01,cloud,aws_costs.csv,cicd,CI/CD pipelines,IT,4500,IE,runner_min,59512.7,479.64,
+2025-09-01,cloud,aws_costs.csv,net-egress,Data egress,IT,4500,CH,gb_transfer,2211.57,166.29,
+2025-09-01,server,aws_costs.csv,sandbox,Test account,Test account,9100,IE,vcpu_h,132.0,5.19,data for 22 of 30 days; source marks rows for exclusion (kept)
+2025-09-01,cloud,aws_costs.csv,st-archive,Legacy project archive,Sales,4100,CH,gb_day,837865.69,585.77,data for 29 of 30 days
+2025-09-01,cloud,aws_costs.csv,st-backup,Backup archive,IT,4500,IE,gb_day,1635031.58,653.63,
+2025-09-01,cloud,aws_costs.csv,support,Cloud support,IT,4500,CH,none,0.0,900.0,monthly fee estimated from other months
+2025-09-01,server,aws_costs.csv,vm-test,Test environments,IT,4500,IE,vcpu_h,46080.0,2022.96,cost estimated for 1 day
+2025-09-01,cloud,azure_costs.csv,db-fin,Finance database,Finance,4200,CH,vcpu_h,11520.0,1036.26,cost estimated for 1 day
+2025-09-01,cloud,azure_costs.csv,dp-dev,Data platform development,IT,4500,DE,node_h,5760.0,3181.0757,
+2025-09-01,cloud,azure_costs.csv,dp-prod,Data platform production,Consulting,4000,CH,node_h,11520.0,6360.7,
+2025-09-01,cloud,azure_costs.csv,dp-storage,Data platform storage,Consulting,4000,CH,gb_day,641735.33,447.98,data for 29 of 30 days
+2025-09-01,server,azure_costs.csv,gpu-ml,AI compute server (GPU),Consulting,4000,DE,gpu_h,720.0,938.0388,cost estimated for 1 day
+2025-09-01,cloud,azure_costs.csv,pbi-kap,Power BI capacity,IT,4500,CH,capacity_day,30.0,1976.95,cost estimated for 1 day
+2025-09-01,server,azure_costs.csv,vm-app,App server,IT,4500,CH,vcpu_h,36224.87,1893.86,
+2025-09-01,cloud,hoster_invoice.csv,logs,Logging and monitoring,IT,4500,CH,gb_day,1539814.16,1086.7654,cost estimated for 3 days
+2025-09-01,cloud,hoster_invoice.csv,st-proj,Project file storage,Consulting,4000,CH,gb_day,443571.67,310.0686,cost estimated for 1 day
+2025-09-01,cloud,hoster_invoice.csv,web-cdn,Web hosting and CDN,Marketing,4300,CH,gb_transfer,1099.85,82.5753,cost estimated for 1 day
+2025-09-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Consulting,4000,EU,seat_month,41.0,408.4625,
+2025-09-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Finance,4200,EU,seat_month,12.0,119.55,
+2025-09-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),HR,4400,EU,seat_month,6.0,59.775,
+2025-09-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),IT,4500,EU,seat_month,16.0,159.4,
+2025-09-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Management,4900,EU,seat_month,6.0,59.775,
+2025-09-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Marketing,4300,EU,seat_month,12.0,119.55,
+2025-09-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Sales,4100,EU,seat_month,21.0,209.2125,
+2025-09-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Consulting,4000,EU,seat_month,297.0,2811.105,
+2025-09-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Finance,4200,EU,seat_month,70.0,997.84,
+2025-09-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,HR,4400,EU,seat_month,30.0,223.77,
+2025-09-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,IT,4500,EU,seat_month,104.0,1024.517,
+2025-09-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Management,4900,EU,seat_month,25.0,183.92,
+2025-09-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Marketing,4300,EU,seat_month,68.0,1235.86,
+2025-09-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Sales,4100,EU,seat_month,96.0,1724.544,
+2025-10-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),HR,4400,EU,messages,119.0,79.87,
+2025-10-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Marketing,4300,EU,messages,147.0,139.7725,
+2025-10-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Sales,4100,EU,messages,279.0,239.61,
+2025-10-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Consulting,4000,EU,messages,5918.0,399.35,
+2025-10-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),IT,4500,EU,messages,2546.0,159.74,
+2025-10-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Marketing,4300,EU,messages,1686.0,119.805,
+2025-10-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Consulting,4000,EU,messages,5647.0,862.596,
+2025-10-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Finance,4200,EU,messages,1283.0,263.571,
+2025-10-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),HR,4400,EU,messages,469.0,119.805,
+2025-10-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),IT,4500,EU,messages,2704.0,335.454,
+2025-10-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Management,4900,EU,messages,686.0,119.805,
+2025-10-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Marketing,4300,EU,messages,2066.0,263.571,
+2025-10-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Sales,4100,EU,messages,3701.0,431.298,
+2025-10-01,ai,ai_usage.csv,ai-agent,Support-Agent,Consulting,,EU,tokens,45581834.0,112.7919,
+2025-10-01,ai,ai_usage.csv,ai-agent2,Other agents,Sales,,EU,tokens,70952041.0,171.1746,
+2025-10-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Consulting,,EU,tokens,119548737.0,534.4482,"incomplete token usage: 0 missing input values, 12 missing output values; known tokens only"
+2025-10-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Finance,,EU,tokens,37861876.0,170.1204,"incomplete token usage: 0 missing input values, 8 missing output values; known tokens only"
+2025-10-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,HR,,EU,tokens,22536602.0,100.7631,"incomplete token usage: 0 missing input values, 9 missing output values; known tokens only"
+2025-10-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,IT,,EU,tokens,33218608.0,149.0009,"incomplete token usage: 0 missing input values, 9 missing output values; known tokens only"
+2025-10-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Management,,EU,tokens,16791104.0,76.4747,"incomplete token usage: 0 missing input values, 13 missing output values; known tokens only"
+2025-10-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Marketing,,EU,tokens,47027922.0,214.79,"incomplete token usage: 0 missing input values, 13 missing output values; known tokens only"
+2025-10-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Sales,,EU,tokens,76408845.0,340.0414,"incomplete token usage: 0 missing input values, 8 missing output values; known tokens only"
+2025-10-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,Consulting,,EU,tokens,3246621.0,12.4006,"incomplete token usage: 0 missing input values, 4 missing output values; known tokens only"
+2025-10-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,HR,,EU,tokens,2172293.0,8.1356,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2025-10-01,ai,ai_usage.csv,ai-marketing,Marketing text analysis,Marketing,,EU,tokens,195260186.0,596.4654,
+2025-10-01,ai,ai_usage.csv,ai-quote,Quote generator,Sales,,EU,tokens,4542980.0,40.7564,
+2025-10-01,ai,ai_usage.csv,ai-report,Report-Agent,Finance,,EU,tokens,3119894.0,8.5443,"incomplete token usage: 0 missing input values, 2 missing output values; known tokens only"
+2025-10-01,cloud,aws_costs.csv,cicd,CI/CD pipelines,IT,4500,IE,runner_min,64475.75,516.36,
+2025-10-01,cloud,aws_costs.csv,net-egress,Data egress,IT,4500,CH,gb_transfer,2169.59,162.97,data for 30 of 31 days
+2025-10-01,server,aws_costs.csv,sandbox,Test account,Test account,9100,IE,vcpu_h,138.0,5.505,cost estimated for 1 day; data for 23 of 31 days
+2025-10-01,cloud,aws_costs.csv,st-archive,Legacy project archive,Sales,4100,CH,gb_day,869384.26,607.7,cost estimated for 1 day; data for 30 of 31 days
+2025-10-01,cloud,aws_costs.csv,st-backup,Backup archive,IT,4500,IE,gb_day,1740328.45,692.02,
+2025-10-01,cloud,aws_costs.csv,support,Cloud support,IT,4500,CH,none,0.0,900.0,
+2025-10-01,server,aws_costs.csv,vm-test,Test environments,IT,4500,IE,vcpu_h,47616.0,2095.715,cost estimated for 1 day
+2025-10-01,cloud,azure_costs.csv,db-fin,Finance database,Finance,4200,CH,vcpu_h,11904.0,1068.4,cost estimated for 1 day
+2025-10-01,cloud,azure_costs.csv,dp-dev,Data platform development,IT,4500,DE,node_h,5952.0,3271.4976,cost estimated for 1 day
+2025-10-01,cloud,azure_costs.csv,dp-prod,Data platform production,Consulting,4000,CH,node_h,11904.0,6569.24,
+2025-10-01,cloud,azure_costs.csv,dp-storage,Data platform storage,Consulting,4000,CH,gb_day,675631.74,472.91,data for 30 of 31 days
+2025-10-01,server,azure_costs.csv,gpu-ml,AI compute server (GPU),Consulting,4000,DE,gpu_h,744.0,965.7495,
+2025-10-01,cloud,azure_costs.csv,pbi-kap,Power BI capacity,IT,4500,CH,capacity_day,30.0,1977.82,cost estimated for 1 day; data for 30 of 31 days
+2025-10-01,server,azure_costs.csv,vm-app,App server,IT,4500,CH,vcpu_h,36197.42,1868.37,data for 30 of 31 days
+2025-10-01,cloud,hoster_invoice.csv,logs,Logging and monitoring,IT,4500,CH,gb_day,1635602.69,1148.68,
+2025-10-01,cloud,hoster_invoice.csv,st-proj,Project file storage,Consulting,4000,CH,gb_day,467344.82,327.41,
+2025-10-01,cloud,hoster_invoice.csv,web-cdn,Web hosting and CDN,Marketing,4300,CH,gb_transfer,1178.03,88.63,
+2025-10-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Consulting,4000,EU,seat_month,41.0,409.3338,
+2025-10-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Finance,4200,EU,seat_month,12.0,119.805,
+2025-10-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),HR,4400,EU,seat_month,6.0,59.9025,
+2025-10-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),IT,4500,EU,seat_month,17.0,169.7238,
+2025-10-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Management,4900,EU,seat_month,6.0,59.9025,
+2025-10-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Marketing,4300,EU,seat_month,12.0,119.805,
+2025-10-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Sales,4100,EU,seat_month,21.0,209.6588,
+2025-10-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Consulting,4000,EU,seat_month,297.0,2805.6567,
+2025-10-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Finance,4200,EU,seat_month,70.0,997.312,
+2025-10-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,HR,4400,EU,seat_month,30.0,223.591,
+2025-10-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,IT,4500,EU,seat_month,104.0,1022.1939,
+2025-10-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Management,4900,EU,seat_month,25.0,183.656,
+2025-10-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Marketing,4300,EU,seat_month,68.0,1233.774,
+2025-10-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Sales,4100,EU,seat_month,102.0,1831.4304,
+2025-11-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),HR,4400,EU,messages,140.0,80.36,
+2025-11-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Marketing,4300,EU,messages,171.0,140.63,
+2025-11-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Sales,4100,EU,messages,320.0,241.08,
+2025-11-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Consulting,4000,EU,messages,5615.0,401.8,
+2025-11-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),IT,4500,EU,messages,2848.0,160.72,
+2025-11-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Marketing,4300,EU,messages,1853.0,120.54,
+2025-11-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Consulting,4000,EU,messages,5473.0,867.888,
+2025-11-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Finance,4200,EU,messages,1300.0,265.188,
+2025-11-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),HR,4400,EU,messages,518.0,120.54,
+2025-11-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),IT,4500,EU,messages,2645.0,337.512,
+2025-11-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Management,4900,EU,messages,634.0,120.54,
+2025-11-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Marketing,4300,EU,messages,1875.0,265.188,
+2025-11-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Sales,4100,EU,messages,3004.0,433.944,
+2025-11-01,ai,ai_usage.csv,ai-agent,Support-Agent,Consulting,,EU,tokens,41965569.0,104.7311,"incomplete token usage: 0 missing input values, 2 missing output values; known tokens only"
+2025-11-01,ai,ai_usage.csv,ai-agent2,Other agents,Sales,,EU,tokens,71332221.0,173.8201,"incomplete token usage: 0 missing input values, 2 missing output values; known tokens only"
+2025-11-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Consulting,,EU,tokens,113139042.0,512.3899,"incomplete token usage: 0 missing input values, 8 missing output values; known tokens only"
+2025-11-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Finance,,EU,tokens,36438716.0,164.8012,"incomplete token usage: 0 missing input values, 12 missing output values; known tokens only"
+2025-11-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,HR,,EU,tokens,20252312.0,91.5207,"incomplete token usage: 0 missing input values, 4 missing output values; known tokens only"
+2025-11-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,IT,,EU,tokens,31404513.0,140.7156,"incomplete token usage: 0 missing input values, 7 missing output values; known tokens only"
+2025-11-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Management,,EU,tokens,15103999.0,68.7145,"incomplete token usage: 0 missing input values, 11 missing output values; known tokens only"
+2025-11-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Marketing,,EU,tokens,45092840.0,204.4954,"incomplete token usage: 0 missing input values, 11 missing output values; known tokens only"
+2025-11-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Sales,,EU,tokens,71997013.0,330.6251,"incomplete token usage: 0 missing input values, 11 missing output values; known tokens only"
+2025-11-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,Consulting,,EU,tokens,3067757.0,11.8667,"incomplete token usage: 0 missing input values, 2 missing output values; known tokens only"
+2025-11-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,HR,,EU,tokens,2037590.0,7.6093,"incomplete token usage: 0 missing input values, 2 missing output values; known tokens only"
+2025-11-01,ai,ai_usage.csv,ai-marketing,Marketing text analysis,Marketing,,EU,tokens,281665181.0,866.1186,
+2025-11-01,ai,ai_usage.csv,ai-quote,Quote generator,Sales,,EU,tokens,4014154.0,36.0555,
+2025-11-01,ai,ai_usage.csv,ai-report,Report-Agent,Finance,,EU,tokens,3072326.0,8.426,
+2025-11-01,cloud,aws_costs.csv,cicd,CI/CD pipelines,IT,4500,IE,runner_min,54393.05,434.28,
+2025-11-01,cloud,aws_costs.csv,net-egress,Data egress,IT,4500,CH,gb_transfer,2251.02,168.71,data for 29 of 30 days
+2025-11-01,server,aws_costs.csv,sandbox,Test account,Test account,9100,IE,vcpu_h,120.0,4.73,data for 20 of 30 days; source marks rows for exclusion (kept)
+2025-11-01,cloud,aws_costs.csv,st-archive,Legacy project archive,Sales,4100,CH,gb_day,842939.35,589.59,data for 29 of 30 days
+2025-11-01,cloud,aws_costs.csv,st-backup,Backup archive,IT,4500,IE,gb_day,1734815.59,692.9724,cost estimated for 1 day
+2025-11-01,cloud,aws_costs.csv,support,Cloud support,IT,4500,CH,none,0.0,900.0,
+2025-11-01,server,aws_costs.csv,vm-test,Test environments,IT,4500,IE,vcpu_h,46080.0,2029.81,cost estimated for 2 days
+2025-11-01,cloud,azure_costs.csv,db-fin,Finance database,Finance,4200,CH,vcpu_h,11520.0,1030.57,
+2025-11-01,cloud,azure_costs.csv,dp-dev,Data platform development,IT,4500,DE,node_h,5568.0,3056.5308,data for 29 of 30 days
+2025-11-01,cloud,azure_costs.csv,dp-prod,Data platform production,Consulting,4000,CH,node_h,11136.0,6141.555,cost estimated for 1 day; data for 29 of 30 days
+2025-11-01,cloud,azure_costs.csv,dp-storage,Data platform storage,Consulting,4000,CH,gb_day,690670.47,484.32,
+2025-11-01,server,azure_costs.csv,gpu-ml,AI compute server (GPU),Consulting,4000,DE,gpu_h,696.0,901.3204,cost estimated for 1 day; data for 29 of 30 days
+2025-11-01,cloud,azure_costs.csv,pbi-kap,Power BI capacity,IT,4500,CH,capacity_day,30.0,1983.24,
+2025-11-01,server,azure_costs.csv,vm-app,App server,IT,4500,CH,vcpu_h,36311.23,1886.3862,cost estimated for 1 day
+2025-11-01,cloud,hoster_invoice.csv,logs,Logging and monitoring,IT,4500,CH,gb_day,1548813.84,1082.0577,cost estimated for 1 day; data for 29 of 30 days
+2025-11-01,cloud,hoster_invoice.csv,st-proj,Project file storage,Consulting,4000,CH,gb_day,460442.68,321.76,
+2025-11-01,cloud,hoster_invoice.csv,web-cdn,Web hosting and CDN,Marketing,4300,CH,gb_transfer,1086.28,80.828,cost estimated for 2 days; data for 29 of 30 days
+2025-11-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Consulting,4000,EU,seat_month,41.0,411.845,
+2025-11-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Finance,4200,EU,seat_month,12.0,120.54,
+2025-11-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),HR,4400,EU,seat_month,6.0,60.27,
+2025-11-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),IT,4500,EU,seat_month,17.0,170.765,
+2025-11-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Management,4900,EU,seat_month,6.0,60.27,
+2025-11-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Marketing,4300,EU,seat_month,12.0,120.54,
+2025-11-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Sales,4100,EU,seat_month,21.0,210.945,
+2025-11-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Consulting,4000,EU,seat_month,297.0,2813.877,
+2025-11-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Finance,4200,EU,seat_month,70.0,997.912,
+2025-11-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,HR,4400,EU,seat_month,30.0,224.136,
+2025-11-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,IT,4500,EU,seat_month,104.0,1024.9226,
+2025-11-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Management,4900,EU,seat_month,25.0,183.956,
+2025-11-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Marketing,4300,EU,seat_month,68.0,1235.188,
+2025-11-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Sales,4100,EU,seat_month,102.0,1832.4504,
+2025-12-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),HR,4400,EU,messages,176.0,79.7,
+2025-12-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Marketing,4300,EU,messages,135.0,139.475,
+2025-12-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Sales,4100,EU,messages,330.0,239.1,
+2025-12-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Consulting,4000,EU,messages,6881.0,398.5,
+2025-12-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),IT,4500,EU,messages,2339.0,159.4,
+2025-12-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Marketing,4300,EU,messages,1876.0,119.55,
+2025-12-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Consulting,4000,EU,messages,5954.0,602.532,
+2025-12-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Finance,4200,EU,messages,1405.0,184.107,
+2025-12-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),HR,4400,EU,messages,279.0,83.685,
+2025-12-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),IT,4500,EU,messages,2125.0,234.318,
+2025-12-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Management,4900,EU,messages,583.0,83.685,
+2025-12-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Marketing,4300,EU,messages,2255.0,184.107,
+2025-12-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Sales,4100,EU,messages,2935.0,301.266,
+2025-12-01,ai,ai_usage.csv,ai-agent,Support-Agent,Consulting,,EU,tokens,46404677.0,114.5782,
+2025-12-01,ai,ai_usage.csv,ai-agent2,Other agents,Sales,,EU,tokens,79252643.0,190.4495,
+2025-12-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Consulting,,EU,tokens,115196012.0,515.7653,"incomplete token usage: 0 missing input values, 11 missing output values; known tokens only"
+2025-12-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Finance,,EU,tokens,36256932.0,159.8932,"incomplete token usage: 0 missing input values, 8 missing output values; known tokens only"
+2025-12-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,HR,,EU,tokens,20962986.0,93.2269,"incomplete token usage: 0 missing input values, 7 missing output values; known tokens only"
+2025-12-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,IT,,EU,tokens,31193372.0,139.4164,"incomplete token usage: 0 missing input values, 8 missing output values; known tokens only"
+2025-12-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Management,,EU,tokens,15790294.0,68.8821,"incomplete token usage: 0 missing input values, 10 missing output values; known tokens only"
+2025-12-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Marketing,,EU,tokens,47472543.0,212.3623,"incomplete token usage: 0 missing input values, 10 missing output values; known tokens only"
+2025-12-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Sales,,EU,tokens,72234371.0,323.4004,"incomplete token usage: 0 missing input values, 11 missing output values; known tokens only"
+2025-12-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,Consulting,,EU,tokens,3017844.0,10.9706,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2025-12-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,HR,,EU,tokens,2007500.0,7.3581,"incomplete token usage: 0 missing input values, 2 missing output values; known tokens only"
+2025-12-01,ai,ai_usage.csv,ai-marketing,Marketing text analysis,Marketing,,EU,tokens,204053586.0,620.4243,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2025-12-01,ai,ai_usage.csv,ai-quote,Quote generator,Sales,,EU,tokens,4240410.0,38.158,
+2025-12-01,ai,ai_usage.csv,ai-report,Report-Agent,Finance,,EU,tokens,3285871.0,8.9224,
+2025-12-01,cloud,aws_costs.csv,cicd,CI/CD pipelines,IT,4500,IE,runner_min,58392.43,469.88,
+2025-12-01,cloud,aws_costs.csv,net-egress,Data egress,IT,4500,CH,gb_transfer,2359.98,177.2275,cost estimated for 1 day; data for 30 of 31 days
+2025-12-01,server,aws_costs.csv,sandbox,Test account,Test account,9100,IE,vcpu_h,120.0,4.81,data for 20 of 31 days; source marks rows for exclusion (kept)
+2025-12-01,cloud,aws_costs.csv,st-archive,Legacy project archive,Sales,4100,CH,gb_day,845368.69,590.24,data for 29 of 31 days
+2025-12-01,cloud,aws_costs.csv,st-backup,Backup archive,IT,4500,IE,gb_day,1846538.57,739.5749,cost estimated for 1 day
+2025-12-01,cloud,aws_costs.csv,support,Cloud support,IT,4500,CH,none,0.0,900.0,
+2025-12-01,server,aws_costs.csv,vm-test,Test environments,IT,4500,IE,vcpu_h,46080.0,2026.27,data for 30 of 31 days
+2025-12-01,cloud,azure_costs.csv,db-fin,Finance database,Finance,4200,CH,vcpu_h,11520.0,1038.36,data for 30 of 31 days
+2025-12-01,cloud,azure_costs.csv,dp-dev,Data platform development,IT,4500,DE,node_h,5952.0,3252.1273,cost estimated for 2 days
+2025-12-01,cloud,azure_costs.csv,dp-prod,Data platform production,Consulting,4000,CH,node_h,11904.0,6519.98,cost estimated for 1 day
+2025-12-01,cloud,azure_costs.csv,dp-storage,Data platform storage,Consulting,4000,CH,gb_day,729080.84,510.3965,cost estimated for 1 day
+2025-12-01,server,azure_costs.csv,gpu-ml,AI compute server (GPU),Consulting,4000,DE,gpu_h,720.0,940.339,cost estimated for 1 day; data for 30 of 31 days
+2025-12-01,cloud,azure_costs.csv,pbi-kap,Power BI capacity,IT,4500,CH,capacity_day,31.0,2045.94,
+2025-12-01,server,azure_costs.csv,vm-app,App server,IT,4500,CH,vcpu_h,36436.26,1892.5994,cost estimated for 1 day; data for 30 of 31 days
+2025-12-01,cloud,hoster_invoice.csv,logs,Logging and monitoring,IT,4500,CH,gb_day,1594456.93,1114.32,data for 30 of 31 days
+2025-12-01,cloud,hoster_invoice.csv,st-proj,Project file storage,Consulting,4000,CH,gb_day,486783.33,338.9,
+2025-12-01,cloud,hoster_invoice.csv,web-cdn,Web hosting and CDN,Marketing,4300,CH,gb_transfer,1207.89,90.2409,cost estimated for 1 day
+2025-12-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Consulting,4000,EU,seat_month,42.0,418.425,
+2025-12-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Finance,4200,EU,seat_month,12.0,119.55,
+2025-12-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),HR,4400,EU,seat_month,6.0,59.775,
+2025-12-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),IT,4500,EU,seat_month,17.0,169.3625,
+2025-12-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Management,4900,EU,seat_month,6.0,59.775,
+2025-12-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Marketing,4300,EU,seat_month,12.0,119.55,
+2025-12-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Sales,4100,EU,seat_month,21.0,209.2125,
+2025-12-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Consulting,4000,EU,seat_month,297.0,2808.6696,
+2025-12-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Finance,4200,EU,seat_month,70.0,997.624,
+2025-12-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,HR,4400,EU,seat_month,30.0,223.662,
+2025-12-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,IT,4500,EU,seat_month,104.0,1023.5576,
+2025-12-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Management,4900,EU,seat_month,25.0,183.812,
+2025-12-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Marketing,4300,EU,seat_month,68.0,1235.104,
+2025-12-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Sales,4100,EU,seat_month,102.0,1831.9608,
+2026-01-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),HR,4400,EU,messages,161.0,78.99,
+2026-01-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Marketing,4300,EU,messages,155.0,138.2325,
+2026-01-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Sales,4100,EU,messages,292.0,236.97,
+2026-01-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Consulting,4000,EU,messages,6539.0,394.95,
+2026-01-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),IT,4500,EU,messages,2429.0,157.98,
+2026-01-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Marketing,4300,EU,messages,1832.0,118.485,
+2026-01-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Consulting,4000,EU,messages,6147.0,597.1644,
+2026-01-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Finance,4200,EU,messages,1445.0,182.4669,
+2026-01-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),HR,4400,EU,messages,241.0,82.9395,
+2026-01-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),IT,4500,EU,messages,2086.0,232.2306,
+2026-01-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Management,4900,EU,messages,663.0,82.9395,
+2026-01-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Marketing,4300,EU,messages,1937.0,182.4669,
+2026-01-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Sales,4100,EU,messages,3874.0,298.5822,
+2026-01-01,ai,ai_usage.csv,ai-agent,Support-Agent,Consulting,,EU,tokens,53610599.0,131.3421,
+2026-01-01,ai,ai_usage.csv,ai-agent2,Other agents,Sales,,EU,tokens,101560670.0,241.6117,
+2026-01-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Consulting,,EU,tokens,121269438.0,534.369,"incomplete token usage: 0 missing input values, 6 missing output values; known tokens only"
+2026-01-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Finance,,EU,tokens,41426864.0,183.2111,"incomplete token usage: 0 missing input values, 15 missing output values; known tokens only"
+2026-01-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,HR,,EU,tokens,23971593.0,105.6234,"incomplete token usage: 0 missing input values, 7 missing output values; known tokens only"
+2026-01-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,IT,,EU,tokens,35343668.0,159.2413,"incomplete token usage: 0 missing input values, 10 missing output values; known tokens only"
+2026-01-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Management,,EU,tokens,17684117.0,78.3678,"incomplete token usage: 0 missing input values, 4 missing output values; known tokens only"
+2026-01-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Marketing,,EU,tokens,53781431.0,236.8331,"incomplete token usage: 0 missing input values, 13 missing output values; known tokens only"
+2026-01-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Sales,,EU,tokens,83624753.0,369.1052,"incomplete token usage: 0 missing input values, 6 missing output values; known tokens only"
+2026-01-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,Consulting,,EU,tokens,3649008.0,13.2771,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2026-01-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,HR,,EU,tokens,2241095.0,8.3589,"incomplete token usage: 0 missing input values, 7 missing output values; known tokens only"
+2026-01-01,ai,ai_usage.csv,ai-marketing,Marketing text analysis,Marketing,,EU,tokens,208016354.0,630.1992,
+2026-01-01,ai,ai_usage.csv,ai-quote,Quote generator,Sales,,EU,tokens,4424224.0,40.1902,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2026-01-01,ai,ai_usage.csv,ai-report,Report-Agent,Finance,,EU,tokens,3181270.0,8.5627,"incomplete token usage: 0 missing input values, 2 missing output values; known tokens only"
+2026-01-01,cloud,aws_costs.csv,cicd,CI/CD pipelines,IT,4500,IE,runner_min,54744.96,438.05,data for 28 of 31 days
+2026-01-01,cloud,aws_costs.csv,net-egress,Data egress,IT,4500,CH,gb_transfer,7325.93,547.0383,cost estimated for 1 day; data for 30 of 31 days
+2026-01-01,server,aws_costs.csv,sandbox,Test account,Test account,9100,IE,vcpu_h,126.0,5.03,data for 21 of 31 days; source marks rows for exclusion (kept)
+2026-01-01,cloud,aws_costs.csv,st-archive,Legacy project archive,Sales,4100,CH,gb_day,848095.6,592.8233,cost estimated for 2 days; data for 29 of 31 days
+2026-01-01,cloud,aws_costs.csv,st-backup,Backup archive,IT,4500,IE,gb_day,1902973.96,764.9511,cost estimated for 1 day
+2026-01-01,cloud,aws_costs.csv,support,Cloud support,IT,4500,CH,none,0.0,900.0,
+2026-01-01,server,aws_costs.csv,vm-test,Test environments,IT,4500,IE,vcpu_h,47616.0,2095.86,
+2026-01-01,cloud,azure_costs.csv,db-fin,Finance database,Finance,4200,CH,vcpu_h,11904.0,1073.07,cost estimated for 2 days
+2026-01-01,cloud,azure_costs.csv,dp-dev,Data platform development,IT,4500,DE,node_h,5952.0,3274.1286,
+2026-01-01,cloud,azure_costs.csv,dp-prod,Data platform production,Consulting,4000,CH,node_h,14880.0,8189.87,
+2026-01-01,cloud,azure_costs.csv,dp-storage,Data platform storage,Consulting,4000,CH,gb_day,746030.89,521.6093,cost estimated for 1 day
+2026-01-01,server,azure_costs.csv,gpu-ml,AI compute server (GPU),Consulting,4000,DE,gpu_h,744.0,960.6905,
+2026-01-01,cloud,azure_costs.csv,pbi-kap,Power BI capacity,IT,4500,CH,capacity_day,30.0,1980.73,cost estimated for 1 day; data for 30 of 31 days
+2026-01-01,server,azure_costs.csv,vm-app,App server,IT,4500,CH,vcpu_h,37855.22,1974.77,
+2026-01-01,cloud,hoster_invoice.csv,logs,Logging and monitoring,IT,4500,CH,gb_day,1657457.75,1158.49,
+2026-01-01,cloud,hoster_invoice.csv,st-proj,Project file storage,Consulting,4000,CH,gb_day,479770.98,335.03,data for 30 of 31 days
+2026-01-01,cloud,hoster_invoice.csv,web-cdn,Web hosting and CDN,Marketing,4300,CH,gb_transfer,1235.66,93.0807,cost estimated for 1 day
+2026-01-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Consulting,4000,EU,seat_month,42.0,414.6975,
+2026-01-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Finance,4200,EU,seat_month,13.0,128.3588,
+2026-01-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),HR,4400,EU,seat_month,6.0,59.2425,
+2026-01-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),IT,4500,EU,seat_month,17.0,167.8538,
+2026-01-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Management,4900,EU,seat_month,6.0,59.2425,
+2026-01-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Marketing,4300,EU,seat_month,13.0,128.3588,
+2026-01-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Sales,4100,EU,seat_month,21.0,207.3488,
+2026-01-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Consulting,4000,EU,seat_month,297.0,2788.8366,
+2026-01-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Finance,4200,EU,seat_month,70.0,996.052,
+2026-01-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,HR,4400,EU,seat_month,30.0,222.521,
+2026-01-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,IT,4500,EU,seat_month,104.0,1016.483,
+2026-01-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Management,4900,EU,seat_month,25.0,183.026,
+2026-01-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Marketing,4300,EU,seat_month,68.0,1230.596,
+2026-01-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Sales,4100,EU,seat_month,102.0,1829.2884,
+2026-02-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),HR,4400,EU,messages,0.0,77.3,
+2026-02-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Marketing,4300,EU,messages,161.0,135.275,
+2026-02-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Sales,4100,EU,messages,338.0,231.9,
+2026-02-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Consulting,4000,EU,messages,6339.0,386.5,
+2026-02-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),IT,4500,EU,messages,2529.0,154.6,
+2026-02-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Marketing,4300,EU,messages,2116.0,115.95,
+2026-02-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Consulting,4000,EU,messages,6494.0,584.388,
+2026-02-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Finance,4200,EU,messages,1536.0,178.563,
+2026-02-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),HR,4400,EU,messages,241.0,81.165,
+2026-02-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),IT,4500,EU,messages,2720.0,227.262,
+2026-02-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Management,4900,EU,messages,876.0,81.165,
+2026-02-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Marketing,4300,EU,messages,2358.0,178.563,
+2026-02-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Sales,4100,EU,messages,2603.0,292.194,
+2026-02-01,ai,ai_usage.csv,ai-agent,Support-Agent,Consulting,,EU,tokens,56177991.0,134.4565,
+2026-02-01,ai,ai_usage.csv,ai-agent2,Other agents,Sales,,EU,tokens,97267150.0,227.1809,
+2026-02-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Consulting,,EU,tokens,130592362.0,563.4814,"incomplete token usage: 0 missing input values, 9 missing output values; known tokens only"
+2026-02-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Finance,,EU,tokens,42531920.0,184.9827,"incomplete token usage: 0 missing input values, 4 missing output values; known tokens only"
+2026-02-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,HR,,EU,tokens,23875923.0,104.9585,"incomplete token usage: 0 missing input values, 10 missing output values; known tokens only"
+2026-02-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,IT,,EU,tokens,36501934.0,157.989,"incomplete token usage: 0 missing input values, 8 missing output values; known tokens only"
+2026-02-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Management,,EU,tokens,18411705.0,77.4953,"incomplete token usage: 0 missing input values, 4 missing output values; known tokens only"
+2026-02-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Marketing,,EU,tokens,53797678.0,234.1378,"incomplete token usage: 0 missing input values, 8 missing output values; known tokens only"
+2026-02-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Sales,,EU,tokens,85079789.0,367.5789,"incomplete token usage: 0 missing input values, 6 missing output values; known tokens only"
+2026-02-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,Consulting,,EU,tokens,3592695.0,13.4091,"incomplete token usage: 0 missing input values, 5 missing output values; known tokens only"
+2026-02-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,HR,,EU,tokens,2503798.0,8.9534,
+2026-02-01,ai,ai_usage.csv,ai-marketing,Marketing text analysis,Marketing,,EU,tokens,196287102.0,585.7433,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2026-02-01,ai,ai_usage.csv,ai-quote,Quote generator,Sales,,EU,tokens,4948975.0,43.5108,
+2026-02-01,ai,ai_usage.csv,ai-report,Report-Agent,Finance,,EU,tokens,3031637.0,7.946,
+2026-02-01,cloud,aws_costs.csv,cicd,CI/CD pipelines,IT,4500,IE,runner_min,52849.18,424.0694,cost estimated for 2 days
+2026-02-01,cloud,aws_costs.csv,net-egress,Data egress,IT,4500,CH,gb_transfer,2360.53,177.599,cost estimated for 1 day
+2026-02-01,server,aws_costs.csv,sandbox,Test account,Test account,9100,IE,vcpu_h,120.0,4.78,data for 20 of 28 days; source marks rows for exclusion (kept)
+2026-02-01,cloud,aws_costs.csv,st-archive,Legacy project archive,Sales,4100,CH,gb_day,821156.45,575.3259,cost estimated for 1 day
+2026-02-01,cloud,aws_costs.csv,st-backup,Backup archive,IT,4500,IE,gb_day,1768756.26,701.6029,cost estimated for 2 days
+2026-02-01,cloud,aws_costs.csv,support,Cloud support,IT,4500,CH,none,0.0,900.0,
+2026-02-01,server,aws_costs.csv,vm-test,Test environments,IT,4500,IE,vcpu_h,43008.0,1894.92,
+2026-02-01,cloud,azure_costs.csv,db-fin,Finance database,Finance,4200,CH,none,0.0,-600.0,SLA credit
+2026-02-01,cloud,azure_costs.csv,db-fin,Finance database,Finance,4200,CH,vcpu_h,10368.0,934.3,cost estimated for 2 days; data for 27 of 28 days
+2026-02-01,cloud,azure_costs.csv,dp-dev,Data platform development,IT,4500,DE,node_h,5184.0,2879.2005,data for 27 of 28 days
+2026-02-01,cloud,azure_costs.csv,dp-prod,Data platform production,Consulting,4000,CH,node_h,13440.0,7428.97,
+2026-02-01,cloud,azure_costs.csv,dp-storage,Data platform storage,Consulting,4000,CH,gb_day,684324.34,478.6047,cost estimated for 1 day
+2026-02-01,server,azure_costs.csv,gpu-ml,AI compute server (GPU),Consulting,4000,DE,gpu_h,672.0,873.0345,cost estimated for 1 day
+2026-02-01,cloud,azure_costs.csv,pbi-kap,Power BI capacity,IT,4500,CH,capacity_day,28.0,1845.84,
+2026-02-01,server,azure_costs.csv,vm-app,App server,IT,4500,CH,vcpu_h,33078.23,1722.67,data for 27 of 28 days
+2026-02-01,cloud,hoster_invoice.csv,logs,Logging and monitoring,IT,4500,CH,gb_day,1433841.2,1000.81,data for 27 of 28 days
+2026-02-01,cloud,hoster_invoice.csv,st-proj,Project file storage,Consulting,4000,CH,gb_day,455148.17,317.03,
+2026-02-01,cloud,hoster_invoice.csv,web-cdn,Web hosting and CDN,Marketing,4300,CH,gb_transfer,1111.32,83.48,
+2026-02-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Consulting,4000,EU,seat_month,42.0,405.825,
+2026-02-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Finance,4200,EU,seat_month,13.0,125.6125,
+2026-02-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),HR,4400,EU,seat_month,6.0,57.975,
+2026-02-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),IT,4500,EU,seat_month,17.0,164.2625,
+2026-02-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Management,4900,EU,seat_month,6.0,57.975,
+2026-02-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Marketing,4300,EU,seat_month,13.0,125.6125,
+2026-02-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Sales,4100,EU,seat_month,21.0,202.9125,
+2026-02-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Consulting,4000,EU,seat_month,297.0,2743.092,
+2026-02-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Finance,4200,EU,seat_month,70.0,992.44,
+2026-02-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,HR,4400,EU,seat_month,30.0,219.87,
+2026-02-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,IT,4500,EU,seat_month,104.0,1000.22,
+2026-02-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Management,4900,EU,seat_month,25.0,181.22,
+2026-02-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Marketing,4300,EU,seat_month,68.0,1220.32,
+2026-02-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Sales,4100,EU,seat_month,102.0,1823.148,
+2026-03-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),HR,4400,EU,messages,0.0,78.68,
+2026-03-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Marketing,4300,EU,messages,159.0,137.69,
+2026-03-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Sales,4100,EU,messages,364.0,236.04,
+2026-03-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Consulting,4000,EU,messages,8056.0,393.4,
+2026-03-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),IT,4500,EU,messages,3295.0,157.36,
+2026-03-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Marketing,4300,EU,messages,1954.0,118.02,
+2026-03-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Consulting,4000,EU,messages,6063.0,594.8208,
+2026-03-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Finance,4200,EU,messages,1477.0,181.7508,
+2026-03-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),HR,4400,EU,messages,311.0,82.614,
+2026-03-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),IT,4500,EU,messages,2252.0,231.3192,
+2026-03-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Management,4900,EU,messages,656.0,82.614,
+2026-03-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Marketing,4300,EU,messages,1725.0,181.7508,
+2026-03-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Sales,4100,EU,messages,3756.0,297.4104,
+2026-03-01,ai,ai_usage.csv,ai-agent,Support-Agent,Consulting,,EU,tokens,65032545.0,158.5651,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2026-03-01,ai,ai_usage.csv,ai-agent2,Other agents,Sales,,EU,tokens,106511197.0,254.7543,"incomplete token usage: 0 missing input values, 2 missing output values; known tokens only"
+2026-03-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Consulting,,EU,tokens,153324673.0,679.8389,"incomplete token usage: 0 missing input values, 7 missing output values; known tokens only"
+2026-03-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Finance,,EU,tokens,48152999.0,212.0496,"incomplete token usage: 0 missing input values, 12 missing output values; known tokens only"
+2026-03-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,HR,,EU,tokens,27733440.0,124.6979,"incomplete token usage: 0 missing input values, 11 missing output values; known tokens only"
+2026-03-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,IT,,EU,tokens,42014921.0,186.3176,"incomplete token usage: 0 missing input values, 5 missing output values; known tokens only"
+2026-03-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Management,,EU,tokens,20635423.0,90.0733,"incomplete token usage: 0 missing input values, 8 missing output values; known tokens only"
+2026-03-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Marketing,,EU,tokens,63532300.0,281.915,"incomplete token usage: 0 missing input values, 9 missing output values; known tokens only"
+2026-03-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Sales,,EU,tokens,98159209.0,433.5811,"incomplete token usage: 0 missing input values, 12 missing output values; known tokens only"
+2026-03-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,Consulting,,EU,tokens,4466831.0,16.4531,"incomplete token usage: 0 missing input values, 2 missing output values; known tokens only"
+2026-03-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,HR,,EU,tokens,2980891.0,10.9183,
+2026-03-01,ai,ai_usage.csv,ai-marketing,Marketing text analysis,Marketing,,EU,tokens,1508326969.0,3988.7294,
+2026-03-01,ai,ai_usage.csv,ai-quote,Quote generator,Sales,,EU,tokens,4797384.0,44.2554,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2026-03-01,ai,ai_usage.csv,ai-report,Report-Agent,Finance,,EU,tokens,3400728.0,9.013,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2026-03-01,cloud,aws_costs.csv,cicd,CI/CD pipelines,IT,4500,IE,runner_min,56052.46,447.34,data for 30 of 31 days
+2026-03-01,cloud,aws_costs.csv,net-egress,Data egress,IT,4500,CH,gb_transfer,2626.56,197.4669,cost estimated for 2 days
+2026-03-01,server,aws_costs.csv,sandbox,Test account,Test account,9100,IE,vcpu_h,126.0,5.02,cost estimated for 1 day; data for 21 of 31 days; source marks rows for exclusion (kept)
+2026-03-01,cloud,aws_costs.csv,st-archive,Legacy project archive,Sales,4100,CH,gb_day,882354.08,619.69,data for 30 of 31 days
+2026-03-01,cloud,aws_costs.csv,st-backup,Backup archive,IT,4500,IE,gb_day,2015192.35,811.06,
+2026-03-01,cloud,aws_costs.csv,support,Cloud support,IT,4500,CH,none,0.0,900.0,
+2026-03-01,server,aws_costs.csv,vm-test,Test environments,IT,4500,IE,vcpu_h,47616.0,2108.81,
+2026-03-01,cloud,azure_costs.csv,db-fin,Finance database,Finance,4200,CH,vcpu_h,11904.0,1071.88,cost estimated for 2 days
+2026-03-01,cloud,azure_costs.csv,dp-dev,Data platform development,IT,4500,DE,node_h,5952.0,3271.321,cost estimated for 1 day
+2026-03-01,cloud,azure_costs.csv,dp-prod,Data platform production,Consulting,4000,CH,node_h,14880.0,8202.565,cost estimated for 3 days
+2026-03-01,cloud,azure_costs.csv,dp-storage,Data platform storage,Consulting,4000,CH,gb_day,772863.08,543.57,
+2026-03-01,server,azure_costs.csv,gpu-ml,AI compute server (GPU),Consulting,4000,DE,gpu_h,744.0,965.1917,cost estimated for 2 days
+2026-03-01,cloud,azure_costs.csv,pbi-kap,Power BI capacity,IT,4500,CH,capacity_day,31.0,2044.155,cost estimated for 1 day
+2026-03-01,server,azure_costs.csv,vm-app,App server,IT,4500,CH,vcpu_h,38063.16,1968.0271,cost estimated for 1 day
+2026-03-01,cloud,hoster_invoice.csv,logs,Logging and monitoring,IT,4500,CH,gb_day,1689741.9,1182.4704,cost estimated for 2 days
+2026-03-01,cloud,hoster_invoice.csv,st-proj,Project file storage,Consulting,4000,CH,gb_day,514377.76,361.45,
+2026-03-01,cloud,hoster_invoice.csv,web-cdn,Web hosting and CDN,Marketing,4300,CH,gb_transfer,1262.67,94.0058,cost estimated for 1 day
+2026-03-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Consulting,4000,EU,seat_month,42.0,413.07,
+2026-03-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Finance,4200,EU,seat_month,13.0,127.855,
+2026-03-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),HR,4400,EU,seat_month,6.0,59.01,
+2026-03-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),IT,4500,EU,seat_month,17.0,167.195,
+2026-03-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Management,4900,EU,seat_month,6.0,59.01,
+2026-03-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Marketing,4300,EU,seat_month,13.0,127.855,
+2026-03-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Sales,4100,EU,seat_month,21.0,206.535,
+2026-03-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Consulting,4000,EU,seat_month,306.0,2843.2636,
+2026-03-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Finance,4200,EU,seat_month,70.0,993.544,
+2026-03-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,HR,4400,EU,seat_month,30.0,221.112,
+2026-03-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,IT,4500,EU,seat_month,104.0,1005.303,
+2026-03-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Management,4900,EU,seat_month,25.0,181.772,
+2026-03-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Marketing,4300,EU,seat_month,68.0,1222.252,
+2026-03-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Sales,4100,EU,seat_month,102.0,1825.0248,
+2026-04-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),HR,4400,EU,messages,165.0,78.7,
+2026-04-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Marketing,4300,EU,messages,131.0,137.725,
+2026-04-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Sales,4100,EU,messages,165.0,236.1,
+2026-04-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Consulting,4000,EU,messages,8268.0,393.5,
+2026-04-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),IT,4500,EU,messages,2950.0,157.4,
+2026-04-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Marketing,4300,EU,messages,2520.0,118.05,
+2026-04-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Consulting,4000,EU,messages,7119.0,594.972,
+2026-04-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Finance,4200,EU,messages,1734.0,181.797,
+2026-04-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),HR,4400,EU,messages,499.0,82.635,
+2026-04-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),IT,4500,EU,messages,2982.0,231.378,
+2026-04-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Management,4900,EU,messages,492.0,82.635,
+2026-04-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Marketing,4300,EU,messages,2195.0,181.797,
+2026-04-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Sales,4100,EU,messages,3162.0,297.486,
+2026-04-01,ai,ai_usage.csv,ai-agent,Support-Agent,Consulting,,EU,tokens,63794626.0,155.6823,
+2026-04-01,ai,ai_usage.csv,ai-agent2,Other agents,Sales,,EU,tokens,108863344.0,260.1667,
+2026-04-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Consulting,,EU,tokens,146777280.0,653.5837,"incomplete token usage: 0 missing input values, 5 missing output values; known tokens only"
+2026-04-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Finance,,EU,tokens,48949575.0,215.3669,"incomplete token usage: 0 missing input values, 10 missing output values; known tokens only"
+2026-04-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,HR,,EU,tokens,27690724.0,122.4963,"incomplete token usage: 0 missing input values, 10 missing output values; known tokens only"
+2026-04-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,IT,,EU,tokens,41089417.0,180.7952,"incomplete token usage: 0 missing input values, 6 missing output values; known tokens only"
+2026-04-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Management,,EU,tokens,21023807.0,92.8043,"incomplete token usage: 0 missing input values, 11 missing output values; known tokens only"
+2026-04-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Marketing,,EU,tokens,61190302.0,270.8086,"incomplete token usage: 0 missing input values, 13 missing output values; known tokens only"
+2026-04-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Sales,,EU,tokens,96482301.0,425.4142,"incomplete token usage: 0 missing input values, 10 missing output values; known tokens only"
+2026-04-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,Consulting,,EU,tokens,4012627.0,15.2533,"incomplete token usage: 0 missing input values, 5 missing output values; known tokens only"
+2026-04-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,HR,,EU,tokens,2962039.0,11.0181,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2026-04-01,ai,ai_usage.csv,ai-marketing,Marketing text analysis,Marketing,,EU,tokens,231104466.0,695.716,
+2026-04-01,ai,ai_usage.csv,ai-quote,Quote generator,Sales,,EU,tokens,4934068.0,42.991,
+2026-04-01,ai,ai_usage.csv,ai-report,Report-Agent,Finance,,EU,tokens,3333535.0,8.8781,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2026-04-01,cloud,aws_costs.csv,cicd,CI/CD pipelines,IT,4500,IE,runner_min,53583.08,428.66,
+2026-04-01,cloud,aws_costs.csv,net-egress,Data egress,IT,4500,CH,gb_transfer,2516.58,189.4849,cost estimated for 1 day
+2026-04-01,server,aws_costs.csv,sandbox,Test account,Test account,9100,IE,vcpu_h,108.0,4.24,data for 18 of 30 days
+2026-04-01,cloud,aws_costs.csv,st-archive,Legacy project archive,Sales,4100,CH,gb_day,885021.05,620.0206,cost estimated for 2 days
+2026-04-01,cloud,aws_costs.csv,st-backup,Backup archive,IT,4500,IE,gb_day,2008808.79,802.3163,cost estimated for 2 days
+2026-04-01,cloud,aws_costs.csv,support,Cloud support,IT,4500,CH,none,0.0,900.0,
+2026-04-01,server,aws_costs.csv,vm-test,Test environments,IT,4500,IE,vcpu_h,46080.0,2030.87,cost estimated for 2 days
+2026-04-01,cloud,azure_costs.csv,db-fin,Finance database,Finance,4200,CH,vcpu_h,11520.0,1032.63,
+2026-04-01,cloud,azure_costs.csv,dp-dev,Data platform development,IT,4500,DE,node_h,5760.0,3183.6903,cost estimated for 2 days
+2026-04-01,cloud,azure_costs.csv,dp-prod,Data platform production,Consulting,4000,CH,node_h,14400.0,7922.24,
+2026-04-01,cloud,azure_costs.csv,dp-storage,Data platform storage,Consulting,4000,CH,gb_day,763551.18,532.6,
+2026-04-01,server,azure_costs.csv,gpu-ml,AI compute server (GPU),Consulting,4000,DE,gpu_h,696.0,907.8398,data for 29 of 30 days
+2026-04-01,cloud,azure_costs.csv,pbi-kap,Power BI capacity,IT,4500,CH,capacity_day,29.0,1914.465,cost estimated for 1 day; data for 29 of 30 days
+2026-04-01,server,azure_costs.csv,vm-app,App server,IT,4500,CH,vcpu_h,34672.15,1802.5478,cost estimated for 2 days; data for 28 of 30 days; suspicious free text in source ignored
+2026-04-01,cloud,hoster_invoice.csv,logs,Logging and monitoring,IT,4500,CH,gb_day,1673649.57,1169.25,
+2026-04-01,cloud,hoster_invoice.csv,st-proj,Project file storage,Consulting,4000,CH,gb_day,509253.88,356.23,
+2026-04-01,cloud,hoster_invoice.csv,web-cdn,Web hosting and CDN,Marketing,4300,CH,gb_transfer,1286.26,96.89,
+2026-04-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Consulting,4000,EU,seat_month,42.0,413.175,
+2026-04-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Finance,4200,EU,seat_month,13.0,127.8875,
+2026-04-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),HR,4400,EU,seat_month,6.0,59.025,
+2026-04-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),IT,4500,EU,seat_month,17.0,167.2375,
+2026-04-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Management,4900,EU,seat_month,6.0,59.025,
+2026-04-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Marketing,4300,EU,seat_month,13.0,127.8875,
+2026-04-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Sales,4100,EU,seat_month,21.0,206.5875,
+2026-04-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Consulting,4000,EU,seat_month,306.0,2860.1922,
+2026-04-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Finance,4200,EU,seat_month,70.0,994.996,
+2026-04-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,HR,4400,EU,seat_month,30.0,221.848,
+2026-04-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,IT,4500,EU,seat_month,104.0,1011.7549,
+2026-04-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Management,4900,EU,seat_month,25.0,182.498,
+2026-04-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Marketing,4300,EU,seat_month,68.0,1227.306,
+2026-04-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Sales,4100,EU,seat_month,102.0,1827.4932,
+2026-05-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),HR,4400,EU,messages,0.0,78.38,
+2026-05-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Marketing,4300,EU,messages,140.0,137.165,
+2026-05-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Sales,4100,EU,messages,172.0,235.14,
+2026-05-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Consulting,4000,EU,messages,8417.0,391.9,
+2026-05-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),IT,4500,EU,messages,3136.0,156.76,
+2026-05-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Marketing,4300,EU,messages,2570.0,117.57,
+2026-05-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Consulting,4000,EU,messages,7211.0,592.5528,
+2026-05-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Finance,4200,EU,messages,1517.0,181.0578,
+2026-05-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),HR,4400,EU,messages,336.0,82.299,
+2026-05-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),IT,4500,EU,messages,2809.0,230.4372,
+2026-05-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Management,4900,EU,messages,660.0,82.299,
+2026-05-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Marketing,4300,EU,messages,1970.0,181.0578,
+2026-05-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Sales,4100,EU,messages,3046.0,296.2764,
+2026-05-01,ai,ai_usage.csv,ai-agent,Support-Agent,Consulting,,EU,tokens,163076954.0,364.2006,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2026-05-01,ai,ai_usage.csv,ai-agent2,Other agents,Sales,,EU,tokens,115863077.0,275.8568,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2026-05-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Consulting,,EU,tokens,146630042.0,644.1862,"incomplete token usage: 0 missing input values, 9 missing output values; known tokens only"
+2026-05-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Finance,,EU,tokens,44803477.0,199.4478,"incomplete token usage: 0 missing input values, 15 missing output values; known tokens only"
+2026-05-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,HR,,EU,tokens,25931880.0,114.8873,"incomplete token usage: 0 missing input values, 12 missing output values; known tokens only"
+2026-05-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,IT,,EU,tokens,39311205.0,173.1194,"incomplete token usage: 0 missing input values, 6 missing output values; known tokens only"
+2026-05-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Management,,EU,tokens,19889005.0,86.476,"incomplete token usage: 0 missing input values, 9 missing output values; known tokens only"
+2026-05-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Marketing,,EU,tokens,60511284.0,261.554,"incomplete token usage: 0 missing input values, 10 missing output values; known tokens only"
+2026-05-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Sales,,EU,tokens,89130934.0,398.8749,"incomplete token usage: 0 missing input values, 12 missing output values; known tokens only"
+2026-05-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,Consulting,,EU,tokens,4205836.0,15.3953,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2026-05-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,HR,,EU,tokens,2585445.0,9.569,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2026-05-01,ai,ai_usage.csv,ai-marketing,Marketing text analysis,Marketing,,EU,tokens,234509509.0,711.7578,"incomplete token usage: 0 missing input values, 2 missing output values; known tokens only"
+2026-05-01,ai,ai_usage.csv,ai-quote,Quote generator,Sales,,EU,tokens,4435977.0,42.8702,"incomplete token usage: 0 missing input values, 4 missing output values; known tokens only"
+2026-05-01,ai,ai_usage.csv,ai-report,Report-Agent,Finance,,EU,tokens,3411400.0,9.017,"incomplete token usage: 0 missing input values, 2 missing output values; known tokens only"
+2026-05-01,cloud,aws_costs.csv,cicd,CI/CD pipelines,IT,4500,IE,runner_min,50175.51,403.15,
+2026-05-01,cloud,aws_costs.csv,net-egress,Data egress,IT,4500,CH,gb_transfer,2893.18,217.26,
+2026-05-01,server,aws_costs.csv,sandbox,Test account,Test account,9100,IE,vcpu_h,102.0,4.1,data for 17 of 31 days; source marks rows for exclusion (kept)
+2026-05-01,cloud,aws_costs.csv,st-archive,Legacy project archive,Sales,4100,CH,gb_day,917271.02,641.53,
+2026-05-01,cloud,aws_costs.csv,st-backup,Backup archive,IT,4500,IE,gb_day,2138177.07,851.9045,cost estimated for 1 day
+2026-05-01,cloud,aws_costs.csv,support,Cloud support,IT,4500,CH,none,0.0,900.0,
+2026-05-01,server,aws_costs.csv,vm-test,Test environments,IT,4500,IE,vcpu_h,47616.0,2086.66,cost estimated for 1 day
+2026-05-01,cloud,azure_costs.csv,db-fin,Finance database,Finance,4200,CH,vcpu_h,11904.0,1069.58,cost estimated for 1 day
+2026-05-01,cloud,azure_costs.csv,dp-dev,Data platform development,IT,4500,DE,node_h,5952.0,3267.0164,cost estimated for 2 days
+2026-05-01,cloud,azure_costs.csv,dp-prod,Data platform production,Consulting,4000,CH,node_h,14880.0,8199.78,
+2026-05-01,cloud,azure_costs.csv,dp-storage,Data platform storage,Consulting,4000,CH,gb_day,775586.76,543.46,data for 30 of 31 days
+2026-05-01,server,azure_costs.csv,gpu-ml,AI compute server (GPU),Consulting,4000,DE,gpu_h,744.0,971.8342,cost estimated for 2 days
+2026-05-01,cloud,azure_costs.csv,pbi-kap,Power BI capacity,IT,4500,CH,capacity_day,31.0,2043.36,
+2026-05-01,server,azure_costs.csv,vm-app,App server,IT,4500,CH,vcpu_h,38376.18,2000.0154,cost estimated for 1 day
+2026-05-01,cloud,hoster_invoice.csv,logs,Logging and monitoring,IT,4500,CH,gb_day,1689966.38,1176.2,data for 30 of 31 days
+2026-05-01,cloud,hoster_invoice.csv,st-proj,Project file storage,Consulting,4000,CH,gb_day,536202.87,375.1984,cost estimated for 1 day
+2026-05-01,cloud,hoster_invoice.csv,web-cdn,Web hosting and CDN,Marketing,4300,CH,gb_transfer,1266.07,94.81,data for 30 of 31 days
+2026-05-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Consulting,4000,EU,seat_month,42.0,411.495,
+2026-05-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Finance,4200,EU,seat_month,13.0,127.3675,
+2026-05-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),HR,4400,EU,seat_month,6.0,58.785,
+2026-05-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),IT,4500,EU,seat_month,17.0,166.5575,
+2026-05-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Management,4900,EU,seat_month,6.0,58.785,
+2026-05-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Marketing,4300,EU,seat_month,13.0,127.3675,
+2026-05-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Sales,4100,EU,seat_month,21.0,205.7475,
+2026-05-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Consulting,4000,EU,seat_month,306.0,2845.8306,
+2026-05-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Finance,4200,EU,seat_month,70.0,993.844,
+2026-05-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,HR,4400,EU,seat_month,30.0,221.112,
+2026-05-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,IT,4500,EU,seat_month,104.0,1006.5965,
+2026-05-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Management,4900,EU,seat_month,25.0,181.922,
+2026-05-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Marketing,4300,EU,seat_month,68.0,1223.722,
+2026-05-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Sales,4100,EU,seat_month,102.0,1825.5348,
+2026-06-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),HR,4400,EU,messages,0.0,79.92,
+2026-06-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Marketing,4300,EU,messages,135.0,139.86,
+2026-06-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Sales,4100,EU,messages,387.0,239.76,
+2026-06-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Consulting,4000,EU,messages,6909.0,399.6,
+2026-06-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),IT,4500,EU,messages,2823.0,159.84,
+2026-06-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Marketing,4300,EU,messages,2301.0,119.88,
+2026-06-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Consulting,4000,EU,messages,6442.0,604.1952,
+2026-06-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Finance,4200,EU,messages,1273.0,184.6152,
+2026-06-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),HR,4400,EU,messages,334.0,83.916,
+2026-06-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),IT,4500,EU,messages,2701.0,234.9648,
+2026-06-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Management,4900,EU,messages,644.0,83.916,
+2026-06-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Marketing,4300,EU,messages,2229.0,184.6152,
+2026-06-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Sales,4100,EU,messages,2937.0,302.0976,
+2026-06-01,ai,ai_usage.csv,ai-agent,Support-Agent,Consulting,,EU,tokens,76115272.0,188.8438,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2026-06-01,ai,ai_usage.csv,ai-agent2,Other agents,Sales,,EU,tokens,142287139.0,343.5976,
+2026-06-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Consulting,,EU,tokens,183008090.0,832.842,"incomplete token usage: 0 missing input values, 12 missing output values; known tokens only"
+2026-06-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Finance,,EU,tokens,58006716.0,263.308,"incomplete token usage: 0 missing input values, 19 missing output values; known tokens only"
+2026-06-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,HR,,EU,tokens,33316104.0,149.1223,"incomplete token usage: 0 missing input values, 3 missing output values; known tokens only"
+2026-06-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,IT,,EU,tokens,49970211.0,223.5391,"incomplete token usage: 0 missing input values, 7 missing output values; known tokens only"
+2026-06-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Management,,EU,tokens,25463455.0,113.3278,"incomplete token usage: 0 missing input values, 9 missing output values; known tokens only"
+2026-06-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Marketing,,EU,tokens,76334315.0,339.5892,"incomplete token usage: 0 missing input values, 8 missing output values; known tokens only"
+2026-06-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Sales,,EU,tokens,116950267.0,527.2763,"incomplete token usage: 0 missing input values, 7 missing output values; known tokens only"
+2026-06-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,Consulting,,EU,tokens,5150333.0,19.3987,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2026-06-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,HR,,EU,tokens,3297639.0,12.4843,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2026-06-01,ai,ai_usage.csv,ai-marketing,Marketing text analysis,Marketing,,EU,tokens,241905117.0,744.1368,"incomplete token usage: 0 missing input values, 2 missing output values; known tokens only"
+2026-06-01,ai,ai_usage.csv,ai-quote,Quote generator,Sales,,EU,tokens,5593885.0,53.8671,"incomplete token usage: 0 missing input values, 2 missing output values; known tokens only"
+2026-06-01,ai,ai_usage.csv,ai-report,Report-Agent,Finance,,EU,tokens,3524857.0,9.4603,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2026-06-01,cloud,aws_costs.csv,cicd,CI/CD pipelines,IT,4500,IE,runner_min,60863.3,484.88,
+2026-06-01,cloud,aws_costs.csv,net-egress,Data egress,IT,4500,CH,gb_transfer,2817.83,211.0139,cost estimated for 1 day
+2026-06-01,server,aws_costs.csv,sandbox,Test account,Test account,9100,IE,vcpu_h,132.0,5.27,data for 22 of 30 days; source marks rows for exclusion (kept)
+2026-06-01,cloud,aws_costs.csv,st-archive,Legacy project archive,Sales,4100,CH,gb_day,890350.15,620.4942,cost estimated for 1 day
+2026-06-01,cloud,aws_costs.csv,st-backup,Backup archive,IT,4500,IE,gb_day,2131404.03,848.0425,cost estimated for 2 days
+2026-06-01,cloud,aws_costs.csv,support,Cloud support,IT,4500,CH,none,0.0,900.0,
+2026-06-01,server,aws_costs.csv,vm-test,Test environments,IT,4500,IE,vcpu_h,46080.0,2023.52,
+2026-06-01,cloud,azure_costs.csv,db-fin,Finance database,Finance,4200,CH,vcpu_h,11520.0,1031.8,
+2026-06-01,cloud,azure_costs.csv,dp-dev,Data platform development,IT,4500,DE,node_h,5760.0,3194.043,
+2026-06-01,cloud,azure_costs.csv,dp-prod,Data platform production,Consulting,4000,CH,node_h,14400.0,7970.79,
+2026-06-01,cloud,azure_costs.csv,dp-prod,Data platform production,Consulting,4000,CH,none,0.0,-2400.0,SLA credit
+2026-06-01,cloud,azure_costs.csv,dp-storage,Data platform storage,Consulting,4000,CH,gb_day,767198.92,535.0902,cost estimated for 2 days; data for 29 of 30 days
+2026-06-01,server,azure_costs.csv,gpu-ml,AI compute server (GPU),Consulting,4000,DE,gpu_h,672.0,876.1687,cost estimated for 1 day; data for 28 of 30 days
+2026-06-01,cloud,azure_costs.csv,pbi-kap,Power BI capacity,IT,4500,CH,capacity_day,30.0,1976.22,cost estimated for 2 days
+2026-06-01,server,azure_costs.csv,vm-app,App server,IT,4500,CH,vcpu_h,36222.01,1893.6348,cost estimated for 1 day; data for 29 of 30 days
+2026-06-01,cloud,hoster_invoice.csv,logs,Logging and monitoring,IT,4500,CH,gb_day,1592385.1,1114.3504,cost estimated for 1 day; data for 28 of 30 days
+2026-06-01,cloud,hoster_invoice.csv,st-proj,Project file storage,Consulting,4000,CH,gb_day,529319.28,371.92,
+2026-06-01,cloud,hoster_invoice.csv,web-cdn,Web hosting and CDN,Marketing,4300,CH,gb_transfer,1202.25,90.61,data for 27 of 30 days
+2026-06-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Consulting,4000,EU,seat_month,42.0,419.58,
+2026-06-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Finance,4200,EU,seat_month,13.0,129.87,
+2026-06-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),HR,4400,EU,seat_month,6.0,59.94,
+2026-06-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),IT,4500,EU,seat_month,17.0,169.83,
+2026-06-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Management,4900,EU,seat_month,6.0,59.94,
+2026-06-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Marketing,4300,EU,seat_month,13.0,129.87,
+2026-06-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Sales,4100,EU,seat_month,21.0,209.79,
+2026-06-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Consulting,4000,EU,seat_month,306.0,2879.817,
+2026-06-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Finance,4200,EU,seat_month,70.0,996.364,
+2026-06-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,HR,4400,EU,seat_month,30.0,223.142,
+2026-06-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,IT,4500,EU,seat_month,112.0,1096.2966,
+2026-06-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Management,4900,EU,seat_month,25.0,183.182,
+2026-06-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Marketing,4300,EU,seat_month,68.0,1230.386,
+2026-06-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Sales,4100,EU,seat_month,102.0,1829.8188,
+2026-07-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),HR,4400,EU,messages,0.0,81.07,
+2026-07-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Marketing,4300,EU,messages,157.0,141.8725,
+2026-07-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Sales,4100,EU,messages,304.0,243.21,
+2026-07-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Consulting,4000,EU,messages,7271.0,405.35,
+2026-07-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),IT,4500,EU,messages,2676.0,162.14,
+2026-07-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Marketing,4300,EU,messages,2450.0,121.605,
+2026-07-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Consulting,4000,EU,messages,6197.0,612.8892,
+2026-07-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Finance,4200,EU,messages,1791.0,187.2717,
+2026-07-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),HR,4400,EU,messages,328.0,85.1235,
+2026-07-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),IT,4500,EU,messages,2600.0,238.3458,
+2026-07-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Management,4900,EU,messages,724.0,85.1235,
+2026-07-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Marketing,4300,EU,messages,2165.0,187.2717,
+2026-07-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Sales,4100,EU,messages,3870.0,306.4446,
+2026-07-01,ai,ai_usage.csv,ai-agent,Support-Agent,Consulting,,EU,tokens,68758974.0,173.6111,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2026-07-01,ai,ai_usage.csv,ai-agent2,Other agents,Sales,,EU,tokens,163284378.0,401.0059,
+2026-07-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Consulting,,EU,tokens,156795410.0,705.9399,"incomplete token usage: 0 missing input values, 13 missing output values; known tokens only"
+2026-07-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Finance,,EU,tokens,49977965.0,226.3069,"incomplete token usage: 0 missing input values, 11 missing output values; known tokens only"
+2026-07-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,HR,,EU,tokens,28713017.0,132.6952,"incomplete token usage: 0 missing input values, 9 missing output values; known tokens only"
+2026-07-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,IT,,EU,tokens,42789589.0,196.1415,"incomplete token usage: 0 missing input values, 15 missing output values; known tokens only"
+2026-07-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Management,,EU,tokens,21452951.0,96.3176,"incomplete token usage: 0 missing input values, 5 missing output values; known tokens only"
+2026-07-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Marketing,,EU,tokens,64340888.0,290.4218,"incomplete token usage: 0 missing input values, 13 missing output values; known tokens only"
+2026-07-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Sales,,EU,tokens,101523445.0,458.0065,"incomplete token usage: 0 missing input values, 15 missing output values; known tokens only"
+2026-07-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,Consulting,,EU,tokens,4578482.0,17.4816,"incomplete token usage: 0 missing input values, 2 missing output values; known tokens only"
+2026-07-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,HR,,EU,tokens,3102134.0,11.6588,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2026-07-01,ai,ai_usage.csv,ai-marketing,Marketing text analysis,Marketing,,EU,tokens,246105649.0,769.6683,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2026-07-01,ai,ai_usage.csv,ai-quote,Quote generator,Sales,,EU,tokens,4965976.0,45.8939,
+2026-07-01,ai,ai_usage.csv,ai-report,Report-Agent,Finance,,EU,tokens,3657957.0,9.9504,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2026-07-01,cloud,aws_costs.csv,cicd,CI/CD pipelines,IT,4500,IE,runner_min,60592.02,485.06,data for 30 of 31 days
+2026-07-01,cloud,aws_costs.csv,net-egress,Data egress,IT,4500,CH,gb_transfer,2895.21,216.65,
+2026-07-01,server,aws_costs.csv,sandbox,Test account,Test account,9100,IE,vcpu_h,132.0,5.22,data for 22 of 31 days
+2026-07-01,cloud,aws_costs.csv,st-archive,Legacy project archive,Sales,4100,CH,gb_day,892988.58,626.16,data for 30 of 31 days
+2026-07-01,cloud,aws_costs.csv,st-backup,Backup archive,IT,4500,IE,gb_day,2268667.44,905.5547,cost estimated for 1 day
+2026-07-01,cloud,aws_costs.csv,support,Cloud support,IT,4500,CH,none,0.0,900.0,
+2026-07-01,server,aws_costs.csv,vm-test,Test environments,IT,4500,IE,vcpu_h,47616.0,2106.22,
+2026-07-01,cloud,azure_costs.csv,db-fin,Finance database,Finance,4200,CH,vcpu_h,11904.0,1074.54,cost estimated for 1 day
+2026-07-01,cloud,azure_costs.csv,dp-dev,Data platform development,IT,4500,DE,node_h,5952.0,3280.7429,cost estimated for 1 day
+2026-07-01,cloud,azure_costs.csv,dp-prod,Data platform production,Consulting,4000,CH,node_h,14880.0,8203.1,cost estimated for 1 day
+2026-07-01,cloud,azure_costs.csv,dp-storage,Data platform storage,Consulting,4000,CH,gb_day,835318.63,585.46,
+2026-07-01,server,azure_costs.csv,gpu-ml,AI compute server (GPU),Consulting,4000,DE,gpu_h,744.0,970.4268,
+2026-07-01,cloud,azure_costs.csv,pbi-kap,Power BI capacity,IT,4500,CH,capacity_day,31.0,2047.92,
+2026-07-01,server,azure_costs.csv,vm-app,App server,IT,4500,CH,vcpu_h,38719.56,2017.05,
+2026-07-01,cloud,hoster_invoice.csv,logs,Logging and monitoring,IT,4500,CH,gb_day,1775371.62,1244.19,
+2026-07-01,cloud,hoster_invoice.csv,st-proj,Project file storage,Consulting,4000,CH,gb_day,557259.14,389.53,suspicious free text in source ignored
+2026-07-01,cloud,hoster_invoice.csv,web-cdn,Web hosting and CDN,Marketing,4300,CH,gb_transfer,1351.3,102.03,data for 30 of 31 days
+2026-07-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Consulting,4000,EU,seat_month,42.0,476.6916,
+2026-07-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Finance,4200,EU,seat_month,13.0,147.5474,
+2026-07-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),HR,4400,EU,seat_month,6.0,68.0988,
+2026-07-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),IT,4500,EU,seat_month,17.0,192.9466,
+2026-07-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Management,4900,EU,seat_month,6.0,68.0988,
+2026-07-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Marketing,4300,EU,seat_month,13.0,147.5474,
+2026-07-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Sales,4100,EU,seat_month,21.0,238.3458,
+2026-07-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Consulting,4000,EU,seat_month,306.0,2906.4764,
+2026-07-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Finance,4200,EU,seat_month,70.0,998.356,
+2026-07-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,HR,4400,EU,seat_month,30.0,224.713,
+2026-07-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,IT,4500,EU,seat_month,112.0,1105.986,
+2026-07-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Management,4900,EU,seat_month,25.0,184.178,
+2026-07-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Marketing,4300,EU,seat_month,68.0,1235.748,
+2026-07-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Sales,4100,EU,seat_month,102.0,1833.2052,
+2026-08-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),HR,4400,EU,messages,0.0,80.76,
+2026-08-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Marketing,4300,EU,messages,184.0,141.33,
+2026-08-01,ai,ai_subscriptions.csv,sub-chatgpt,ChatGPT Team (subscription),Sales,4100,EU,messages,198.0,242.28,
+2026-08-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Consulting,4000,EU,messages,6613.0,403.8,
+2026-08-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),IT,4500,EU,messages,2893.0,161.52,
+2026-08-01,ai,ai_subscriptions.csv,sub-claude,Claude Team (subscription),Marketing,4300,EU,messages,2675.0,121.14,
+2026-08-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Consulting,4000,EU,messages,5950.0,610.5456,
+2026-08-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Finance,4200,EU,messages,1584.0,186.5556,
+2026-08-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),HR,4400,EU,messages,645.0,84.798,
+2026-08-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),IT,4500,EU,messages,2937.0,237.4344,
+2026-08-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Management,4900,EU,messages,863.0,84.798,
+2026-08-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Marketing,4300,EU,messages,2196.0,186.5556,
+2026-08-01,ai,ai_subscriptions.csv,sub-copilot,Microsoft Copilot (subscription),Sales,4100,EU,messages,3155.0,305.2728,
+2026-08-01,ai,ai_usage.csv,ai-agent,Support-Agent,Consulting,,EU,tokens,73906081.0,184.7496,
+2026-08-01,ai,ai_usage.csv,ai-agent2,Other agents,Sales,,EU,tokens,164525606.0,403.3876,
+2026-08-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Consulting,,EU,tokens,161159880.0,740.3691,"incomplete token usage: 0 missing input values, 9 missing output values; known tokens only"
+2026-08-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Finance,,EU,tokens,53194484.0,237.1941,"incomplete token usage: 0 missing input values, 10 missing output values; known tokens only"
+2026-08-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,HR,,EU,tokens,29816403.0,135.245,"incomplete token usage: 0 missing input values, 8 missing output values; known tokens only"
+2026-08-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,IT,,EU,tokens,43180518.0,194.2947,"incomplete token usage: 0 missing input values, 11 missing output values; known tokens only"
+2026-08-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Management,,EU,tokens,21585854.0,98.2694,"incomplete token usage: 0 missing input values, 8 missing output values; known tokens only"
+2026-08-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Marketing,,EU,tokens,67044417.0,305.9462,"incomplete token usage: 0 missing input values, 14 missing output values; known tokens only"
+2026-08-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Sales,,EU,tokens,103412537.0,468.2248,"incomplete token usage: 0 missing input values, 7 missing output values; known tokens only"
+2026-08-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,Consulting,,EU,tokens,4661048.0,17.6582,"incomplete token usage: 0 missing input values, 2 missing output values; known tokens only"
+2026-08-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,HR,,EU,tokens,3228249.0,12.1306,"incomplete token usage: 0 missing input values, 3 missing output values; known tokens only"
+2026-08-01,ai,ai_usage.csv,ai-marketing,Marketing text analysis,Marketing,,EU,tokens,252417508.0,778.5018,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2026-08-01,ai,ai_usage.csv,ai-quote,Quote generator,Sales,,EU,tokens,5084723.0,45.7964,
+2026-08-01,ai,ai_usage.csv,ai-report,Report-Agent,Finance,,EU,tokens,3780209.0,10.2139,
+2026-08-01,cloud,aws_costs.csv,cicd,CI/CD pipelines,IT,4500,IE,runner_min,57849.29,462.3095,cost estimated for 1 day
+2026-08-01,cloud,aws_costs.csv,net-egress,Data egress,IT,4500,CH,gb_transfer,3046.25,229.0027,cost estimated for 2 days
+2026-08-01,server,aws_costs.csv,sandbox,Test account,Test account,9100,IE,vcpu_h,120.0,4.81,data for 20 of 31 days; source marks rows for exclusion (kept)
+2026-08-01,cloud,aws_costs.csv,st-archive,Legacy project archive,Sales,4100,CH,gb_day,865914.5,605.12,data for 29 of 31 days
+2026-08-01,cloud,aws_costs.csv,st-backup,Backup archive,IT,4500,IE,gb_day,2338004.3,938.57,
+2026-08-01,cloud,aws_costs.csv,support,Cloud support,IT,4500,CH,none,0.0,900.0,
+2026-08-01,server,aws_costs.csv,vm-test,Test environments,IT,4500,IE,vcpu_h,47616.0,2093.89,cost estimated for 2 days
+2026-08-01,cloud,azure_costs.csv,db-fin,Finance database,Finance,4200,CH,vcpu_h,11904.0,1072.455,cost estimated for 1 day
+2026-08-01,cloud,azure_costs.csv,dp-dev,Data platform development,IT,4500,DE,node_h,5760.0,3170.2915,cost estimated for 1 day; data for 30 of 31 days
+2026-08-01,cloud,azure_costs.csv,dp-prod,Data platform production,Consulting,4000,CH,node_h,14400.0,7951.19,data for 30 of 31 days
+2026-08-01,cloud,azure_costs.csv,dp-storage,Data platform storage,Consulting,4000,CH,gb_day,826914.19,578.35,data for 30 of 31 days
+2026-08-01,server,azure_costs.csv,gpu-ml,AI compute server (GPU),Consulting,4000,DE,gpu_h,744.0,966.9448,
+2026-08-01,cloud,azure_costs.csv,pbi-kap,Power BI capacity,IT,4500,CH,capacity_day,29.0,1916.225,cost estimated for 1 day; data for 29 of 31 days
+2026-08-01,server,azure_costs.csv,vm-app,App server,IT,4500,CH,vcpu_h,38942.81,2016.24,
+2026-08-01,cloud,hoster_invoice.csv,logs,Logging and monitoring,IT,4500,CH,gb_day,1778600.25,1243.6721,cost estimated for 1 day
+2026-08-01,cloud,hoster_invoice.csv,st-proj,Project file storage,Consulting,4000,CH,gb_day,548437.97,382.21,data for 30 of 31 days
+2026-08-01,cloud,hoster_invoice.csv,web-cdn,Web hosting and CDN,Marketing,4300,CH,gb_transfer,1376.09,103.87,
+2026-08-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Consulting,4000,EU,seat_month,43.0,486.1752,
+2026-08-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Finance,4200,EU,seat_month,13.0,146.9832,
+2026-08-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),HR,4400,EU,seat_month,6.0,67.8384,
+2026-08-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),IT,4500,EU,seat_month,17.0,192.2088,
+2026-08-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Management,4900,EU,seat_month,6.0,67.8384,
+2026-08-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Marketing,4300,EU,seat_month,13.0,146.9832,
+2026-08-01,saas,saas_contracts.csv,saas-m365,Microsoft 365 (licences),Sales,4100,EU,seat_month,21.0,237.4344,
+2026-08-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Consulting,4000,EU,seat_month,306.0,2915.9828,
+2026-08-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Finance,4200,EU,seat_month,70.0,999.256,
+2026-08-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,HR,4400,EU,seat_month,30.0,225.008,
+2026-08-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,IT,4500,EU,seat_month,112.0,1110.2476,
+2026-08-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Management,4900,EU,seat_month,25.0,184.628,
+2026-08-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Marketing,4300,EU,seat_month,68.0,1239.332,
+2026-08-01,saas,saas_contracts.csv,saas-other,Other SaaS contracts,Sales,4100,EU,seat_month,102.0,1834.7352,
+2026-09-01,ai,ai_usage.csv,ai-agent,Support-Agent,Consulting,,EU,tokens,20845289.0,52.5896,
+2026-09-01,ai,ai_usage.csv,ai-agent2,Other agents,Sales,,EU,tokens,32500278.0,80.2271,
+2026-09-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Consulting,,EU,tokens,38630221.0,175.2742,
+2026-09-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Finance,,EU,tokens,12993282.0,59.2663,"incomplete token usage: 0 missing input values, 2 missing output values; known tokens only"
+2026-09-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,HR,,EU,tokens,7137496.0,34.5099,"incomplete token usage: 0 missing input values, 3 missing output values; known tokens only"
+2026-09-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,IT,,EU,tokens,10532964.0,49.8937,"incomplete token usage: 0 missing input values, 2 missing output values; known tokens only"
+2026-09-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Management,,EU,tokens,5368439.0,25.0215,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2026-09-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Marketing,,EU,tokens,15154580.0,71.2756,"incomplete token usage: 0 missing input values, 3 missing output values; known tokens only"
+2026-09-01,ai,ai_usage.csv,ai-assistant,Office AI assistant,Sales,,EU,tokens,25729288.0,118.4091,"incomplete token usage: 0 missing input values, 4 missing output values; known tokens only"
+2026-09-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,Consulting,,EU,tokens,1070362.0,4.3283,"incomplete token usage: 0 missing input values, 2 missing output values; known tokens only"
+2026-09-01,ai,ai_usage.csv,ai-chatbot,Knowledge chatbot,HR,,EU,tokens,647916.0,2.7597,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2026-09-01,ai,ai_usage.csv,ai-marketing,Marketing text analysis,Marketing,,EU,tokens,54043275.0,169.6036,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2026-09-01,ai,ai_usage.csv,ai-quote,Quote generator,Sales,,EU,tokens,1169902.0,10.8398,"incomplete token usage: 0 missing input values, 1 missing output values; known tokens only"
+2026-09-01,ai,ai_usage.csv,ai-report,Report-Agent,Finance,,EU,tokens,705784.0,1.9501,
+2026-09-01,cloud,aws_costs.csv,cicd,CI/CD pipelines,IT,4500,IE,runner_min,10464.0,82.9,data for 6 of 30 days
+2026-09-01,cloud,aws_costs.csv,net-egress,Data egress,IT,4500,CH,gb_transfer,648.58,48.49,data for 6 of 30 days
+2026-09-01,server,aws_costs.csv,sandbox,Test account,Test account,9100,IE,vcpu_h,24.0,0.98,data for 4 of 30 days
+2026-09-01,cloud,aws_costs.csv,st-archive,Legacy project archive,Sales,4100,CH,gb_day,179477.47,126.11,data for 6 of 30 days
+2026-09-01,cloud,aws_costs.csv,st-backup,Backup archive,IT,4500,IE,gb_day,460703.57,182.4399,cost estimated for 1 day; data for 6 of 30 days
+2026-09-01,cloud,aws_costs.csv,support,Cloud support,IT,4500,CH,none,0.0,900.0,
+2026-09-01,server,aws_costs.csv,vm-test,Test environments,IT,4500,IE,vcpu_h,9216.0,403.27,data for 6 of 30 days
+2026-09-01,cloud,azure_costs.csv,db-fin,Finance database,Finance,4200,CH,vcpu_h,1920.0,172.06,data for 5 of 30 days
+2026-09-01,cloud,azure_costs.csv,dp-dev,Data platform development,IT,4500,DE,node_h,1152.0,636.7419,data for 6 of 30 days
+2026-09-01,cloud,azure_costs.csv,dp-prod,Data platform production,Consulting,4000,CH,node_h,2880.0,1585.19,data for 6 of 30 days
+2026-09-01,cloud,azure_costs.csv,dp-storage,Data platform storage,Consulting,4000,CH,gb_day,167162.42,117.24,data for 6 of 30 days
+2026-09-01,server,azure_costs.csv,gpu-ml,AI compute server (GPU),Consulting,4000,DE,gpu_h,144.0,188.9961,data for 6 of 30 days
+2026-09-01,cloud,azure_costs.csv,pbi-kap,Power BI capacity,IT,4500,CH,capacity_day,6.0,396.69,data for 6 of 30 days
+2026-09-01,server,azure_costs.csv,vm-app,App server,IT,4500,CH,vcpu_h,7552.61,393.99,data for 6 of 30 days
+2026-09-01,cloud,hoster_invoice.csv,logs,Logging and monitoring,IT,4500,CH,gb_day,352175.75,244.53,data for 6 of 30 days
+2026-09-01,cloud,hoster_invoice.csv,st-proj,Project file storage,Consulting,4000,CH,gb_day,112278.39,79.38,data for 6 of 30 days
+2026-09-01,cloud,hoster_invoice.csv,web-cdn,Web hosting and CDN,Marketing,4300,CH,gb_transfer,264.91,19.77,data for 6 of 30 days

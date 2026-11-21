@@ -42,7 +42,7 @@ def test_support_fee_is_cost_only_and_estimated_when_missing(facts):
     assert (support["usage_kind"] == "none").all() and (support["usage_qty"] == 0).all()
     assert not support["note"].str.contains("data for").any()
     sep = support.loc[pd.Timestamp("2025-09-01")]  # fee missing in the source
-    assert sep["note"] == "cost estimated for 1 day"
+    assert sep["note"] == "monthly fee estimated from other months"
     assert sep["cost_chf"] == pytest.approx(900.0, rel=0.05)
 
 
@@ -56,3 +56,32 @@ def test_sandbox_kept_as_test_account_and_exclusion_noted(facts):
 def test_locations(facts):
     loc = facts.groupby("resource_id")["location"].first().to_dict()
     assert loc["vm-test"] == "IE" and loc["st-archive"] == "CH"
+
+
+def test_category_per_resource(facts):
+    category = facts.groupby("resource_id")["category"].unique().map(list).to_dict()
+    assert category == {
+        "vm-test": ["server"], "sandbox": ["server"],  # Compute instances = VMs
+        "cicd": ["cloud"], "net-egress": ["cloud"], "st-archive": ["cloud"],
+        "st-backup": ["cloud"], "support": ["cloud"],
+    }
+
+
+def test_every_short_id_is_unique_and_in_the_master_data(raw):
+    from app.pipeline.common import mapping
+
+    pairs = raw[["line_item_resource_id", "resource_id"]].drop_duplicates()
+    assert pairs["resource_id"].is_unique  # one ARN per short ID
+    assert set(pairs["resource_id"]) <= set(mapping().index)
+
+
+def test_unknown_service_stops_the_load(monkeypatch):
+    import app.pipeline.aws as aws
+
+    real = aws.read_csv
+    monkeypatch.setattr(
+        aws, "read_csv",
+        lambda name, **kw: real(name, **kw).replace({"product_servicecode": {"Compute instances": "AmazonEC2"}}),
+    )
+    with pytest.raises(ValueError, match="AmazonEC2"):
+        aws.load_aws()

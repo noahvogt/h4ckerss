@@ -51,6 +51,19 @@ def check_known(df: pd.DataFrame, source: str, **allowed: set) -> None:
         raise ValueError(f"{source}: unexpected values {problems}")
 
 
+def resource_ids(full_ids: pd.Series, separators: str, source: str) -> pd.Series:
+    """Short resource ID = last segment of the provider's full ID (path or ARN).
+
+    Raises if two different full IDs would end up with the same short ID.
+    """
+    short = full_ids.str.split(separators, regex=True).str[-1]
+    pairs = pd.DataFrame({"full": full_ids, "short": short}).drop_duplicates()
+    collisions = sorted(pairs.loc[pairs["short"].duplicated(keep=False), "short"].unique())
+    if collisions:
+        raise ValueError(f"{source}: different resources share the short ID {collisions}")
+    return short
+
+
 def estimate_missing_costs(daily: pd.DataFrame) -> pd.DataFrame:
     """Fill missing cost with quantity x median unit price.
 
@@ -101,8 +114,15 @@ def monthly_facts(
         sorted(set(tags) - {dept}) for tags, dept in zip(g["tag_departments"], master["department"])
     ]
 
+    def estimated_note(n: int) -> str:
+        if not n:
+            return ""
+        if not count_days:  # monthly charge: the whole month's fee was missing
+            return "monthly fee estimated from other months"
+        return f"cost estimated for {days_label(n)}"
+
     notes = join_notes(
-        g["estimated"].map(lambda n: f"cost estimated for {days_label(n)}" if n else ""),
+        g["estimated"].map(estimated_note),
         g["missing_cost"].map(
             lambda n: f"cost incomplete: missing for {days_label(n)}, total too low" if n else ""
         ),

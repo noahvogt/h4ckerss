@@ -11,7 +11,7 @@ import json
 
 import pandas as pd
 
-from app.pipeline.billing import check_known, finish, monthly_facts, single_facts
+from app.pipeline.billing import check_known, finish, monthly_facts, resource_ids, single_facts
 from app.pipeline.common import is_suspicious_text, month_start, read_csv, to_chf
 from app.pipeline.schema import REGION_TO_LOCATION, validate
 
@@ -26,6 +26,11 @@ UNIT_TO_USAGE_KIND = {
     "capacity-day": "capacity_day",
 }
 
+# Every service needs a rule (server vs. cloud, see billing.SERVER_SERVICES).
+KNOWN_SERVICES = {
+    "Compute instances", "GPU instances", "Data platform", "Database", "Storage", "Reporting",
+}
+
 
 def daily_rows() -> pd.DataFrame:
     """azure_costs.csv in the standard daily frame (billing.DAILY_COLUMNS) + charge_type."""
@@ -36,13 +41,14 @@ def daily_rows() -> pd.DataFrame:
         UnitOfMeasure=set(UNIT_TO_USAGE_KIND),
         ChargeType={"Usage", "Credit"},
         ResourceLocation=set(REGION_TO_LOCATION),
+        ServiceName=KNOWN_SERVICES,
     )
     tags = df["Tags"].fillna("{}").map(json.loads)
     return pd.DataFrame(
         {
             "day": pd.to_datetime(df["Date"], format="ISO8601"),
             "month": month_start(df["Date"]),
-            "resource_id": df["ResourceId"].str.split("/").str[-1],
+            "resource_id": resource_ids(df["ResourceId"], "/", SOURCE),
             "service": df["ServiceName"],
             "unit": df["UnitOfMeasure"],
             "region": df["ResourceLocation"],

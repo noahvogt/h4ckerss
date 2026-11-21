@@ -72,3 +72,21 @@ def test_monthly_fee_has_no_usage_and_no_day_count():
     df = daily([("support", "month", "2025-09-01", 1, 900.0)])
     fact = monthly_facts(df, "test.csv", UNITS, count_days=False).iloc[0]
     assert (fact["usage_kind"], fact["usage_qty"], fact["note"]) == ("none", 0.0, "")
+
+
+def test_short_id_collision_raises():
+    from app.pipeline.billing import resource_ids
+
+    full = pd.Series(["arn:aws:compute:eu:0000:vm-1", "arn:aws:storage:eu:0000:vm-1"])
+    with pytest.raises(ValueError, match="vm-1"):
+        resource_ids(full, r"[:/]", "test.csv")
+
+
+def test_monthly_fee_estimate_is_labelled_as_fee():
+    df = daily([
+        ("support", "month", "2025-08-01", 1, 900.0),
+        ("support", "month", "2025-09-01", 1, None),
+    ])
+    facts = monthly_facts(df, "test.csv", UNITS, count_days=False).set_index("month")
+    assert facts.loc[pd.Timestamp("2025-09-01"), "note"] == "monthly fee estimated from other months"
+    assert facts.loc[pd.Timestamp("2025-09-01"), "cost_chf"] == pytest.approx(900.0)

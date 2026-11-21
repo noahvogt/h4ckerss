@@ -11,7 +11,7 @@ AWS-specific decisions (shared rules: billing.py, docs/data_decisions.md):
 
 import pandas as pd
 
-from app.pipeline.billing import check_known, finish, join_notes, monthly_facts
+from app.pipeline.billing import check_known, finish, join_notes, monthly_facts, resource_ids
 from app.pipeline.common import is_suspicious_text, month_start, read_csv, to_chf
 from app.pipeline.schema import REGION_TO_LOCATION, validate
 
@@ -24,6 +24,11 @@ UNIT_TO_USAGE_KIND = {
     "runner-minute": "runner_min",
     "month": "none",  # support fee
 }
+
+# Every service needs a rule: "Compute instances" are VMs (server), the rest is cloud.
+# A new name (e.g. "AmazonEC2" in a real export) stops the load instead of
+# silently landing in "cloud".
+KNOWN_SERVICES = {"Compute instances", "Storage", "Network", "Build service", "Support"}
 
 _EXCLUSION_REMARK = r"(?i)\bexclude"
 
@@ -38,6 +43,7 @@ def daily_rows() -> pd.DataFrame:
         line_item_line_item_type={"Usage", "Fee"},
         product_region=set(REGION_TO_LOCATION),
         line_item_currency_code={"USD"},
+        product_servicecode=KNOWN_SERVICES,
     )
     description = df["line_item_description"].fillna("")
     row_note = join_notes(
@@ -50,7 +56,7 @@ def daily_rows() -> pd.DataFrame:
         {
             "day": pd.to_datetime(df["line_item_usage_start_date"], format="ISO8601"),
             "month": month_start(df["line_item_usage_start_date"]),
-            "resource_id": df["line_item_resource_id"].str.split(r"[:/]", regex=True).str[-1],
+            "resource_id": resource_ids(df["line_item_resource_id"], r"[:/]", SOURCE),
             "service": df["product_servicecode"],
             "unit": df["pricing_unit"],
             "region": df["product_region"],

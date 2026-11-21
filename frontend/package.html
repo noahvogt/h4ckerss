@@ -305,24 +305,11 @@ body.chat-open .chat{transform:none;opacity:1;visibility:visible;pointer-events:
 @media(max-height:570px){
   .ch-top{padding-block:7px}.chat .chips{flex-wrap:nowrap;overflow-x:auto}.chips button{white-space:nowrap}
 }
-.ch-meter{display:flex;gap:10px;align-items:center;padding:10px 16px;background:#F3FCE1;border-bottom:1px solid var(--line);font-size:11px;color:var(--ink2);font-weight:600}
-.ch-meter .bar{flex:1;height:6px;border-radius:999px;background:#0f1a1412;overflow:hidden}
-.ch-meter .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--eco),var(--volt));transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
-.ch-meter b{font-family:'JetBrains Mono';color:var(--eco-d)}
 .ch-msgs{min-height:0;flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
 .msg{max-width:86%;padding:11px 14px;border-radius:16px;font-size:13.5px;line-height:1.5;animation:msg .35s cubic-bezier(.2,.9,.2,1) both}
 @keyframes msg{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .msg.bot{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:4px;box-shadow:var(--shadow)}
 .msg.me{align-self:flex-end;background:var(--ink);color:#fff;border-bottom-right-radius:4px}
-.msg .n{text-decoration-color:var(--volt-d);font-weight:700}
-.msg .kpi{display:flex;gap:8px;margin-top:8px}
-.msg .kpi div{flex:1;padding:8px 10px;border-radius:10px;background:var(--bg);border:1px solid var(--line)}
-.msg .kpi b{display:block;font-family:'JetBrains Mono';font-size:15px;color:var(--eco-d)}
-.msg .kpi span{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);font-weight:700}
-.msg.typing{display:flex;gap:4px;padding:14px 16px}
-.msg.typing i{width:7px;height:7px;border-radius:50%;background:var(--mute);animation:dot 1s infinite}
-.msg.typing i:nth-child(2){animation-delay:.15s}.msg.typing i:nth-child(3){animation-delay:.3s}
-@keyframes dot{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-5px);opacity:1}}
 .chips{display:flex;gap:6px;padding:10px 12px 0;flex-wrap:wrap;background:#fff;border-top:1px solid var(--line)}
 .chips button{font-size:11.5px;font-weight:600;padding:7px 11px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink2);transition:.2s}
 .chips button:hover{background:var(--volt);border-color:var(--volt)}
@@ -364,7 +351,10 @@ body.chat-open .chat{transform:none;opacity:1;visibility:visible;pointer-events:
 #approvals .who{margin:0 38px 8px 0}
 .approval-head .status-reader{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);padding:0}
 </style>
-<link rel="stylesheet" href="assets/WattsOn_timeline.css?v=mobile-chat"><script src="assets/WattsOn_timeline.js?v=footer-bottom"></script></head>
+<link rel="stylesheet" href="assets/WattsOn_timeline.css?v=mobile-chat"><script src="assets/WattsOn_timeline.js?v=footer-bottom"></script>
+<link rel="stylesheet" href="assets/WattsOn_guide.css">
+<script defer src="assets/WattsOn_guide.js"></script>
+</head>
 <body>
 <svg width="0" height="0" aria-hidden="true" style="position:absolute"><defs>
  <symbol id="status-pending" viewBox="0 0 24 24"><circle cx="8.5" cy="7" r="3.4"/><path d="M2.5 20v-1.8a6 6 0 0 1 12 0V20M19 4.5v8"/><circle cx="19" cy="16.7" r="1.3" fill="currentColor" stroke="none"/></symbol>
@@ -498,13 +488,13 @@ body.chat-open .chat{transform:none;opacity:1;visibility:visible;pointer-events:
 </button>
 <div class="chat" id="watson-chat" role="dialog" aria-labelledby="watson-name" inert>
   <div class="ch-top">
-    <div><h2 id="watson-name">Wattson</h2><span class="role"><i aria-hidden="true"></i>GreenOps detective</span></div>
+    <div><h2 id="watson-name">WattsON Guide</h2><span class="role"><i aria-hidden="true"></i>Baseline, savings and safeguards</span></div>
     <button class="dialog-close x" type="button" onclick="closeChat()" aria-label="Close chat"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   </div>
-  <div class="ch-meter"><span>CO₂ rescued this session</span><div class="bar"><i id="meterBar"></i></div><b id="meterVal">0 kg</b></div>
-  <div class="ch-msgs" id="msgs"></div>
+  <p class="guide-mode" id="guide-mode" role="status">Connecting to WattsON Guide…</p>
+  <div class="ch-msgs" id="msgs" role="log" aria-label="Guide conversation"></div>
   <div class="chips" id="chips"></div>
-  <form class="ch-in" onsubmit="send(event)"><input id="chIn" placeholder="Ask why, what if, or which…" autocomplete="off" aria-label="Message Wattson"><button type="submit" aria-label="Send"><svg class="ico" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></form>
+  <form class="ch-in"><input id="chIn" required maxlength="700" placeholder="Ask about the baseline or a measure…" autocomplete="off" aria-label="Message Wattson"><button type="submit" aria-label="Send"><svg class="ico" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></form>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"><b>●</b><span id="toastTxt"></span></div>
 
@@ -656,18 +646,6 @@ document.querySelectorAll('[role="button"][tabindex="0"]').forEach(el=>el.addEve
 addEventListener('keydown',e=>{if(e.key==='Escape'){closeTree();closeChat()}});
 
 /* ═══ Wattson chat ═══ */
-let rescued=0;const REPLIES=[
- {k:/frankfurt|43|location|where/i,t:`Frankfurt is only <b>10.5%</b> of spend but <b>43%</b> of CO₂. Two machines do it: the dev cluster and the GPU box. Germany's grid emits <span class="n" data-tree="co2">0.380 kg/kWh</span> versus Switzerland's 0.105. Same work, 3.6× the carbon.<div class="kpi"><div><b>5,141</b><span>kg in FRA</span></div><div><b>571</b><span>after package</span></div></div>`,kg:4570},
- {k:/auto|automatic|itself|without/i,t:`Five measures run themselves: <b>M1, M2, M4, M7, M8</b>. They only touch idle hours, ghost servers, model routing and log retention. The three that need a human are the ones that touch production, contracts or people's seats.`,kg:5643},
- {k:/m6|saas|seat|licen/i,t:`<span class="n" data-tree="m6">264 kg</span> comes from 251 idle seats × 70% reclaimed × a small energy-per-seat × the EU grid. Honestly, the carbon is modest. The <b>CHF 29,900</b> is the headline. Head of Finance decides Video vs. Teams.`,kg:264},
- {k:/gpu|m1|train/i,t:`The GPU server is busy <b>9.2%</b> of the time but billed for 8,664 hours. Ticket T-1101 says it is only needed for quarterly training. Auto-start it on days 1–3 of Jan, Apr, Jul and Oct and you keep <span class="n" data-tree="m1">1,485 kg</span>.`,kg:1485},
- {k:/prod|dp-prod|m3|night|switch off/i,t:`I will never switch production off entirely, even though a ticket (T-1230) told me to. That one was a prompt injection and I quarantined it. What I <i>can</i> do is scale 20 → 6 nodes outside the ETL window and month-end close. That is <span class="n" data-tree="m3">599 kg</span> and CHF 23,560, with Head of Consulting signing.`,kg:599},
- {k:/dev|m2|zurich|cluster/i,t:`The dev cluster runs 24/7 but is used 8.7% of the time. Ticket T-1074 put it in Frankfurt "because it was cheaper". Billing says Zurich is 0.53 vs 0.55 per node-hour. Cheaper <i>and</i> cleaner. <span class="n" data-tree="m2">3,085 kg</span> saved, my single biggest rescue.`,kg:3085},
- {k:/trust|sure|confident|range|wrong/i,t:`Fair question. Every factor has a low, mid and high value. CO₂ is <b>2,925 to 48,600 kg</b> depending on the grid and hardware assumptions; I report the mid case and show the range on every node. Click any number and the bar at the bottom of the panel shows where we sit.`,kg:0},
- {k:/you|energy|cost of ai|yourself/i,t:`Me? About 4.2 million tokens this hackathon, roughly <b>1.7 kWh</b> or 0.18 kg CO₂. That is what gpu-ml-01 wastes sitting idle for three hours. I try to earn my keep.`,kg:0},
-];
-const DEFAULT=`Here is the short version: cost <b>−28.7%</b>, CO₂ <b>−54.5%</b>, effort CHF 15,950 against a CHF 16,500 budget. Ask me <i>why</i> about any number, or try one of the chips below.`;
-const CHIPS=['Why is Frankfurt 43% of CO₂?','What runs automatically?','Explain M6','Can I trust these numbers?','What about dp-prod at night?'];
 const launcher = document.getElementById('fab');
 const chatPanel = document.getElementById('watson-chat');
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
@@ -728,30 +706,13 @@ function setChatOpen(open){
   document.getElementById('watsonAction').textContent = open ? 'Close chat' : 'Ask Wattson';
   document.body.classList.toggle('chat-open', open);
   moveHat(open);
-  if(open && !document.getElementById('msgs').children.length){
-    bot(`Hi, I'm <b>Wattson</b>. I read the same 20 files you did, plus 15 bonus ones, and I found CHF 135,210 hiding in idle machines and unused seats. Where shall we start?`);
-    const chips = document.getElementById('chips');
-    for(const prompt of CHIPS){
-      const chip = document.createElement('button');
-      chip.type = 'button';
-      chip.textContent = prompt;
-      chip.addEventListener('click', () => ask(prompt));
-      chips.appendChild(chip);
-    }
-  }
+  if (open) window.wattsOnGuide.open();
   (open ? document.getElementById('chIn') : launcher).focus({preventScroll:true});
 }
-function openChat(){setChatOpen(true)}
 function closeChat(){setChatOpen(false)}
 launcher.addEventListener('click', () => setChatOpen(chatPanel.inert));
 reducedMotion.addEventListener('change', () => moveHat(!chatPanel.inert));
 
-function me(t){const m=document.createElement('div');m.className='msg me';m.textContent=t;add(m)}
-function bot(h,kg){const ms=document.getElementById('msgs');const ty=document.createElement('div');ty.className='msg bot typing';ty.innerHTML='<i></i><i></i><i></i>';add(ty);
- setTimeout(()=>{ty.remove();const m=document.createElement('div');m.className='msg bot';m.innerHTML=h;add(m);m.querySelectorAll('.n').forEach(el=>el.onclick=()=>openTree(el.dataset.tree));if(kg){rescued=Math.max(rescued,kg);document.getElementById('meterVal').textContent=rescued.toLocaleString('en-US')+' kg';document.getElementById('meterBar').style.width=Math.min(100,rescued/65.16)+'%'}},700+Math.random()*500)}
-function add(m){const ms=document.getElementById('msgs');ms.appendChild(m);ms.scrollTop=ms.scrollHeight}
-function ask(q){me(q);if(!timeline.full){const result=REPLIES.find(x=>x.k.test(q));bot('Selected window: <b>CHF '+timeline.total(135210)+'</b> and <b>'+timeline.total(6516)+' kg CO₂</b> package savings.<br><small>'+timeline.label+'</small>'+(result?'<hr><b>Annual case evidence</b><br>'+result.t:''),0);return}const r=REPLIES.find(x=>x.k.test(q));bot(r?r.t:DEFAULT,r?r.kg:0)}
-function send(e){e.preventDefault();const i=document.getElementById('chIn');if(!i.value.trim())return;ask(i.value.trim());i.value=''}
 /* ═══ page interactions ═══ */
 function toast(m){const t=document.getElementById('toast');document.getElementById('toastTxt').innerHTML=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),3200)}
 function applyPkg(b){b.classList.toggle('on');const on=b.classList.contains('on');toast(on?'<b>Package preview.</b> '+document.getElementById('pendingCount').textContent+' approvals.':'<b>Package withdrawn.</b> Books return to current state.');if(on)document.querySelector('.cards').scrollIntoView({behavior:'smooth',block:'start'})}
@@ -821,7 +782,6 @@ function periodLabels(){
  }
  document.querySelectorAll('.nav-r').forEach(n=>n.textContent='Baseline FY 2025–26 · budget CHF 16,500');
  if(document.body.classList.contains('explore')&&curKey)openTree(curKey);
- document.querySelectorAll('#msgs .msg').forEach(m=>m.remove());
 }
 document.addEventListener('timelinechange',periodLabels);
 </script></body>

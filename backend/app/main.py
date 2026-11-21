@@ -3,9 +3,10 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from app.routers import baseline, measures, rules
+from app.routers import baseline, guide, measures, rules
 
 DATA_DIR = Path(__file__).resolve().parents[2] / "data" / "provided"
 
@@ -33,6 +34,7 @@ app.add_middleware(
 app.include_router(rules.router)
 app.include_router(baseline.router)
 app.include_router(measures.router)
+app.include_router(guide.router)
 
 
 class Health(BaseModel):
@@ -43,3 +45,6 @@ class Health(BaseModel):
 @app.get("/api/health")
 def health() -> Health:
     return Health(status="ok", data_found=(DATA_DIR / "README.md").exists())
+
+
+app.mount("/", StaticFiles(directory=DATA_DIR.parents[1] / "frontend", html=True), name="frontend")

@@ -52,7 +52,11 @@ Scheduled jobs on dp-prod (`extra/data_platform_jobs.csv`, baseline year):
 | January working day | none (year-end close) | 18 | 0 |
 | **Total** | | | **3,210 h of 8,760 h ≈ 37 %** |
 
-This is an upper estimate for the package (#5/#6), not a commitment. Assumptions: business use on working days ends by 20:00 (the data is daily, not hourly, so this comes from the job times and the ≈10 active hours, not from a measurement); the platform starts automatically before 02:00 and before business hours; flexible jobs stay inside the 02:00–08:00 window. Growth to 20 nodes from January 2026 and 24 nodes from October 2026 (tickets T-1172, T-1261) changes the savings in CHF and CO₂, not the windows.
+**Checked against every job run:** all 1,487 scheduled dp-prod runs in the baseline year (plus the day before) were laid over the 311 off windows: none overlaps, including the longest month-end close (11.6 h) and year-end close (7 h) runs.
+
+**Interactive use:** active hours minus job hours give about 6.1 h of interactive use on a working day (at most 9.1 h), which fits into 08:00–18:00 and leaves a 2 h buffer before the 20:00 off window. This is indirect (daily data, not hourly).
+
+This is an upper estimate for the package (#5/#6), not a commitment. Assumptions: the platform starts automatically before 02:00 and before business hours; flexible jobs stay inside the 02:00–08:00 window. Growth to 20 nodes from January 2026 and 24 nodes from October 2026 (tickets T-1172, T-1261) changes the savings in CHF and CO₂, not the windows.
 
 ## 4. Who decides
 
@@ -72,5 +76,5 @@ All numbers come from `backend/app/limits/evidence.py`; `backend/tests/test_evid
 
 ```sh
 cd backend
-uv run python -c "from app.limits.evidence import *; print(usage_by_day_type()); print(job_schedule()); print(possible_off_hours())"
+uv run python -c "from app.limits.evidence import *; print(usage_by_day_type()); print(job_schedule()); print(possible_off_hours()); print(off_schedule_conflicts()); print(business_hours())"
 ```

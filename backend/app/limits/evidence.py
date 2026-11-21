@@ -4,7 +4,7 @@ Backs docs/answers/q3_production_platform_off_hours.md. The numbers there are pi
 by tests/test_evidence.py, so the document cannot silently drift from the data.
 """
 
-from datetime import date
+from datetime import date, datetime, time, timedelta
 
 import pandas as pd
 
@@ -102,3 +102,52 @@ def possible_off_hours(period: tuple[date, date] = BASELINE) -> pd.DataFrame:
     out = pd.DataFrame({"days": counts, "off_hours_per_day": pd.Series(OFF_HOURS_PER_DAY)})
     out["off_hours"] = out["days"] * out["off_hours_per_day"]
     return out.reindex(list(OFF_HOURS_PER_DAY)).rename_axis("day_type")
+
+
+def off_windows(period: tuple[date, date] = BASELINE) -> list[tuple[datetime, datetime]]:
+    """The concrete off windows behind possible_off_hours(): weekends/holidays 08:00 to
+    02:00 next day, working days 20:00 to 02:00, none on closing or January working days."""
+    from app.limits.rules import is_workday
+
+    closing = set(protected_days("R01", *period))
+    out = []
+    for d in pd.date_range(*period).date:
+        if d in closing or (is_workday(d) and d.month == 1):
+            continue
+        start = time(8) if not is_workday(d) else time(20)
+        out.append((datetime.combine(d, start), datetime.combine(d + timedelta(days=1), time(2))))
+    return out
+
+
+def off_schedule_conflicts(resource_id: str = "dp-prod", period: tuple[date, date] = BASELINE) -> tuple[int, pd.DataFrame]:
+    """Every scheduled job run in the period checked against the off windows.
+
+    Returns (number of runs checked, runs that would overlap an off window)."""
+    j = read_csv("extra/data_platform_jobs.csv", parse_dates=["date"]).drop_duplicates()
+    # runs from the day before the period can still reach into its first window
+    first = pd.Timestamp(period[0]) - pd.Timedelta(days=1)
+    j = j[(j["resource_id"] == resource_id) & j["date"].between(first, pd.Timestamp(period[1]))].copy()
+    j["start"] = pd.to_datetime(j["date"].dt.strftime("%Y-%m-%d ") + j["start_time"])
+    j["end"] = j["start"] + pd.to_timedelta(j["duration_h"], unit="h")
+    windows = off_windows(period)
+    hits = [
+        i for i, s, e in zip(j.index, j["start"], j["end"])
+        if any(s < b and e > a for a, b in windows)
+    ]
+    return len(j), j.loc[hits, ["job_name", "start", "end"]]
+
+
+def business_hours(resource_id: str = "dp-prod", period: tuple[date, date] = BASELINE) -> pd.DataFrame:
+    """Active hours per day minus scheduled job hours = an indirect measure of
+    interactive (business) use. Approximate: jobs can overlap each other."""
+    u = read_csv("data_platform_usage.csv", parse_dates=["date"]).drop_duplicates()
+    u = u[(u["resource_id"] == resource_id) & u["date"].between(*map(pd.Timestamp, period))].copy()
+    j = read_csv("extra/data_platform_jobs.csv", parse_dates=["date"]).drop_duplicates()
+    j = j[(j["resource_id"] == resource_id)]
+    u = u.merge(j.groupby("date")["duration_h"].sum().rename("job_h"), on="date", how="left").fillna({"job_h": 0})
+    u["day_type"] = _day_types(u["date"])
+    u["other_h"] = u["active_use_h"] - u["job_h"]
+    return u.groupby("day_type").agg(
+        active_h=("active_use_h", "mean"), job_h=("job_h", "mean"),
+        other_h=("other_h", "mean"), other_h_max=("other_h", "max"),
+    ).reindex(["closing day", "workday", "weekend/holiday"])

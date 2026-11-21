@@ -45,9 +45,26 @@ def test_relocation_changes_location_not_usage(cat):
     assert (m["location"], m["location_after"], m["usage_factor"]) == ("DE", "CH", 1.0)
 
 
-def test_seat_measures_do_not_claim_energy_savings(cat):
-    for mid in ["M-sub-copilot", "M-sub-claude", "M-sub-chatgpt"]:
-        assert cat.loc[mid, "usage_factor"] == 1.0 and cat.loc[mid, "cost_factor"] < 1.0
+def test_seat_and_routing_measures_do_not_claim_energy_savings(cat):
+    for mid in ["M-sub-copilot", "M-sub-claude", "M-sub-chatgpt", "M-saas-other", "M-saas-m365", "M-ai-assistant-model"]:
+        m = cat.loc[mid]
+        assert (m["usage_factor"], m["energy_effect"]) == (1.0, "none") and m["cost_factor"] < 1.0
+
+
+def test_energy_effect_per_measure(cat):
+    assert cat.loc["M-dp-prod-schedule", "energy_effect"] == "usage"
+    assert cat.loc["M-dp-dev-relocate", "energy_effect"] == "location"
+    assert set(cat["energy_effect"]) == {"usage", "location", "none"}
+
+
+def test_measures_on_the_same_resource_point_to_each_other(cat):
+    assert cat.loc["M-dp-dev-pause", "interacts_with"] == "M-dp-dev-relocate"
+    assert cat.loc["M-dp-dev-relocate", "interacts_with"] == "M-dp-dev-pause"
+    assert cat.loc["M-vm-test-downsize", "interacts_with"] == ""
+
+
+def test_dp_prod_schedule_is_checked_against_job_runs(cat):
+    assert "1,487 runs, 0 overlap an off window" in cat.loc["M-dp-prod-schedule", "assumptions"]
 
 
 def test_windows_are_carried_as_conditions(cat):

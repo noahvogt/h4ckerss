@@ -13,8 +13,11 @@ Conventions:
   latest full month (August 2026) x 12, the current run rate.
 - Effort is in person-days; 1 person-day = CHF 1,100 (case rules).
 - Each measure is valid on its own against the baseline. Measures on the same resource
-  interact (e.g. pause + relocate): the package (#6) combines them, it must not add
-  their savings blindly.
+  interact (e.g. pause + relocate, listed in interacts_with): the package (#6) combines
+  them, it must not add their savings blindly.
+- energy_effect says whether the calculation (#4) may derive kWh/CO2 savings:
+  "usage" (usage_factor < 1 on an energy-driving usage), "location" (same usage, other
+  grid), "none" (only CHF: cancelled seats, model routing). No CO2 is claimed for "none".
 """
 
 from datetime import date, timedelta
@@ -22,7 +25,7 @@ from math import ceil
 
 import pandas as pd
 
-from app.limits.evidence import possible_off_hours
+from app.limits.evidence import business_hours, off_schedule_conflicts, possible_off_hours
 from app.limits.rules import check_measure, is_workday, protected_days
 from app.pipeline.build import BASELINE, read_facts
 from app.pipeline.common import DATA_DIR, read_csv, to_chf
@@ -84,14 +87,15 @@ def kept_hours_on_demand(training_rule: str, workday_hours: int = 10) -> float:
 
 
 def _usage_measure(baseline, measure_id, title, resource_id, change, usage_factor, effort_key,
-                   assumptions, sources, risks, location_after=None, cost_factor=None):
+                   assumptions, sources, risks, location_after=None, cost_factor=None, energy_effect="usage"):
     cost, qty, kind, location = _resource_cost(baseline, resource_id)
     effort_pd, effort_why = EFFORT[effort_key]
     cost_factor = usage_factor if cost_factor is None else cost_factor
     return {
         "measure_id": measure_id, "title": title, "resource_id": resource_id, "change": change,
         "usage_kind": kind, "location": location, "location_after": location_after or location,
-        "baseline_qty": qty, "usage_factor": usage_factor, "cost_factor": cost_factor, "baseline_cost_chf": cost,
+        "baseline_qty": qty, "usage_factor": usage_factor, "cost_factor": cost_factor, "energy_effect": energy_effect,
+        "baseline_cost_chf": cost,
         "savings_cost_chf_per_year": cost * (1 - cost_factor),
         "effort_person_days": effort_pd, "effort_why": effort_why,
         "assumptions": assumptions, "sources": sources, "risks": risks,
@@ -130,7 +134,7 @@ def _seat_measures() -> list[dict]:
             "resource_id": resource_id, "change": "cancel_seats", "usage_kind": "messages",
             "location": "EU", "location_after": "EU", "baseline_qty": float(r["bought"]),
             "usage_factor": 1.0,  # messages of active users stay the same
-            "cost_factor": r["keep"] / r["bought"],
+            "cost_factor": r["keep"] / r["bought"], "energy_effect": "none",
             "baseline_cost_chf": r["year_cost"], "savings_cost_chf_per_year": r["savings"],
             "effort_person_days": effort_pd, "effort_why": effort_why,
             "assumptions": f"August 2026: {int(r['bought'])} seats bought, {int(r['active'])} active in 30 days; "
@@ -149,7 +153,7 @@ def _seat_measures() -> list[dict]:
         "resource_id": "sub-chatgpt", "change": "cancel_seats", "usage_kind": "messages",
         "location": "EU", "location_after": "EU", "baseline_qty": float(chat["bought"]),
         "usage_factor": 1.0,  # the active users keep working, on another tool
-        "cost_factor": moved * claude_price / (chat["bought"] * chat["price_chf"]),
+        "cost_factor": moved * claude_price / (chat["bought"] * chat["price_chf"]), "energy_effect": "none",
         "baseline_cost_chf": chat["year_cost"],
         "savings_cost_chf_per_year": chat["year_cost"] - moved * claude_price * 12,
         "effort_person_days": effort_pd, "effort_why": effort_why,
@@ -169,8 +173,8 @@ def _seat_measures() -> list[dict]:
             else "Reduce unused Microsoft 365 licences at renewal",
             "resource_id": resource_id, "change": "cancel_seats", "usage_kind": "seat_month",
             "location": "EU", "location_after": "EU", "baseline_qty": float(rows["bought"].sum() * 12),
-            "usage_factor": float(rows["keep"].sum() / rows["bought"].sum()),
-            "cost_factor": float(1 - rows["savings"].sum() / rows["year_cost"].sum()),
+            "usage_factor": 1.0,  # active users keep working; unused licences use no energy
+            "cost_factor": float(1 - rows["savings"].sum() / rows["year_cost"].sum()), "energy_effect": "none",
             "baseline_cost_chf": float(rows["year_cost"].sum()), "savings_cost_chf_per_year": float(rows["savings"].sum()),
             "effort_person_days": effort_pd, "effort_why": effort_why,
             "assumptions": f"August 2026: {int(rows['bought'].sum())} licences bought, {int(rows['active'].sum())} active "
@@ -205,13 +209,15 @@ def _ai_model_routing(baseline: pd.DataFrame) -> list[dict]:
             "resource_id": resource_id, "change": "downsize", "usage_kind": kind, "location": location,
             "location_after": location, "baseline_qty": qty,
             "usage_factor": 1.0,  # same tokens, smaller model: energy per token differs (see #4)
-            "cost_factor": 1 - float(rows["savings"].sum()) / cost,
+            "cost_factor": 1 - float(rows["savings"].sum()) / cost, "energy_effect": "none",
             "baseline_cost_chf": cost, "savings_cost_chf_per_year": float(rows["savings"].sum()),
             "effort_person_days": effort_pd, "effort_why": effort_why,
             "assumptions": f"Tasks {', '.join(sorted(rows['task_type'].unique()))} on large models "
                            f"(CHF {rows['cost_chf'].sum():,.0f} in the baseline year) move to the provider's small "
                            f"model; price ratio small/large from the gateway: "
-                           + ", ".join(f"{p} {r:.2f}" for p, r in ratio.items()) + ".",
+                           + ", ".join(f"{p} {r:.2f}" for p, r in ratio.items()) + ". "
+                           "No CO2 saving is claimed: the energy model has one factor per token, "
+                           "whatever the model size.",
             "sources": "ai_usage.csv",
             "risks": "Quality must be checked on samples per task before switching.",
         })
@@ -224,6 +230,8 @@ def build_catalogue() -> pd.DataFrame:
     dev_kept = kept_hours_on_demand("R02") / HOURS_PER_YEAR
     gpu_kept = kept_hours_on_demand("R04") / HOURS_PER_YEAR
     off = possible_off_hours()["off_hours"].sum()
+    runs_checked, run_conflicts = off_schedule_conflicts()
+    biz = business_hours()
 
     dev_price = _resource_cost(b, "dp-dev")
     prod_price = _resource_cost(b, "dp-prod")
@@ -234,9 +242,13 @@ def build_catalogue() -> pd.DataFrame:
             b, "M-dp-prod-schedule", "Switch the production platform off at nights and weekends, outside protection windows",
             "dp-prod", "schedule_off", 1 - off / HOURS_PER_YEAR, "dp-prod schedule",
             f"Off weekends 08:00-02:00 and working days 20:00-02:00; never on closing days or January working "
-            f"days: {off:,.0f} of {HOURS_PER_YEAR:,} h per year. Node-hours fall in proportion.",
+            f"days: {off:,.0f} of {HOURS_PER_YEAR:,} h per year. Node-hours fall in proportion. Checked against "
+            f"every scheduled job run: {runs_checked:,} runs, {len(run_conflicts)} overlap an off window. Interactive "
+            f"use on working days is about {biz.loc['workday', 'other_h']:.1f} h (at most "
+            f"{biz.loc['workday', 'other_h_max']:.1f} h), so it fits before 20:00.",
             "data_platform_usage.csv, extra/data_platform_jobs.csv, it_tickets.csv (T-1029); docs/answers/q3_production_platform_off_hours.md",
-            "Upper estimate: assumes no business use after 20:00. Automatic start before 02:00 and before office hours.",
+            "Business hours come from daily data (active hours minus job hours), not hourly measurements; "
+            "keep a 2 h buffer after office hours. Automatic start before 02:00 and before office hours.",
         ),
         _usage_measure(
             b, "M-dp-dev-pause", "Run the development cluster only on working days 08:00-18:00 and during quarterly training",
@@ -254,7 +266,7 @@ def build_catalogue() -> pd.DataFrame:
             f"negative; the measure is about CO2 (Swiss vs. German grid).",
             "azure_costs.csv, it_tickets.csv (T-1074: moving is technically possible)",
             "Data transfer and a short downtime during migration.",
-            location_after="CH", cost_factor=price_ratio,
+            location_after="CH", cost_factor=price_ratio, energy_effect="location",
         ),
         _usage_measure(
             b, "M-gpu-ml-pause", "Start the GPU server only when needed: working days 08:00-18:00 and quarterly training",
@@ -277,6 +289,10 @@ def build_catalogue() -> pd.DataFrame:
     ]
 
     cat = pd.DataFrame(rows)
+    same_resource = cat.groupby("resource_id")["measure_id"].agg(list)
+    cat["interacts_with"] = [
+        ";".join(m for m in same_resource[r] if m != mid) for mid, r in zip(cat["measure_id"], cat["resource_id"])
+    ]
     cat["effort_chf"] = cat["effort_person_days"] * PERSON_DAY_CHF
     checks = [check_measure(r, c) for r, c in zip(cat["resource_id"], cat["change"])]
     cat["status"] = [c.status for c in checks]

@@ -6,7 +6,7 @@ The deck is `docs/WattsON_pitch.pptx`. We show slides 1 to 3 and keep slide 4 as
 | Part | Time | What is on screen |
 |---|---|---|
 | 1. Opening | 0:00 – 0:45 | Slide 1 |
-| 2. Live demo | 0:45 – 3:45 | App: Baseline → Package → edge case |
+| 2. Live demo | 0:45 – 3:45 | App: Baseline → Package → Forecast → edge case |
 | 3. Closing | 3:45 – 5:00 | Slide 2, then slide 3 |
 
 The spoken text is meant to be read aloud. It runs at about 130 words per minute and leaves some slack.
@@ -19,6 +19,13 @@ The spoken text is meant to be read aloud. It runs at about 130 words per minute
 > slide, that costs us credibility. Either the pages take their headline numbers from
 > `/api/baseline` and `/api/package`, or we change the text below to the app's numbers before
 > Sunday.
+>
+> **The Forecast page has the same issue and more.** `WattsOn_forecast.js` uses its own
+> baseline (11,956 kg, CHF 470,384) and its own 8 measures, with numbers that differ from the
+> package, for example GPU CHF 9,770 instead of CHF 7,738. There is no backend forecast
+> endpoint. The minimum fix is to base it on `/api/baseline` and the measures of
+> `/api/package`. The page also states its own data-cleaning counts (15 duplicates, 209 imputed
+> costs) and an AI footprint of 1.7 kWh. Both should match the backend and slide 3.
 
 ---
 
@@ -47,7 +54,7 @@ The spoken text is meant to be read aloud. It runs at about 130 words per minute
 Rule of thumb: **one click, one sentence.** Don't read numbers off the screen. Say what they
 mean.
 
-### 2.1 Overall picture: Baseline page (about 40 s)
+### 2.1 Overall picture: Baseline page (about 35 s)
 - Open the **map**: costs and CO₂ by region. Point at **Frankfurt**: *"11 % of the cost, but
   37 % of the CO₂. The German grid emits almost four times as much as the Swiss one."*
 - Open the **regional ledger** by department and tool. *"Every franc is assigned to a
@@ -56,13 +63,13 @@ mean.
   source file, currency conversion, energy factor, grid mix."* This click is our proof for the
   20 % criterion (data preparation).
 
-### 2.2 One finding: development cluster in Frankfurt (about 30 s)
+### 2.2 One finding: development cluster in Frankfurt (about 25 s)
 - Stay on Frankfurt and open the workloads or evidence for **dp-dev**.
 - *"The development cluster runs around the clock, but it is idle most of that time."*
 - Measures: run it on working days only, with the quarterly training kept: **CHF 26,361 and
   898 kg CO₂ a year**. Moving it to Zurich saves another **298 kg at about the same price**.
 
-### 2.3 The package: Package page (about 50 s)
+### 2.3 The package: Package page (about 40 s)
 - Open **The Package**: the targets bar shows −46 % CO₂ against the −40 % target, −27 % cost
   against −25 %, and CHF 16,500 of CHF 16,500.
 - *"WattsON tried every combination of measures, about a thousand, and picked the best one
@@ -71,7 +78,23 @@ mean.
   `/api/package/evaluate`). Approve it again.
 - Optional, only if time is left: the **CO₂ low / mid / high** range for the same package.
 
-### 2.4 The edge case: what WattsON does *not* do (about 50 s)
+### 2.4 Forecast: Forecast studio (about 30 s)
+This covers three of the case's stretch goals in one page: the forecast, the market-based view,
+and clustering. Skip it if we are more than 15 s behind; the edge case is mandatory, the
+forecast is not.
+- Open **Forecast**: the chart runs from the baseline to FY 2030, **without vs. with
+  package**, each line with a low / mid / high band.
+- *"The company keeps growing: more data platform nodes, higher licence prices. Without the
+  package, cost and CO₂ keep rising. With it, the savings grow every year."*
+- Move the **demand growth** slider once. *"Every assumption has a range, and you can change
+  it."*
+- Switch **Location-based → Market-based** once. *"With certificates the CO₂ looks much
+  smaller. We show it, but we decide on location-based, because a certificate doesn't change
+  where the electricity flows."*
+- Don't read out any forecast numbers. The page runs on its own frontend estimates, not on the
+  API (see the warning at the top).
+
+### 2.5 The edge case: what WattsON does *not* do (about 50 s)
 - Open **Human review**, or ask the **WattsON Guide**: *"Can we switch off the production
   platform?"*
 - Show the ticket **T-1230**: a note in the IT ticket data that tells "AI assistants" to
@@ -141,5 +164,6 @@ Slide 4 has the tables. Short answers to the likely questions:
 | How sure is the CO₂ number? | Low −54 %, mid −46 %, high −41 %. The target holds in all three. The high scenario assumes full GPU load all year; we measured 9 %. |
 | Why is SaaS missing from the CO₂? | It makes up 31 % of the cost but has no reliable energy factor. We'd rather leave it out than invent a number. It is in the CHF figures. |
 | Location-based or market-based? | Location-based, as the case asks. A certificate can't change where the electricity flows. |
+| What does the forecast assume? | Demand growth with a low / mid / high range, the known changes in the data (more nodes on the data platform, licence price increases at renewal) and the change in grid mix per year. All of them can be changed in the Forecast studio. The forecast is per year. Seasonality is not modelled month by month; the page shows the peak quarter. |
 | How much effort for a new SME? | One loader per export format. The formats (Azure Cost Management, AWS CUR, OpenAI usage) are the same for every customer. |
 | Why did the AI not follow the hidden instructions? | Free text in the data is treated as data. The Guide only picks among calculated evidence; the server renders the answer. |

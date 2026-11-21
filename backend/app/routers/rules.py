@@ -7,7 +7,7 @@ from pydantic import BaseModel
 
 from app.limits.contradictions import contradictions as find_contradictions
 from app.limits.explain import explain as explain_measure
-from app.limits.rules import CHANGES, check_measure, load_rules, protected_days, rules_for
+from app.limits.rules import CHANGES, UnknownResource, check_measure, load_rules, protected_days, rules_for
 
 router = APIRouter(prefix="/api/rules", tags=["rules"])
 
@@ -36,12 +36,24 @@ class Reason(BaseModel):
     summary: str
 
 
+class Condition(BaseModel):
+    """A window the concrete schedule must stay outside of. Not checked by the API."""
+
+    rule_id: str
+    when: str
+    schedule: str
+    from_time: str | None
+    until_time: str | None
+
+
 class CheckResult(BaseModel):
     resource_id: str
     change: str
-    status: str  # allowed | allowed_outside_windows | needs_human | blocked
+    # allowed | allowed_outside_windows (conditional, see conditions) | needs_human | blocked
+    status: str
     decided_by: str | None
     reasons: list[Reason]
+    conditions: list[Condition]
 
 
 class ExplainItem(BaseModel):
@@ -106,10 +118,16 @@ def check(
     resource_id: str,
     change: str = Query(description=f"one of {sorted(CHANGES)}"),
 ) -> CheckResult:
-    """May this change be made to this resource? With reasons and who decides."""
+    """May this change be made to this resource? With reasons and who decides.
+
+    "allowed_outside_windows" is not an approval of a schedule: the schedule must avoid
+    every window in `conditions`."""
     if change not in CHANGES:
         raise HTTPException(422, f"unknown change {change!r}, expected one of {sorted(CHANGES)}")
-    result = check_measure(resource_id, change)
+    try:
+        result = check_measure(resource_id, change)
+    except UnknownResource as e:
+        raise HTTPException(404, str(e)) from e
     reasons = [Reason(**{**r, "source": r["source"].split(";")}) for r in result.reasons]
     return CheckResult(**{**result.__dict__, "reasons": reasons})
 
@@ -123,7 +141,10 @@ def explain(
     protection windows, reasons with sources and the data behind them."""
     if change not in CHANGES:
         raise HTTPException(422, f"unknown change {change!r}, expected one of {sorted(CHANGES)}")
-    return Explanation(**explain_measure(resource_id, change))
+    try:
+        return Explanation(**explain_measure(resource_id, change))
+    except UnknownResource as e:
+        raise HTTPException(404, str(e)) from e
 
 
 @router.get("/contradictions")

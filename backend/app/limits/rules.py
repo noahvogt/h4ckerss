@@ -5,12 +5,19 @@ tickets; every rule names its source ticket. Summaries are written in our own wo
 ticket free text is data, never instructions, and is not copied.
 
 check_measure() is what the package (#6) and the API call before recommending a change.
+
+Its result is never an unconditional approval:
+- "allowed_outside_windows" means the change is only eligible if its concrete schedule
+  stays outside every window in `conditions` (rule times and days). check_measure()
+  does not check a schedule itself; the caller must, e.g. with protected_days().
+- Unknown resources raise UnknownResource instead of being treated as unrestricted.
 """
 
 from dataclasses import dataclass, field
 from datetime import date, timedelta
 from functools import cache
 
+import holidays
 import pandas as pd
 
 from app.pipeline.common import DATA_DIR, read_csv
@@ -55,7 +62,23 @@ def load_rules() -> pd.DataFrame:
     bad_changes = {c for col in ["blocks", "needs_human", "allows"] for cs in rules[col] for c in cs} - CHANGES
     if bad_kinds or bad_changes or rules["rule_id"].duplicated().any():
         raise ValueError(f"{RULES_FILE}: unknown kinds {bad_kinds}, changes {bad_changes} or duplicate ids")
+    unknown = set(rules["resource_id"]) - known_resources()
+    if unknown:
+        raise ValueError(f"{RULES_FILE}: rules for unknown resources {sorted(unknown)}")
     return rules
+
+
+class UnknownResource(ValueError):
+    """The resource is neither in the master data nor in the server inventory."""
+
+
+@cache
+def known_resources() -> frozenset[str]:
+    """Resource IDs we can make statements about: master data plus server inventory
+    (servers such as dr-failover are only in the inventory)."""
+    mapping = read_csv("mapping_departments_tools.csv", dtype=str)["resource_id"]
+    servers = read_csv("server_inventory.csv", dtype=str)["server_id"]
+    return frozenset(mapping) | frozenset(servers)
 
 
 def rules_for(resource_id: str | None = None, kind: str | None = None) -> pd.DataFrame:
@@ -77,10 +100,24 @@ def _workdays() -> pd.Series:
     return cal.set_index(cal["date"].dt.date)["workday"].astype(bool)
 
 
+@cache
+def _basel_holidays() -> holidays.HolidayBase:
+    # Same source as the provided calendar (README: package holidays, subdivision BS);
+    # it matches business_calendar.csv on every public holiday 2024-2026.
+    return holidays.country_holidays("CH", subdiv="BS")
+
+
 def is_workday(day: date) -> bool:
-    """From the calendar; after its end (2026-09-06) Monday-Friday is assumed."""
+    """Working day as defined by business_calendar.csv: Monday-Friday and no public
+    holiday in Basel-Stadt (company holidays still count as working days there).
+
+    Inside the calendar (until 2026-09-06) the file decides; after it, the same rule is
+    applied with the Basel-Stadt public holidays from the `holidays` package.
+    """
     known = _workdays()
-    return bool(known[day]) if day in known.index else day.weekday() < 5
+    if day in known.index:
+        return bool(known[day])
+    return day.weekday() < 5 and day not in _basel_holidays()
 
 
 def protected_days(rule_id: str, start: date, end: date) -> list[date]:
@@ -111,6 +148,31 @@ def protected_days(rule_id: str, start: date, end: date) -> list[date]:
     raise ValueError(f"rule {rule_id}: unknown schedule {rule['schedule']!r}")
 
 
+MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August",
+          "September", "October", "November", "December"]  # fmt: skip
+
+
+def describe_schedule(rule: pd.Series) -> str:
+    """Rule schedule in plain words, e.g. 'last 3 working days of each month, 18:00-04:00'."""
+    kind, _, arg = rule["schedule"].partition(":")
+    if kind == "last_workdays":
+        when = f"last {arg} working days of each month"
+    elif kind == "quarter_days":
+        first, last = arg.split("-")
+        when = f"days {first}-{last} of January, April, July and October"
+    elif kind == "month_workdays":
+        when = f"every working day in {MONTHS[int(arg) - 1]}"
+    elif kind == "daily":
+        when = "every day"
+    elif kind == "date_range":
+        when = f"{rule['start_date'] or '…'} to {rule['end_date'] or 'open end'}"
+    else:
+        when = "always"
+    if rule["from_time"] or rule["until_time"]:
+        when += f", {rule['from_time'] or '00:00'}-{rule['until_time'] or '24:00'}"
+    return when
+
+
 # --- checking a measure ------------------------------------------------------------
 
 
@@ -121,6 +183,9 @@ class Check:
     status: str  # allowed | allowed_outside_windows | needs_human | blocked
     decided_by: str | None = None
     reasons: list[dict] = field(default_factory=list)  # {rule_id, kind, source, summary}
+    # Windows a schedule must stay outside of (only for allowed_outside_windows):
+    # {rule_id, when, schedule, from_time, until_time}. Not checked here, see module doc.
+    conditions: list[dict] = field(default_factory=list)
 
 
 STATUS_ORDER = ["allowed", "allowed_outside_windows", "needs_human", "blocked"]
@@ -131,11 +196,17 @@ def check_measure(resource_id: str, change: str, as_of: date = date(2026, 9, 6))
 
     blocked > needs_human > allowed_outside_windows > allowed. Windows that ended
     before `as_of` (default: data as of 2026-09-06) no longer restrict anything.
+
+    "allowed_outside_windows" is conditional: the caller must make sure the concrete
+    schedule avoids every window in `conditions`. Raises UnknownResource for resources
+    outside the master data and server inventory.
     """
     if change not in CHANGES:
         raise ValueError(f"unknown change {change!r}, expected one of {sorted(CHANGES)}")
+    if resource_id not in known_resources():
+        raise UnknownResource(f"unknown resource {resource_id!r}: not in master data or server inventory")
 
-    status, decided_by, reasons = "allowed", None, []
+    status, decided_by, reasons, conditions = "allowed", None, [], []
 
     def raise_to(new: str, rule: pd.Series) -> None:
         nonlocal status, decided_by
@@ -154,7 +225,11 @@ def check_measure(resource_id: str, change: str, as_of: date = date(2026, 9, 6))
             raise_to("needs_human", rule)
         elif rule["kind"] == "window" and change in TEMPORAL_CHANGES:
             raise_to("allowed_outside_windows", rule)
+            conditions.append(
+                {"rule_id": rule["rule_id"], "when": describe_schedule(rule), "schedule": rule["schedule"],
+                 "from_time": rule["from_time"] or None, "until_time": rule["until_time"] or None}
+            )
         elif change in rule["allows"]:
             reasons.append({k: rule[k] for k in ["rule_id", "kind", "source", "summary"]})
 
-    return Check(resource_id, change, status, decided_by, reasons)
+    return Check(resource_id, change, status, decided_by, reasons, conditions)

@@ -5,6 +5,7 @@ description = "WattsON API (sprintd Basel GreenTech)"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi[standard]>=0.115",
+    "holidays>=0.108",
     "pandas>=2.2",
 ]
 

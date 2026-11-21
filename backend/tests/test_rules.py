@@ -3,7 +3,7 @@ from datetime import date
 import pytest
 from fastapi.testclient import TestClient
 
-from app.limits.rules import check_measure, load_rules, protected_days
+from app.limits.rules import UnknownResource, check_measure, is_workday, load_rules, protected_days
 from app.main import app
 
 client = TestClient(app)
@@ -96,7 +96,9 @@ def explain(resource_id, change):
 def test_explain_night_shutdown_of_production():
     body = explain("dp-prod", "schedule_off")
     assert body["status"] == "allowed_outside_windows"
-    assert body["headline"].startswith("Allowed outside protection windows: last 3 working days of each month, 18:00-04:00")
+    assert body["headline"].startswith(
+        "Allowed only outside protection windows, the schedule must avoid: last 3 working days of each month, 18:00-04:00"
+    )
     assert [w["rule_id"] for w in body["windows"]] == ["R01", "R18", "R19"]
     ev = body["evidence"]
     assert ev["idle_share"] == 0.65
@@ -117,10 +119,40 @@ def test_explain_blocked_and_human_cases():
     assert chatgpt["status"] == "needs_human" and chatgpt["decided_by"] == "Management"
 
 
-def test_explain_agreed_change_and_unknown_resource():
+def test_explain_agreed_change_and_resource_without_rules():
     assert explain("dp-dev", "relocate")["headline"] == "Allowed and already agreed (T-1074)."
-    unknown = explain("no-such-resource", "pause")
-    assert unknown["status"] == "allowed" and unknown["evidence"]["sources"] == []
+    db = explain("db-fin", "downsize")  # known resource, no rule
+    assert db["status"] == "allowed" and db["evidence"]["sources"] == []
+
+
+def test_unknown_resource_is_rejected_not_allowed():
+    with pytest.raises(UnknownResource):
+        check_measure("no-such-resource", "pause")
+    for path in ["/api/rules/check", "/api/rules/explain"]:
+        r = client.get(path, params={"resource_id": "no-such-resource", "change": "pause"})
+        assert r.status_code == 404 and "unknown resource" in r.json()["detail"]
+    assert check_measure("dr-failover", "pause").status == "blocked"  # server only in the inventory
+
+
+def test_conditional_status_lists_the_windows_to_respect():
+    result = client.get("/api/rules/check", params={"resource_id": "dp-prod", "change": "schedule_off"}).json()
+    assert result["status"] == "allowed_outside_windows"
+    assert [(c["rule_id"], c["from_time"], c["until_time"]) for c in result["conditions"]] == [
+        ("R01", "18:00", "04:00"), ("R18", "02:00", "08:00"), ("R19", "20:00", "02:00"),
+    ]
+    blocked = client.get("/api/rules/check", params={"resource_id": "dp-prod", "change": "switch_off"}).json()
+    assert blocked["conditions"] == []  # nothing to schedule around when blocked
+
+
+def test_workdays_after_the_calendar_use_basel_holidays():
+    assert not is_workday(date(2026, 12, 25))  # Christmas, after the calendar ends
+    assert not is_workday(date(2026, 12, 26)) and not is_workday(date(2027, 1, 1))
+    assert is_workday(date(2026, 12, 28))  # Monday, no holiday
+    assert not is_workday(date(2027, 5, 6))  # Ascension 2027 (Auffahrt), a Thursday
+    # last 3 working days of December 2026 skip Christmas and the weekend
+    assert protected_days("R01", date(2026, 12, 1), date(2026, 12, 31)) == [
+        date(2026, 12, 29), date(2026, 12, 30), date(2026, 12, 31),
+    ]
 
 
 def test_explain_never_repeats_injected_text():

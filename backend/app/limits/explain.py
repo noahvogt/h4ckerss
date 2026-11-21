@@ -9,31 +9,7 @@ from datetime import date
 import pandas as pd
 
 from app.limits import evidence
-from app.limits.rules import check_measure, load_rules
-
-MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August",
-          "September", "October", "November", "December"]  # fmt: skip
-
-
-def describe_schedule(rule: pd.Series) -> str:
-    """Rule schedule in plain words, e.g. 'last 3 working days of each month, 18:00-04:00'."""
-    kind, _, arg = rule["schedule"].partition(":")
-    if kind == "last_workdays":
-        when = f"last {arg} working days of each month"
-    elif kind == "quarter_days":
-        first, last = arg.split("-")
-        when = f"days {first}-{last} of January, April, July and October"
-    elif kind == "month_workdays":
-        when = f"every working day in {MONTHS[int(arg) - 1]}"
-    elif kind == "daily":
-        when = "every day"
-    elif kind == "date_range":
-        when = f"{rule['start_date'] or '…'} to {rule['end_date'] or 'open end'}"
-    else:
-        when = "always"
-    if rule["from_time"] or rule["until_time"]:
-        when += f", {rule['from_time'] or '00:00'}-{rule['until_time'] or '24:00'}"
-    return when
+from app.limits.rules import check_measure, describe_schedule, load_rules
 
 
 def _headline(status: str, windows: list[dict], others: list[dict], decided_by: str | None) -> str:
@@ -42,7 +18,10 @@ def _headline(status: str, windows: list[dict], others: list[dict], decided_by: 
     elif status == "needs_human":
         text = f"Needs a human decision: {others[0]['summary']}"
     elif status == "allowed_outside_windows":
-        text = "Allowed outside protection windows: " + "; ".join(w["when"] for w in windows) + "."
+        text = (
+            "Allowed only outside protection windows, the schedule must avoid: "
+            + "; ".join(w["when"] for w in windows) + "."
+        )
     elif others:
         text = f"Allowed and already agreed ({', '.join(others[0]['source'])})."
     else:

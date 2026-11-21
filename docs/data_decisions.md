@@ -18,6 +18,9 @@
   missing and the note explains that usage is unavailable.
 - Detail rows preserve input, cached-input, and output token totals along with
   missing-value counts.
+- `ai_usage.csv` has no per-row deployment region. Its provider usage is
+  therefore assigned the agreed mixed-provider location `EU`, consistent with
+  AI subscription and SaaS facts; no source location value is overwritten.
 
 ## AI and SaaS subscriptions
 

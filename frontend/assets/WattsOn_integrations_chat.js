@@ -7,6 +7,13 @@
   const input = document.getElementById("chIn");
   if (!launcher || !chatPanel || !messages) return;
 
+  const footer = document.querySelector(".wrap > footer");
+  if (footer) {
+    new IntersectionObserver(([entry]) => {
+      document.documentElement.classList.toggle("footer-in-view", entry.isIntersecting);
+    }).observe(footer);
+  }
+
   const prompts = [
     "Which source should I import first?",
     "Explain AWS and GCP invoice options",

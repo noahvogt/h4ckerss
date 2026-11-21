@@ -3,8 +3,8 @@ import pytest
 
 from app.measures.catalogue import build_catalogue
 from app.measures.package import (
-    BUDGET_CHF, OUTPUT, TEMPLATE_COLUMNS, Co2Inputs, attribute, baseline_cost_chf, eligible, evaluate,
-    recommend, search, to_template,
+    BUDGET_CHF, OUTPUT, TEMPLATE_COLUMNS, Co2Inputs, _targets, attribute, baseline_cost_chf, eligible,
+    evaluate, recommend, search, to_template,
 )
 from app.pipeline.common import DATA_DIR
 
@@ -40,6 +40,7 @@ def test_recommended_package_meets_cost_target_within_budget(baseline):
     assert best["cost_reduction"] == pytest.approx(0.282, abs=0.001)
     assert best["effort_person_days"] == 13
     assert best["needs_approval"] == []
+    assert best["targets"] == "pending" and best["meets_co2_target"] is None  # CO2 not known yet
     assert rows["savings_chf"].sum() == pytest.approx(best["savings_chf"])
     assert len(ranked) > 1  # alternatives exist for the trade-off view
 
@@ -73,6 +74,49 @@ def test_co2_makes_the_relocation_worth_it(cat, baseline):
 def test_seat_measures_save_no_co2(cat, baseline):
     co2 = Co2Inputs(resource_kg={"sub-copilot": 500}, total_kg=1_000, grid={"EU": 0.22, "CH": 0.09})
     assert evaluate(pick(cat, "M-sub-copilot"), baseline, co2)["savings_co2_kg"] == 0
+
+
+def test_without_co2_no_package_counts_as_meeting_the_co2_target(cat, baseline):
+    ranked = search(cat, baseline)
+    assert "met" not in set(ranked["targets"])
+    assert set(ranked["targets"]) == {"pending", "not_met"}
+    assert ranked["meets_co2_target"].isna().all()
+
+
+@pytest.mark.parametrize("dp_prod_kg", [None, float("nan")])
+def test_unknown_co2_stays_unknown_not_zero(cat, baseline, dp_prod_kg):
+    kg = {"vm-test": 1_000} | ({} if dp_prod_kg is None else {"dp-prod": dp_prod_kg})
+    co2 = Co2Inputs(resource_kg=kg, total_kg=10_000, grid={"CH": 0.09, "IE": 0.26, "EU": 0.22})
+    selected = pick(cat, "M-dp-prod-schedule", "M-vm-test-downsize", "M-sub-copilot")
+    rows = attribute(selected, co2).set_index("measure_id")
+    assert pd.isna(rows.loc["M-dp-prod-schedule", "savings_co2_kg"])
+    assert rows.loc["M-vm-test-downsize", "savings_co2_kg"] == pytest.approx(750)
+    assert rows.loc["M-sub-copilot", "savings_co2_kg"] == 0  # seats: known zero, even without data
+    result = evaluate(selected, baseline, co2)
+    assert result["co2_unknown"] == ["M-dp-prod-schedule"]
+    assert result["savings_co2_kg"] == pytest.approx(750)  # lower bound
+    assert result["meets_co2_target"] is None  # undecidable, not met and not failed
+
+
+def test_known_savings_can_meet_the_co2_target_despite_unknowns(cat, baseline):
+    co2 = Co2Inputs(resource_kg={"vm-test": 1_000}, total_kg=1_000, grid={"CH": 0.09, "IE": 0.26})
+    result = evaluate(pick(cat, "M-dp-prod-schedule", "M-vm-test-downsize"), baseline, co2)
+    assert result["co2_unknown"] == ["M-dp-prod-schedule"]
+    assert result["meets_co2_target"] is True
+
+
+def test_known_shortfall_does_not_meet_the_co2_target(cat, baseline):
+    co2 = Co2Inputs(resource_kg={"vm-test": 100}, total_kg=1_000, grid={"IE": 0.26})
+    result = evaluate(pick(cat, "M-vm-test-downsize"), baseline, co2)
+    assert result["meets_co2_target"] is False
+
+
+@pytest.mark.parametrize("cost, co2, expected", [
+    (True, True, "met"), (True, None, "pending"), (True, False, "not_met"),
+    (False, True, "not_met"), (False, None, "not_met"),
+])
+def test_package_meets_targets_only_when_both_are_known_to_be_met(cost, co2, expected):
+    assert _targets(cost, co2) == expected
 
 
 def test_template_has_the_submission_columns():

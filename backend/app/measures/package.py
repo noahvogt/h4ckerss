@@ -13,7 +13,12 @@ alternatives show the trade-offs.
   location. Per-measure savings are attributed in that order, so rows add up exactly.
 - CO2 is optional until the calculation (#4) is merged: pass Co2Inputs with the
   baseline-year CO2 per resource and the grid intensity per location. Without it the
-  package is chosen on CHF and effort, and the CO2 target is reported as "pending".
+  package is chosen on CHF and effort, and the CO2 target is reported as "pending",
+  never as met.
+- Unknown is not zero (as in #4): a resource missing from Co2Inputs (or NaN) has unknown
+  CO2, so a measure that changes its energy has unknown CO2 savings (None), and the
+  package total is a lower bound. Only measures that do not change energy use
+  (energy_effect "none", e.g. cancelling unused seats) save a known 0 kg.
 """
 
 from dataclasses import dataclass
@@ -42,10 +47,19 @@ _ORDER = {"usage": 0, "none": 1, "location": 2}
 class Co2Inputs:
     """From the calculation (#4), mid scenario, baseline year."""
 
-    resource_kg: dict[str, float]  # resource_id -> kg CO2e per year
-    total_kg: float  # whole baseline, for the -40 % target
-    grid: dict[str, float]  # location -> kg CO2e per kWh
+    resource_kg: dict[str, float]  # resource_id -> kg CO2e per year; missing or NaN = unknown
+    total_kg: float  # whole baseline (known part), for the -40 % target
+    grid: dict[str, float]  # location -> kg CO2e per kWh; missing = unknown
     resource_kwh: dict[str, float] | None = None  # resource_id -> kWh per year (for the template)
+
+
+# Target status of a package: met, pending (CO2 not calculated or not decidable yet), not_met.
+_TARGET_RANK = {"met": 0, "pending": 1, "not_met": 2}
+
+
+def _known(value) -> float | None:
+    """A number, or None if missing/NaN (unknown is not zero)."""
+    return None if value is None or value != value else float(value)
 
 
 def baseline_cost_chf() -> float:
@@ -73,17 +87,24 @@ def _attribute(records: list[dict], co2: Co2Inputs | None = None) -> list[dict]:
         group = sorted(group, key=lambda m: _ORDER[m["energy_effect"]])
         cost_left, usage_left = 1.0, 1.0
         location = start = group[0]["location"]
+        kg = kwh = None
+        if co2 is not None:
+            kg = _known(co2.resource_kg.get(resource_id))
+            kwh = _known((co2.resource_kwh or {}).get(resource_id))
         for m in group:
             saved_chf = m["baseline_cost_chf"] * cost_left * (1 - m["cost_factor"])
             cost_left *= m["cost_factor"]
             saved_co2 = saved_kwh = None
             if co2 is not None:
-                kg = co2.resource_kg.get(resource_id, 0.0)
-                kwh = (co2.resource_kwh or {}).get(resource_id, 0.0)
-                before = usage_left * co2.grid[location]
-                after = usage_left * m["usage_factor"] * co2.grid[m["location_after"]]
-                saved_co2 = kg * (before - after) / co2.grid[start]
-                saved_kwh = kwh * usage_left * (1 - m["usage_factor"])
+                if m["energy_effect"] == "none":  # energy use unchanged: a known zero
+                    saved_co2, saved_kwh = 0.0, 0.0
+                else:
+                    grid = [_known(co2.grid.get(loc)) for loc in (start, location, m["location_after"])]
+                    if kg is not None and None not in grid:
+                        g_start, g_now, g_after = grid
+                        saved_co2 = kg * usage_left * (g_now - m["usage_factor"] * g_after) / g_start
+                    if kwh is not None:
+                        saved_kwh = kwh * usage_left * (1 - m["usage_factor"])
                 usage_left *= m["usage_factor"]
                 location = m["location_after"]
             out.append({**m, "savings_chf": saved_chf, "savings_co2_kg": saved_co2, "savings_kwh": saved_kwh})
@@ -108,13 +129,25 @@ def _evaluate(records: list[dict], baseline_chf: float, co2: Co2Inputs | None) -
         "within_budget": effort_pd * PERSON_DAY_CHF <= BUDGET_CHF,
         "meets_cost_target": savings_chf / baseline_chf >= COST_TARGET,
         "savings_co2_kg": None, "co2_reduction": None, "meets_co2_target": None,
+        "co2_unknown": [],
         "needs_approval": [m["measure_id"] for m in records if m["status"] == "needs_human"],
     }
     if co2 is not None:
-        saved = sum(p["savings_co2_kg"] for p in parts)
-        result.update(savings_co2_kg=saved, co2_reduction=saved / co2.total_kg,
-                      meets_co2_target=saved / co2.total_kg >= CO2_TARGET)
+        unknown = [p["measure_id"] for p in parts if p["savings_co2_kg"] is None]
+        saved = sum(p["savings_co2_kg"] for p in parts if p["savings_co2_kg"] is not None)
+        reduction = saved / co2.total_kg
+        # Known savings are a lower bound: enough already, or undecidable while some are unknown.
+        met = True if reduction >= CO2_TARGET else (None if unknown else False)
+        result.update(savings_co2_kg=saved, co2_reduction=reduction, meets_co2_target=met, co2_unknown=unknown)
+    result["targets"] = _targets(result["meets_cost_target"], result["meets_co2_target"])
     return result
+
+
+def _targets(cost: bool, co2: bool | None) -> str:
+    """met only if both targets are known to be met; pending while CO2 is unknown."""
+    if not cost or co2 is False:
+        return "not_met"
+    return "met" if co2 else "pending"
 
 
 def evaluate(selected: pd.DataFrame, baseline_chf: float, co2: Co2Inputs | None = None) -> dict:
@@ -125,7 +158,7 @@ def search(cat: pd.DataFrame, baseline_chf: float, co2: Co2Inputs | None = None,
            include_needs_human: bool = False) -> pd.DataFrame:
     """Every combination within budget, best first.
 
-    Ranking: packages that meet all known targets first; then most CO2 saved (if known),
+    Ranking: target status (met, pending, not_met); then most CO2 saved (if known),
     most CHF saved, least effort."""
     pool = eligible(cat, include_needs_human)[_FIELDS].to_dict("records")
     results = []
@@ -135,11 +168,11 @@ def search(cat: pd.DataFrame, baseline_chf: float, co2: Co2Inputs | None = None,
                 continue
             results.append(_evaluate(list(combo), baseline_chf, co2))
     out = pd.DataFrame(results)
-    out["meets_targets"] = out["meets_cost_target"] & (out["meets_co2_target"].fillna(True).astype(bool))
-    keys = ["meets_targets", "savings_co2_kg", "savings_chf", "effort_person_days"] if co2 else \
-        ["meets_targets", "savings_chf", "effort_person_days"]
-    ascending = [False, False, False, True] if co2 else [False, False, True]
-    return out.sort_values(keys, ascending=ascending, ignore_index=True)
+    out["_target_rank"] = out["targets"].map(_TARGET_RANK)
+    keys = ["_target_rank", "savings_co2_kg", "savings_chf", "effort_person_days"] if co2 else \
+        ["_target_rank", "savings_chf", "effort_person_days"]
+    ascending = [True, False, False, True] if co2 else [True, False, True]
+    return out.sort_values(keys, ascending=ascending, ignore_index=True).drop(columns="_target_rank")
 
 
 def recommend(co2: Co2Inputs | None = None, include_needs_human: bool = False) -> tuple[pd.DataFrame, dict, pd.DataFrame]:
@@ -183,11 +216,15 @@ def main() -> None:
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     to_template(rows).to_csv(OUTPUT, index=False)
     print(f"Baseline year cost: CHF {baseline:,.0f}; target -25 % = CHF {baseline * COST_TARGET:,.0f}; budget CHF {BUDGET_CHF:,}")
-    print(f"{len(ranked)} combinations within budget, {int(ranked['meets_targets'].sum())} meet the known targets\n")
+    counts = ranked["targets"].value_counts()
+    print(f"{len(ranked)} combinations within budget: {counts.get('met', 0)} meet both targets, "
+          f"{counts.get('pending', 0)} meet the cost target with CO2 pending\n")
     print(rows[["measure_id", "status", "effort_person_days", "savings_chf"]].round(0).to_string(index=False))
     print(f"\nRecommended: CHF {best['savings_chf']:,.0f}/year ({best['cost_reduction']:.1%}), "
           f"{best['effort_person_days']:g} PD = CHF {best['effort_chf']:,.0f}; CO2: "
-          + ("pending (#4)" if best["co2_reduction"] is None else f"{best['co2_reduction']:.1%}"))
+          + ("pending (#4)" if best["co2_reduction"] is None else
+             f"{best['co2_reduction']:.1%}" + (f" + unknown for {best['co2_unknown']}" if best["co2_unknown"] else ""))
+          + f"; targets: {best['targets']}")
     with_human = recommend(include_needs_human=True)[1]
     print(f"With approvals: CHF {with_human['savings_chf']:,.0f}/year ({with_human['cost_reduction']:.1%}), "
           f"{with_human['effort_person_days']:g} PD, needs approval: {with_human['needs_approval']}")

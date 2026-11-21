@@ -8,7 +8,7 @@
   const history = [];
   let suggestionTimer = 0;
   let lastSuggestionAt = 0;
-  let busy = false;
+  let activeRequest = null;
 
   function text(selector) {
     return Array.from(document.querySelectorAll(selector))
@@ -86,13 +86,18 @@
   }
 
   async function askLlm(question, options = {}) {
-    if (busy && !options.suggestion) return false;
-    busy = true;
-    const typing = addBotHtml("", true);
+    if (activeRequest) return false;
+    const request = {
+      suggestion: Boolean(options.suggestion),
+      controller: new AbortController(),
+      typing: addBotHtml("", true),
+    };
+    activeRequest = request;
     try {
       const response = await fetch("/api/wattson/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        signal: request.controller.signal,
         body: JSON.stringify({
           message: question,
           page: document.title,
@@ -102,22 +107,28 @@
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.detail || "Wattson backend failed");
-      typing.remove();
+      if (request.controller.signal.aborted) return false;
       const label = data.live ? "" : '<small class="detail-note">Local fallback · set OPENAI_API_KEY for live LLM</small>';
       addBotHtml((options.suggestion ? "<b>Suggestion</b><br>" : "") + escapeHtml(data.reply).replace(/\n/g, "<br>") + label);
       history.push({ role: "user", content: question }, { role: "assistant", content: data.reply });
       return true;
-    } catch (error) {
-      typing.remove();
+    } catch {
       return false;
     } finally {
-      busy = false;
+      request.typing.remove();
+      if (activeRequest === request) activeRequest = null;
     }
   }
 
   window.ask = function wattsonAsk(question) {
     const q = String(question || "").trim();
-    if (!q) return;
+    if (!q || activeRequest?.suggestion === false) return false;
+    clearTimeout(suggestionTimer);
+    if (activeRequest) {
+      activeRequest.controller.abort();
+      activeRequest.typing.remove();
+      activeRequest = null;
+    }
     const me = document.createElement("div");
     me.className = "msg me";
     me.textContent = q;
@@ -129,20 +140,19 @@
         originalAsk(q);
       }
     });
+    return true;
   };
 
   window.send = function wattsonSend(event) {
     event.preventDefault();
-    const value = input.value.trim();
-    if (!value) return;
-    input.value = "";
-    window.ask(value);
+    if (window.ask(input.value)) input.value = "";
   };
 
   function scheduleSuggestion(reason) {
-    if (chat.inert || Date.now() - lastSuggestionAt < 9000) return;
+    if (chat.inert || activeRequest || Date.now() - lastSuggestionAt < 9000) return;
     clearTimeout(suggestionTimer);
     suggestionTimer = setTimeout(() => {
+      if (chat.inert || activeRequest) return;
       lastSuggestionAt = Date.now();
       askLlm("Based on the current UI after this action, suggest the single most useful next step. Action: " + reason, { suggestion: true });
     }, 900);
@@ -150,9 +160,10 @@
 
   document.addEventListener("change", event => {
     const el = event.target;
-    if (el && el.matches("select,input")) scheduleSuggestion(el.id || el.name || el.type);
+    if (!chat.contains(el) && el.matches("select,input")) scheduleSuggestion(el.id || el.name || el.type);
   }, true);
   document.addEventListener("click", event => {
+    if (chat.contains(event.target)) return;
     const el = event.target.closest("button,[data-group],[data-review],.map-pin,.sitePin,.m,.card");
     if (el) scheduleSuggestion((el.textContent || el.id || el.className || "click").trim().slice(0, 80));
   }, true);

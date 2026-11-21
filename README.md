@@ -16,4 +16,5 @@ uv sync              # install dependencies
 uv run fastapi dev   # API on http://127.0.0.1:8000, docs at /docs
 uv run pytest        # tests
 uv run python -m app.pipeline.build   # rebuild data/derived/facts.csv from data/provided
+uv run python -m app.measures.catalogue   # rebuild data/derived/measures.csv (measures with effort and CHF savings)
 ```

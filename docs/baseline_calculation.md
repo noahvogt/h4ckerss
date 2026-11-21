@@ -83,8 +83,43 @@ The annual summary counts 698 facts and retains CHF 470,300.4703 net. Energy and
 
 `rank_drivers()` ranks annual subtotals by resource ID, department, tool, or location. The ranking metric is signed net CHF (`cost_chf`), mid scenario kWh (`energy_kwh`), or mid scenario kg CO₂e (`co2e_kg`). Groups with unavailable values for the selected metric are excluded. Known zero values remain eligible. Rows sort by descending subtotal and ascending group label for ties, with missing labels last. Ranked rows retain the summary's coverage counts and statuses. An optional limit returns the top rows.
 
+## Frontend and audit exports
+
+From the repository root, run:
+
+```sh
+cd backend
+uv run python -m app.pipeline.baseline_export
+```
+
+The command reads the checked-in facts and research assumptions through the existing pipeline. It writes `out/baseline/baseline.json` and `out/baseline/baseline_details.csv` relative to the repository root. Pass `--output-dir PATH` to write both files elsewhere. The default `out/` directory is ignored by Git, and rerunning the command replaces the two generated files.
+
+### JSON contract
+
+The [exporter](../backend/app/pipeline/baseline_export.py) writes `schema_version: 1`, inclusive `period_start` and `period_end`, `scenarios`, `default_scenario: "mid"`, a `units` map, and the companion `details_file` name. Dates use `YYYY-MM-DD`, with monthly rows dated on the first day of each month.
+
+| Field | Content |
+|---|---|
+| `annual` | Company-wide KPI record. |
+| `monthly` | Company-wide records in month order. |
+| `breakdowns` | Separate annual arrays keyed by `location`, `department`, `tool`, and `category`. |
+| `drivers` | Up to ten known drivers per metric and dimension, in rank order. Metric keys are `cost_chf`, `energy_kwh`, and `co2e_kg`. Each contains rankings by `resource_id`, `department`, `tool`, and `location`. |
+| `rows` | Annual groups by location, department, tool, and category for the existing map importer. `energy_kwh` and `co2_kg` are compatibility aliases of the mid scenario values, with `co2_kg` expressed in kg CO₂e. |
+
+Each summary or ranking record includes `cost_chf` in CHF, the three `energy_kwh_*` values in kWh, the three `co2e_kg_*` values in kg CO₂e, `fact_count`, and the coverage fields defined above. Missing numbers are JSON `null`. A numeric zero represents a known zero, and the coverage fields distinguish unavailable and inapplicable results. Values retain their calculation precision. Round for display.
+
+For the [map overview](../frontend/page1-map-overview/README.md), open it with `?dev=1` and import `baseline.json` in Developer tools. The map reads the period and `rows`. Its partial labels depend only on null metric values. It does not interpret `cost_coverage`, `energy_coverage`, `emissions_coverage`, or their counts. A numeric subtotal with flagged partial usage may appear without a partial label, and a null from cost-only activity may trigger a partial label. For coverage-aware displays, use the exported summaries and each metric's explicit coverage fields.
+
+### Audit CSV
+
+The UTF-8 CSV contains one row per original fact, sorted by the stable key `(month, source, resource_id, department, usage_kind)`. It retains all fact fields, original notes, calculated scenarios, and statuses. It adds per-fact coverage, the energy usage divisor, the energy and grid factor values for each scenario, and the source and calculation assumption for each matched factor.
+
+When calling the export functions directly, supply calculated facts from the validated baseline selector. The JSON builder assumes unique fact keys. The combined exporter checks those keys through the audit join before writing either file.
+
+The `pue_multiplier_*` columns show the scenario multiplier for a matched energy factor. Facility-inclusive AI factors use 1. Rows with no energy factor have blank multipliers. PUE research provenance is present where the factor calls for PUE. Grid unit labels are retained from the research CSV. Missing CSV fields are blank, with the status and coverage fields providing their meaning. Use the stable fact key for individual audits or filter by the dimensions of an aggregate row.
+
 ## Limitations and planned work
 
 Energy values use researched proxies. The storage factor assumes logical GB-days, and the GPU factor models the board. Energy and emissions cover only supported kinds and reported usage. The Swiss grid factor uses a consumption mix including imports. The German, Irish, and mixed EU factors use generation-based proxies, and the mixed EU factor represents the region rather than individual providers.
 
-Frontend integration and submission export are outside the current pipeline.
+Automatic frontend loading and the official submission-template export are separate work.

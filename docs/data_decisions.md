@@ -21,6 +21,25 @@
 
 ## AI and SaaS subscriptions
 
+- Subscription facts use the canonical resource IDs from
+  `mapping_departments_tools.csv`: ChatGPT Team uses `sub-chatgpt`, Claude Team
+  uses `sub-claude`, Microsoft Copilot uses `sub-copilot`, Microsoft 365 uses
+  `saas-m365`, and all other SaaS contracts use `saas-other`. These exact,
+  deterministic mappings replace product/provider-derived IDs. Facts sharing a
+  canonical ID, month, and cost-center allocation are aggregated, while detail
+  rows retain their original product, provider, and contract fields.
+- The master mapping supplies the canonical resource identity only.
+  Subscription departments continue to come from each source row's
+  `cost_center`, including when several departments use the same subscription.
+- AI subscription usage is measured as `messages_30d` (`usage_kind: messages`),
+  because messages are the agreed driver for AI subscription energy and CO₂
+  calculations. SaaS subscription usage remains purchased licences
+  (`usage_kind: seat_month`), matching its seat-based service. Licence counts
+  remain available in AI detail data for unused-seat calculations.
+- Missing AI message counts are never estimated or replaced with zero. Known
+  message counts are summed and flagged as partial when other counts are
+  missing; if all are missing, usage remains unavailable and is flagged in
+  `note`.
 - Subscription costs use the shared monthly CHF conversion helper. Invalid
   dates, unsupported currencies, and absent exchange rates raise errors rather
   than being silently converted into plausible-looking values.

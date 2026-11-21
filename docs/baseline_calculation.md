@@ -6,7 +6,9 @@ The pipeline selects monthly facts, validates research factors, estimates facili
 
 [`select_baseline_facts()`](../backend/app/pipeline/baseline.py) validates the entire input against the shared fact schema before filtering. This includes out-of-period rows. It checks required fields, allowed categorical values, month starts on the first day at midnight, and a note on any missing CHF cost. It then selects **September 2025 through August 2026**, inclusive, and requires at least one fact in each of the 12 months.
 
-For the supplied recurring billing and licence feeds, it also requires all 12 months per source. This covers Azure, AWS, the hoster, AI subscriptions, and SaaS contracts when those feeds are present in the input. Gateway activity and other sparse sources are exempt from this check.
+By default, Azure, AWS, the hoster, AI subscriptions, and SaaS contracts must each be present in the selected period and cover all 12 months. A wholly absent required feed is listed by source name. Gaps in a required feed that is present are listed as `(source, month)` pairs. Gateway activity and other sparse sources are exempt unless explicitly required.
+
+For a deliberate subset, pass `required_sources` to replace the default set. An empty collection skips per-source checks while still requiring all 12 baseline months overall.
 
 Within the selected period, it rejects duplicate keys on `(month, source, resource_id, department, usage_kind)` and missing, noncanonical, or unknown resource IDs. IDs must match the [master mapping](../data/provided/mapping_departments_tools.csv) exactly. Ingestion can use a whitespace-tolerant lookup for metadata, and the baseline points out padding on a known ID so the caller can correct the fact key. Selection preserves row order, CHF values, and source notes.
 

@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WattsOn · Forecast studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F7F9F5; --surface:#FFFFFF; --ink:#0F1A14; --ink2:#2B3A31; --mute:#5E6B64; --line:#E3E9E2; --line2:#CDD6CF;
+  --volt:#C8F31D; --volt-d:#8CB800; --eco:#16A34A; --eco-d:#0F7A36; --elec:#2563EB; --elec-l:#DBEAFE; --red:#DC2626; --amber:#D97706;
+  --zrh:#2F6BFF; --fra:#F2652F; --dub:#12B886; --eu:#8B5CF6;
+  --r:22px; --shadow:0 1px 2px #0f1a1408,0 12px 40px -12px #0f1a1420;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:16px;line-height:1.5;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.mono{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums}
+button{font-family:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--elec);outline-offset:3px;border-radius:8px}
+#gl{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
+.wrap{position:relative;z-index:2;max-width:1360px;margin:0 auto;padding:0 36px 140px}
+.ico{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.12em}
+
+/* nav */
+nav{position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:16px 0;background:linear-gradient(#F7F9F5f0,#F7F9F500);backdrop-filter:blur(14px)}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;letter-spacing:-.02em}
+.logo .orb{width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff 0,var(--volt) 30%,var(--volt-d) 80%);box-shadow:0 0 0 4px #C8F31D55,0 6px 18px #8CB80066}
+.crumbs{display:flex;gap:4px;padding:4px;border:1px solid var(--line);border-radius:999px;background:#ffffffcc}
+.crumbs span{padding:8px 16px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.crumbs span.on{background:var(--ink);color:var(--volt)}
+.nav-r{font-size:12px;color:var(--mute)}
+
+/* hero */
+.hero{padding:60px 0 30px;display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:end}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:var(--eco-d);padding:7px 14px;border-radius:999px;background:#16A34A14;border:1px solid #16A34A33}
+.eyebrow i{width:7px;height:7px;border-radius:50%;background:var(--eco);box-shadow:0 0 0 3px #16A34A33;animation:blink 1.8s infinite}
+@keyframes blink{50%{opacity:.35}}
+h1{font-size:clamp(46px,6.4vw,92px);font-weight:800;letter-spacing:-.05em;line-height:.96;margin:22px 0 16px}
+h1 .g{background:linear-gradient(100deg,var(--eco) 0%,var(--volt-d) 55%,var(--elec) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{color:var(--mute);font-size:17px;max-width:560px}
+.lede b{color:var(--ink)}
+.hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stat{padding:18px 20px;border-radius:18px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow)}
+.stat b{display:block;font-family:'JetBrains Mono';font-size:28px;letter-spacing:-.03em;color:var(--eco-d)}
+.stat span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:600}
+
+/* compare */
+.compare{display:grid;grid-template-columns:1fr 150px 1fr;margin-top:40px}
+.panel{position:relative;border-radius:var(--r);background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);padding:34px 36px;overflow:hidden;transition:transform .5s cubic-bezier(.2,.8,.2,1),box-shadow .5s}
+.panel:hover{transform:translateY(-4px);box-shadow:0 30px 70px -20px #0f1a1433}
+.panel.after{background:linear-gradient(160deg,#ffffff,#F3FCE1);border-color:#C8F31D}
+.panel.after::after{content:"";position:absolute;top:-140px;right:-140px;width:380px;height:380px;background:radial-gradient(circle,#C8F31D66,transparent 60%);pointer-events:none}
+.ph{display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);font-weight:700}
+.ph .pill{padding:4px 10px;border-radius:999px;border:1px solid var(--line);font-family:'JetBrains Mono';letter-spacing:0;text-transform:none;font-weight:500;background:#fff}
+.panel.after .ph{color:var(--eco-d)}
+.big{display:flex;align-items:baseline;gap:12px;margin:22px 0 4px;position:relative;z-index:1}
+.big .num{font-family:'JetBrains Mono';font-weight:700;font-size:clamp(44px,4.6vw,68px);letter-spacing:-.05em;line-height:1}
+.big small{font-size:15px;color:var(--mute);font-weight:600}
+.unit{font-size:13px;color:var(--mute);margin-bottom:22px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;position:relative;z-index:1}
+.sep{height:1px;background:var(--line);margin:22px 0}
+.n{cursor:pointer;position:relative;display:inline-block;border-radius:10px;padding:0 6px;margin:0 -6px;transition:.25s;text-decoration:underline dotted var(--line2);text-underline-offset:6px;text-decoration-thickness:2px}
+.n:hover{background:var(--volt);text-decoration-color:transparent;color:var(--ink)}
+.n::after{content:"explain";position:absolute;top:-24px;right:0;font:700 10px/1 'Plus Jakarta Sans';letter-spacing:.14em;text-transform:uppercase;color:#fff;background:var(--ink);padding:6px 9px;border-radius:7px;opacity:0;transform:translateY(6px);transition:.25s;pointer-events:none;white-space:nowrap}
+.n:hover::after{opacity:1;transform:none}
+.bars{display:flex;flex-direction:column;gap:10px;position:relative;z-index:1}
+.bar{display:grid;grid-template-columns:84px 1fr 64px;align-items:center;gap:12px}
+.bar .lab{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);font-weight:600}
+.bar .trk{height:10px;border-radius:999px;background:#0f1a140d;position:relative;overflow:hidden}
+.bar .fill{position:absolute;inset:0;width:0;border-radius:999px;transition:width 1.4s cubic-bezier(.2,.8,.2,1)}
+.bar .ghost{position:absolute;inset:0;border-radius:999px;background:repeating-linear-gradient(90deg,#0f1a1422 0 3px,transparent 3px 6px)}
+.bar .v{text-align:right;font-family:'JetBrains Mono';font-size:12px;color:var(--mute)}
+.c-zrh{background:var(--zrh)}.c-fra{background:var(--fra)}.c-dub{background:var(--dub)}.c-eu{background:var(--eu)}
+.spine{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:40px;position:relative;z-index:2}
+.hop{position:relative;width:100%;display:grid;place-items:center}
+.hop::before{content:"";position:absolute;left:-8px;right:-4px;top:50%;height:4px;transform:translateY(-50%);border-radius:2px;background:repeating-linear-gradient(90deg,var(--eco) 0 10px,transparent 10px 18px);animation:dash .8s linear infinite;opacity:.85}
+.hop::after{content:"";position:absolute;right:-12px;top:50%;transform:translateY(-50%);border:9px solid transparent;border-left:14px solid var(--eco);filter:drop-shadow(0 0 6px #16A34A88)}
+@keyframes dash{to{background-position:18px 0}}
+.hop .cap{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:9px;letter-spacing:.2em;text-transform:uppercase;font-weight:800;color:var(--eco-d);background:#F7F9F5;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.ring{position:relative;width:118px;height:118px;display:grid;place-items:center;z-index:1}
+.ring .lbl svg{width:22px;height:22px;stroke:var(--ink);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;margin-bottom:3px}
+.ring .lbl .co2t{font:800 9px 'JetBrains Mono';fill:var(--ink);stroke:none}
+.ring>svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:8;stroke-linecap:round}
+.ring .bgc{stroke:#0f1a1410}
+.ring .fg{stroke:url(#gr);stroke-dasharray:314;stroke-dashoffset:314;transition:stroke-dashoffset 1.8s cubic-bezier(.2,.8,.2,1)}
+.ring .lbl{text-align:center;background:#fff;border-radius:50%;width:88px;height:88px;display:grid;place-items:center;align-content:center;box-shadow:var(--shadow)}
+.ring .lbl b{font-family:'JetBrains Mono';font-size:17px;letter-spacing:-.04em;display:block;line-height:1;color:var(--eco-d)}
+.ring .lbl span{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);font-weight:700}
+
+/* cta */
+.cta{margin:40px 0 0;display:grid;grid-template-columns:1fr auto;gap:30px;align-items:center;padding:28px 34px;border-radius:var(--r);background:var(--ink);color:#fff;position:relative;overflow:hidden}
+.cta::before{content:"";position:absolute;inset:-60%;background:conic-gradient(from 0deg,transparent 0 72%,#C8F31D33 86%,transparent 100%);animation:spin 10s linear infinite;pointer-events:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.cta>*{position:relative}
+.cta h3{font-size:26px;letter-spacing:-.02em;font-weight:800}
+.cta p{color:#B8C4BD;margin-top:4px;font-size:14px}
+.cta p b{color:var(--volt)}
+.go{display:inline-flex;align-items:center;gap:16px;padding:18px 26px 18px 20px;border-radius:999px;border:0;background:var(--volt);color:var(--ink);font:800 14px 'Plus Jakarta Sans';letter-spacing:.06em;text-transform:uppercase;box-shadow:0 14px 40px #C8F31D55;transition:.3s}
+.go:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 20px 50px #C8F31D88}
+.go .sw{width:52px;height:28px;border-radius:999px;background:var(--ink);position:relative;transition:.3s}
+.go .sw::after{content:"";position:absolute;top:4px;left:4px;width:20px;height:20px;border-radius:50%;background:var(--volt);transition:.3s cubic-bezier(.3,1.5,.5,1)}
+.go.on .sw::after{left:28px;background:#fff}
+.go .meta{display:block;font:500 11px 'JetBrains Mono';text-transform:none;letter-spacing:0;opacity:.7}
+
+/* sections */
+section{margin-top:84px}
+.sh{display:flex;align-items:end;justify-content:space-between;margin-bottom:26px}
+.sh h2{font-size:38px;letter-spacing:-.035em;font-weight:800;line-height:1.05}
+.sh h2 span{color:var(--mute);font-weight:500}
+.sh p{color:var(--mute);font-size:13px}
+.measures{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.m{position:relative;padding:22px 22px 18px;border-radius:20px;border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow);cursor:pointer;transition:.35s cubic-bezier(.2,.8,.2,1);overflow:hidden;min-height:230px;display:flex;flex-direction:column}
+.m:hover{transform:translateY(-6px);border-color:var(--volt-d);box-shadow:0 30px 60px -20px #0f1a1433}
+.m .id{font-family:'JetBrains Mono';font-size:11px;color:var(--eco-d);letter-spacing:.1em;font-weight:700}
+.m .tag{position:absolute;top:18px;right:18px;font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:4px 8px;border-radius:999px;font-weight:800}
+.m .tag.auto{background:#C8F31D55;color:#3F5A00}
+.m .tag.human{background:#DC262614;color:var(--red)}
+.m h4{font-size:15px;font-weight:700;margin:10px 0 6px;line-height:1.3;letter-spacing:-.01em;padding-right:10px}
+.m p{font-size:12.5px;color:var(--mute);flex:1}
+.m .fig{display:flex;align-items:baseline;gap:6px;margin-top:14px}
+.m .fig b{font-family:'JetBrains Mono';font-size:30px;letter-spacing:-.04em;line-height:1}
+.m .fig span{font-size:11px;color:var(--mute)}
+.m .sub{display:flex;justify-content:space-between;font-family:'JetBrains Mono';font-size:11px;color:var(--mute);margin-top:6px}
+.m .glow{position:absolute;left:0;right:0;bottom:0;height:4px;background:linear-gradient(90deg,var(--eco),var(--volt));transform-origin:left;transform:scaleX(var(--p))}
+.m.big-m{grid-column:span 2;background:linear-gradient(140deg,#F3FCE1,#fff);border-color:#C8F31D}
+.m.big-m .fig b{font-size:46px;color:var(--eco-d)}
+.m.total{grid-column:span 3;background:var(--ink);color:#fff;border-color:var(--ink)}
+.m.total p,.m.total .sub,.m.total .fig span{color:#B8C4BD}.m.total .fig b{color:var(--volt)}.m.total .id{color:var(--volt)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;perspective:1400px}
+.card{position:relative;padding:28px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow);transition:transform .15s ease-out,box-shadow .4s;transform-style:preserve-3d}
+.card .stamp{display:inline-flex;align-items:center;gap:8px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;padding:6px 12px;border-radius:999px;font-weight:800;color:var(--amber);background:#D9770614}
+.card .stamp i{width:6px;height:6px;border-radius:50%;background:currentColor;animation:blink 1.4s infinite}
+.card .stamp.ok{color:var(--eco-d);background:#16A34A1A}.card .stamp.no{color:var(--red);background:#DC26261A}
+.card .who{display:flex;align-items:center;gap:10px;margin:18px 0 10px;font-size:12px;color:var(--mute);font-weight:600}
+.card .who i{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font:800 11px 'Plus Jakarta Sans';font-style:normal;background:var(--elec-l);color:var(--elec)}
+.card h3{font-size:20px;font-weight:700;line-height:1.25;letter-spacing:-.015em}
+.card h3 code{font-family:'JetBrains Mono';font-size:14px;color:var(--eco-d);background:#16A34A14;padding:2px 7px;border-radius:6px}
+.card .why{font-size:13px;color:var(--mute);margin:10px 0 16px}
+.card .figs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.card .figs div{padding:12px;border-radius:14px;background:var(--bg);border:1px solid var(--line)}
+.card .figs b{display:block;font-family:'JetBrains Mono';font-size:18px;letter-spacing:-.03em}
+.card .figs span{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);font-weight:600}
+.card .guard{font-size:12px;line-height:1.55;padding:12px 14px;border-radius:14px;background:#DC26260A;border:1px solid #DC262626;margin-bottom:18px}
+.card .guard b{color:var(--red)}
+.card .acts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.card .acts button{padding:13px 8px;border-radius:12px;border:1px solid var(--line);background:#fff;color:var(--ink);font:800 12px 'Plus Jakarta Sans';letter-spacing:.08em;text-transform:uppercase;transition:.2s}
+.card .acts .ex:hover{background:var(--bg)}
+.card .acts .ok{background:var(--ink);color:var(--volt);border-color:var(--ink)}
+.card .acts .ok:hover{box-shadow:0 10px 24px #0f1a1444;transform:translateY(-1px)}
+.card .acts .no:hover{background:var(--red);border-color:var(--red);color:#fff}
+.card.done{opacity:.55}.card.done .acts{display:none}
+footer{margin-top:100px;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:600}
+.reveal{opacity:0;transform:translateY(24px);transition:.8s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:none}
+.reveal .m,.reveal .card{opacity:0;transform:translateY(18px) scale(.97);transition:opacity .45s cubic-bezier(.34,1.3,.5,1),transform .45s cubic-bezier(.34,1.3,.5,1)}
+.reveal.in .m,.reveal.in .card{opacity:1;transform:none}
+.measures .m{transition-delay:calc(var(--i,0)*45ms)}.cards .card{transition-delay:calc(var(--i,0)*70ms)}
+
+/* ═══════ TREE EXPLORER ═══════ */
+.explorer{position:fixed;inset:0;z-index:50;background:#F7F9F5;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .35s}
+body.explore .explorer{opacity:1;pointer-events:auto}
+.explorer::before{content:"";position:absolute;inset:0;background-image:radial-gradient(#0f1a1414 1px,transparent 1px);background-size:26px 26px;pointer-events:none}
+.ex-top{position:relative;z-index:2;display:flex;align-items:center;gap:20px;padding:16px 28px;background:#ffffffee;backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.ex-top .k{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--eco-d);font-weight:800}
+.ex-top .h{font-family:'JetBrains Mono';font-weight:700;font-size:30px;letter-spacing:-.05em;line-height:1}
+.ex-top .s{font-size:13px;color:var(--mute)}
+.ex-story{flex:1;margin:0 10px;padding:12px 18px;border-radius:14px;background:var(--ink);color:#fff;font-size:14px;line-height:1.5;display:flex;gap:12px;align-items:center;min-width:0}
+.ex-story .b{font-family:'JetBrains Mono';background:var(--volt);color:var(--ink);padding:1px 7px;border-radius:6px;font-weight:700;white-space:nowrap}
+.ex-tools{display:flex;gap:8px}
+.ex-tools button{height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:#fff;font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;display:inline-flex;align-items:center;gap:8px;transition:.2s}
+.ex-tools button:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+.ex-tools .x{width:40px;padding:0;justify-content:center;font-size:18px}
+.ex-body{position:relative;flex:1;display:grid;grid-template-columns:1fr 360px;min-height:0}
+.canvas{position:relative;overflow:auto;cursor:grab}
+.canvas:active{cursor:grabbing}
+.stage{position:relative;transform-origin:0 0;transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+.edges{position:absolute;inset:0;overflow:visible;pointer-events:none}
+.edges path.e{fill:none;stroke:var(--line2);stroke-width:2.5;stroke-linecap:round;transition:d .5s}
+.edges path.e.hot{stroke:var(--eco);stroke-width:3}
+.edges .spark{fill:var(--volt-d);filter:drop-shadow(0 0 4px var(--volt))}
+.edges .opb{font:800 13px 'JetBrains Mono';fill:#fff}
+.edges .opc{fill:var(--ink)}
+.tn{position:absolute;width:232px;border-radius:18px;background:#fff;border:1.5px solid var(--line);box-shadow:var(--shadow);padding:14px 16px 12px;transition:left .5s cubic-bezier(.2,.8,.2,1),top .5s cubic-bezier(.2,.8,.2,1),box-shadow .25s,transform .25s;cursor:pointer;animation:pop .45s cubic-bezier(.34,1.4,.5,1) both}
+@keyframes pop{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:none}}
+.tn:hover{transform:translateY(-3px);box-shadow:0 20px 44px -16px #0f1a1444;border-color:var(--volt-d)}
+.tn.sel{border-color:var(--ink);box-shadow:0 0 0 4px #C8F31D88,0 20px 44px -16px #0f1a1444}
+.tn.root{background:var(--ink);color:#fff;border-color:var(--ink)}
+.tn.leaf{background:linear-gradient(160deg,#fff,#F3FCE1)}
+.tn .l{font-weight:700;font-size:13.5px;line-height:1.25;letter-spacing:-.01em;padding-right:30px}
+.tn .s{font-size:11px;color:var(--mute);margin-top:2px}
+.tn.root .s{color:#B8C4BD}
+.tn .v{font-family:'JetBrains Mono';font-weight:700;font-size:22px;letter-spacing:-.04em;margin-top:8px;line-height:1}
+.tn .v em{font-style:normal;font-weight:500;font-size:11px;color:var(--mute);margin-left:4px}
+.tn.root .v{color:var(--volt)}
+.tn .tg{position:absolute;top:12px;right:12px;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line2);background:#fff;display:grid;place-items:center;font-size:12px;color:var(--ink);transition:.25s}
+.tn.root .tg{background:var(--volt);border-color:var(--volt)}
+.tn.open .tg{transform:rotate(180deg);background:var(--ink);color:var(--volt);border-color:var(--ink)}
+.tn .tg b{font:800 10px 'JetBrains Mono'}
+.tn .src{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font:500 10px 'JetBrains Mono';padding:3px 8px;border-radius:999px;background:var(--bg);border:1px solid var(--line);color:var(--mute);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tn.root .src{background:#ffffff14;border-color:#ffffff22;color:#B8C4BD}
+.tn .src::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--elec);flex:none}
+.tn .warn{position:absolute;top:-10px;left:12px;background:var(--red);color:#fff;font:800 9px 'Plus Jakarta Sans';letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:999px}
+.tn .mini{height:5px;border-radius:999px;background:linear-gradient(90deg,var(--eco),var(--volt) 40%,var(--amber) 75%,var(--red));margin-top:10px;position:relative;opacity:.8}
+.tn .mini i{position:absolute;top:-4px;width:3px;height:13px;background:var(--ink);border-radius:2px;left:var(--x)}
+
+/* reading pane */
+.read{position:relative;z-index:2;border-left:1px solid var(--line);background:#fff;padding:26px;overflow-y:auto}
+.read .k{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);font-weight:800;margin-bottom:8px}
+.read h3{font-size:22px;letter-spacing:-.03em;font-weight:800;line-height:1.15}
+.read .val{font-family:'JetBrains Mono';font-size:40px;font-weight:700;letter-spacing:-.05em;margin:10px 0 18px;color:var(--eco-d)}
+.read .val em{font-style:normal;font-size:14px;font-weight:500;color:var(--mute);margin-left:6px}
+.read .formula{padding:14px 16px;border-radius:14px;background:var(--ink);color:#fff;font-family:'JetBrains Mono';font-size:13px;line-height:2;margin-bottom:16px}
+.read .formula .chip{background:var(--volt);color:var(--ink);padding:1px 7px;border-radius:6px;font-weight:700}
+.read .note{font-size:13px;color:var(--ink2);padding:12px 14px;border-radius:12px;background:var(--bg);border:1px solid var(--line);margin-bottom:10px;line-height:1.55}
+.read .note b{color:var(--ink)}
+.read .warnb{font-size:13px;color:#7F1D1D;padding:12px 14px;border-radius:12px;background:#DC26260F;border:1px solid #DC262633;margin-bottom:10px;line-height:1.55}
+.read .srcs{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 20px}
+.read .srcs span{font:500 11px 'JetBrains Mono';padding:5px 10px;border-radius:999px;background:var(--elec-l);color:#1E40AF}
+.read .sens h4{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);font-weight:800;margin-bottom:10px}
+.read .range{position:relative;height:10px;border-radius:999px;background:linear-gradient(90deg,var(--eco),var(--volt) 40%,var(--amber) 75%,var(--red));margin:18px 0 8px}
+.read .range i{position:absolute;top:-6px;width:4px;height:22px;border-radius:2px;background:var(--ink);left:var(--x)}
+.read .rl{display:flex;justify-content:space-between;font-family:'JetBrains Mono';font-size:11px;color:var(--mute)}
+.read .hint{margin-top:26px;font-size:12px;color:var(--mute);display:flex;gap:10px;align-items:flex-start}
+.read .hint svg{flex:none;margin-top:3px;color:var(--eco)}
+
+/* Wattson's portrait and chat share one fixed corner. */
+:root{
+  --watson-edge:max(20px,env(safe-area-inset-right));
+  --watson-foot:max(18px,env(safe-area-inset-bottom));
+  --watson-size:120px;
+  --watson-shape:35% 35% 24% 24% / 28% 28% 22% 22%;
+  --chat-foot:calc(var(--watson-foot) + var(--watson-size) + 20px);
+}
+.fab{
+  position:fixed;right:var(--watson-edge);bottom:var(--watson-foot);z-index:61;
+  width:var(--watson-size);height:calc(var(--watson-size) + 8px);
+  display:grid;justify-items:center;align-content:start;isolation:isolate;
+  background:transparent;border:0;color:#f7f3e7;-webkit-tap-highlight-color:transparent;
+}
+.fab:focus-visible{outline-offset:5px;border-radius:50% 50% 22px 22px}
+.watson-bezel{
+  width:100%;aspect-ratio:1;border-radius:var(--watson-shape);padding:3px;display:grid;
+  background:conic-gradient(from -40deg,#fbefd0,#c0a77c 18%,#77684e 38%,#e4d4ab 55%,#9c8660 72%,#e9ddbe 90%,#fbefd0);
+  box-shadow:0 0 0 1px #27372c,0 3px 4px #19271a38,0 9px 22px -4px #12231566;
+  transition:box-shadow .22s ease;
+}
+.watson-portrait{
+  position:relative;display:block;overflow:hidden;border-radius:var(--watson-shape);
+  background-color:#243b34;background-repeat:no-repeat;background-position:0% 0%;background-size:600% 800%;
+
+  box-shadow:inset 0 0 0 2px #142219,inset 0 0 10px #10171070;
+}
+.watson-portrait::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  box-shadow:inset 0 0 0 1px #17251b,inset 0 -10px 15px -10px #09100d;
+  background:linear-gradient(125deg,#fff5d50c,transparent 40%);
+}
+.watson-label{
+  position:absolute;bottom:0;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;
+  border:1px solid #a69970;border-radius:999px;padding:4px 10px 5px;
+  background:linear-gradient(150deg,#2d3930,#122219 75%);color:#fcfaf2;
+  font:700 11px/1.2 'Plus Jakarta Sans',system-ui,sans-serif;letter-spacing:.015em;
+  box-shadow:0 2px 6px #0f1a1433;transition:background .2s;
+}
+.watson-label .ico{width:13px;height:13px;color:var(--volt);stroke-width:1.8}
+.fab[aria-expanded="true"] .open-mark,.fab[aria-expanded="false"] .close-mark{display:none}
+@media(hover:hover){
+  .fab:hover .watson-bezel{box-shadow:0 0 0 1px #263a28,0 0 0 4px #91a77840,0 10px 25px -4px #12231570}
+}
+.chat{
+  position:fixed;right:var(--watson-edge);bottom:var(--chat-foot);z-index:60;
+  width:min(400px,calc(100vw - var(--watson-edge) - 12px));height:580px;
+  max-height:calc(100vh - var(--chat-foot) - 12px);max-height:calc(100dvh - var(--chat-foot) - max(12px,env(safe-area-inset-top)));
+  display:flex;flex-direction:column;overflow:hidden;border:1px solid #c5cfc3;border-radius:22px;
+  background:var(--surface);box-shadow:0 24px 64px -18px #10231955,0 2px 8px #10231917;
+  transform-origin:100% 100%;transform:translateY(9px) scale(.985);opacity:0;visibility:hidden;pointer-events:none;
+  transition:transform .24s ease,opacity .2s,visibility 0s .24s;
+}
+body.chat-open .chat{transform:none;opacity:1;visibility:visible;pointer-events:auto;transition-delay:0s}
+.ch-top{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;flex:none;padding:13px 16px 13px 20px;
+  color:#faf8f0;background:linear-gradient(110deg,#233a2d,#10231b 86%);border-bottom:1px solid #ac9a71;
+}
+.ch-top h2{font:500 25px/1.1 Georgia,'Times New Roman',serif;letter-spacing:-.035em}
+.ch-top .role{display:flex;align-items:center;gap:7px;margin-top:4px;color:#d6dfd2;font-size:11px}
+.ch-top .role i{width:6px;height:6px;border-radius:50%;background:var(--volt)}
+.ch-top .x{
+  flex:none;width:44px;height:44px;display:grid;place-items:center;border:1px solid #ffffff38;
+  border-radius:50%;background:transparent;color:#f6f6e9;font-size:17px;
+}
+.ch-top .x:hover{background:#ffffff19}
+.ch-top .x:focus-visible{outline-color:var(--volt)}
+@media(max-width:540px){
+  :root{--watson-edge:max(12px,env(safe-area-inset-right));--watson-foot:max(12px,env(safe-area-inset-bottom));--watson-size:98px}
+}
+@media(max-height:530px) and (min-width:540px){
+  .chat{right:calc(var(--watson-edge) + var(--watson-size) + 14px);bottom:var(--watson-foot);
+    max-height:calc(100vh - var(--watson-foot) - 12px);max-height:calc(100dvh - var(--watson-foot) - 12px)}
+}
+@media(max-height:570px){
+  .ch-top{padding-block:7px}.chat .chips{flex-wrap:nowrap;overflow-x:auto}.chips button{white-space:nowrap}
+}
+.ch-meter{display:flex;gap:10px;align-items:center;padding:10px 16px;background:#F3FCE1;border-bottom:1px solid var(--line);font-size:11px;color:var(--ink2);font-weight:600}
+.ch-meter .bar{flex:1;height:6px;border-radius:999px;background:#0f1a1412;overflow:hidden}
+.ch-meter .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--eco),var(--volt));transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
+.ch-meter b{font-family:'JetBrains Mono';color:var(--eco-d)}
+.ch-msgs{min-height:0;flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
+.msg{max-width:86%;padding:11px 14px;border-radius:16px;font-size:13.5px;line-height:1.5;animation:msg .35s cubic-bezier(.2,.9,.2,1) both}
+@keyframes msg{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.msg.bot{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:4px;box-shadow:var(--shadow)}
+.msg.me{align-self:flex-end;background:var(--ink);color:#fff;border-bottom-right-radius:4px}
+.msg .n{text-decoration-color:var(--volt-d);font-weight:700}
+.msg .kpi{display:flex;gap:8px;margin-top:8px}
+.msg .kpi div{flex:1;padding:8px 10px;border-radius:10px;background:var(--bg);border:1px solid var(--line)}
+.msg .kpi b{display:block;font-family:'JetBrains Mono';font-size:15px;color:var(--eco-d)}
+.msg .kpi span{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);font-weight:700}
+.msg.typing{display:flex;gap:4px;padding:14px 16px}
+.msg.typing i{width:7px;height:7px;border-radius:50%;background:var(--mute);animation:dot 1s infinite}
+.msg.typing i:nth-child(2){animation-delay:.15s}.msg.typing i:nth-child(3){animation-delay:.3s}
+@keyframes dot{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-5px);opacity:1}}
+.chips{display:flex;gap:6px;padding:10px 12px 0;flex-wrap:wrap;background:#fff;border-top:1px solid var(--line)}
+.chips button{font-size:11.5px;font-weight:600;padding:7px 11px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink2);transition:.2s}
+.chips button:hover{background:var(--volt);border-color:var(--volt)}
+.ch-in{display:flex;gap:8px;padding:10px 12px 12px;background:#fff}
+.ch-in input{flex:1;height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line2);font:500 14px 'Plus Jakarta Sans';background:var(--bg)}
+.ch-in input:focus{outline:none;border-color:var(--ink);background:#fff}
+.ch-in button{width:44px;height:44px;border-radius:50%;border:0;background:var(--ink);color:var(--volt);display:grid;place-items:center;font-size:18px}
+.ch-in button:hover{background:var(--eco-d)}
+.toast{position:fixed;left:50%;bottom:30px;transform:translate(-50%,140px);background:var(--ink);color:#fff;padding:14px 22px;border-radius:999px;font-size:13px;z-index:65;transition:.45s cubic-bezier(.2,.9,.2,1);display:flex;gap:12px;align-items:center;box-shadow:0 20px 60px #0f1a1455}
+.toast.on{transform:translate(-50%,0)}.toast b{color:var(--volt)}
+@media(max-width:1000px){.hero{grid-template-columns:1fr}.compare{grid-template-columns:1fr}.spine{flex-direction:row;padding:20px 0}.spine::before,.spine .flow{display:none}.measures{grid-template-columns:1fr 1fr}.m.total{grid-column:span 2}.cards{grid-template-columns:1fr}.cta{grid-template-columns:1fr}.ex-body{grid-template-columns:1fr}.read{display:none}.ex-story{display:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}#gl{display:none}.reveal,.reveal .m,.reveal .card{opacity:1;transform:none}.bar .fill{width:var(--w)!important}}
+/* Offline 3D portrait. Character geometry and skin materials adapted from the MakeHuman Community CC0 assets. */
+.watson-portrait{background-image:url(assets/WattsOn_portrait.webp)}
+.atlas-summary + .compare{margin-top:16px}
+.package-content{margin-top:32px}
+#approvals{scroll-margin-top:90px;background:#edf2eb;border:1px solid #cbd6c8;border-radius:20px;padding:16px}
+.approval-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.approval-head h2{font-size:17px;letter-spacing:-.025em}
+.approval-head span,.card h3 small{font:600 11px monospace;border-radius:7px;background:white;padding:4px 7px}
+.approval-link{color:var(--volt);text-underline-offset:3px}
+#approvals .card{display:flex;flex-direction:column;padding:18px;min-width:0}
+#approvals .stamp{align-self:start}
+#approvals .who{margin:10px 0 6px}
+#approvals .guard{background:#f7f8f4;border-color:var(--line);color:var(--ink2)}
+#approvals .guard b{color:var(--ink)}
+#approvals .acts{margin-top:auto}
+#approvals .acts [hidden]{display:none}
+#approvals .revise{grid-column:span 2}
+#approvals .figs div{min-width:0}
+@media(max-width:550px){#approvals{padding:10px}.approval-head{padding:4px}}
+.decision-strip{display:inline-flex;align-items:center;padding-right:8px;gap:1px;border-radius:8px;background:#fff0cc;color:#794500;font:700 13px monospace}.decision-strip[hidden]{display:none}
+.card .stamp.decision-icon,.m .tag.human.decision-icon,.decision-strip .decision-icon{display:inline-grid;place-items:center;padding:0;border-radius:50%;width:28px;height:28px;line-height:1;color:var(--status-fg);background:var(--status-bg)}
+.decision-icon[data-state=pending]{--status-fg:#925600;--status-bg:#fff0cc}
+.decision-icon[data-state=ok]{--status-fg:#176d36;--status-bg:#dcf4df}
+.decision-icon[data-state=no]{--status-fg:#a1332f;--status-bg:#fae4df}
+.decision-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#approvals .card .stamp{position:absolute;right:16px;top:16px}
+#approvals .who{margin:0 38px 8px 0}
+.approval-head .status-reader{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);padding:0}
+</style>
+<link rel="stylesheet" href="assets/WattsOn_timeline.css"><script src="assets/WattsOn_timeline.js"></script><style>.forecast{padding-bottom:110px}.forecast nav a{text-decoration:none;display:flex}.year{justify-self:end;display:flex;align-items:center;gap:7px;font-weight:600;color:#536072;font-size:12px}.forecast select,.forecast button{font:600 13px system-ui;color:#243244}.forecast select,.forecast-title button,.downloads button{border:1px solid #cbd4db;background:white;border-radius:10px;padding:9px 12px}.forecast-title{display:flex;align-items:center;justify-content:space-between;margin:21px 0 17px}.forecast-title h1{font-size:clamp(32px,3.4vw,52px);margin:0;letter-spacing:-.06em}.forecast-title p,.downloads p{font-size:13px;color:#536072;margin-top:5px}.studio{display:grid;grid-template-columns:minmax(0,2.15fr) minmax(255px,1fr);gap:16px;align-items:start}.plotcard,.controls,.targets,.downloads,.evidence>details{border:1px solid #d4ddd8;background:#fff;border-radius:18px;box-shadow:0 4px 14px #26314208}.plotcard,.controls{padding:clamp(14px,2vw,27px)}.plothead,.section-head,.downloads{display:flex;align-items:center;justify-content:space-between;gap:12px}.forecast h2{font-size:21px;letter-spacing:-.045em}.kicker,.rangeText,.targets small,.section-head span{font:11px 'JetBrains Mono',monospace;color:#546473}.kicker{letter-spacing:.06em}.seg{display:flex;padding:3px;background:#eef2f4;border-radius:12px}.seg button{border:none;background:transparent;padding:7px 10px;border-radius:9px}.seg [aria-pressed=true]{background:#fff;box-shadow:0 1px 5px #1a324622}.keys{display:flex;gap:16px;flex-wrap:wrap;margin:14px 0 0;color:#4d6070;font-size:11px}.key:before{display:inline-block;vertical-align:middle;content:'';width:20px;height:0;margin-right:5px;border-top:3px solid #137568}.key.base:before{border-top:3px dashed #83609e}.key.band:before{height:9px;border:0;background:#d9e5e5}#chart svg{display:block;width:100%;height:clamp(220px,20vw,300px)}.readouts,.targets{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.readouts>div{border-top:2px solid #d1d9dc;padding-top:8px}.readouts strong,.targets b{display:block;font:650 clamp(16px,1.8vw,27px) 'JetBrains Mono',monospace;letter-spacing:-.06em}.readouts small,.controls small,.forecast details small{font-size:11px;color:#596873}.readouts>div:nth-child(2){border-color:#137568}.forecast summary{cursor:pointer;font-size:13px;font-weight:700}.values,.pick{margin-top:15px;border-top:1px solid #dce3df;padding-top:10px}.scroll{overflow:auto}.forecast table{border-collapse:collapse;width:100%;font-size:11px;text-align:left}.forecast th,.forecast td{padding:8px 4px;border-bottom:1px solid #e1e6e4}.knob{display:grid;grid-template-columns:1fr auto;align-items:center;gap:7px;margin-top:18px}.knob label,.basis{font-size:13px;font-weight:600}.knob output{font:700 13px monospace;color:#15685d}.knob input,.knob small{grid-column:1/-1}.knob input{width:100%;accent-color:#15796c}.basis{display:grid;gap:5px;margin-top:16px}#measureList label{display:flex;align-items:center;gap:6px;font-size:12px;padding:5px 0}.compact{margin-top:24px}.section-head{margin-bottom:9px;flex-wrap:wrap}.targets{padding:14px 20px}.targets>div+div{border-left:1px solid #d6dfdb;padding-left:12px}.targets em{display:inline-block;font:600 10px system-ui;padding:3px 6px;border-radius:5px;background:#eef5f0;color:#216140}.targets em.miss{color:#894310;background:#fff0dc}.evidence{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:start}.evidence>details{padding:13px 16px;border-radius:12px}.evidence p{font-size:13px;line-height:1.55;margin:8px 0;color:#41515c}.downloads{padding:18px;margin-top:20px;justify-content:flex-start;flex-wrap:wrap}.downloads div{margin-right:auto}.forecast footer{margin-top:28px}.year select{max-width:100%}@media(max-width:800px){.studio{grid-template-columns:1fr}.forecast .year{grid-area:1/2}.forecast{padding-inline:15px}.controls{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px}.controls h2{grid-column:1/-1}.controls .knob{margin:5px 0}.basis{margin:0}}@media(max-width:540px){.year{font-size:10px}.controls,.evidence{display:block}.controls .knob,.basis{margin-top:12px}.evidence>details{margin-top:6px}.plothead{flex-wrap:wrap}.readouts,.targets{gap:5px}.targets{padding:11px}.readouts small{font-size:10px}.forecast .crumbs span{font-size:10px;padding:7px 9px}.forecast .plotcard{padding:12px}.section-head span{font-size:10px}}.casebook{background:#fff;border:1px solid #d4ddd8;border-radius:18px;padding:clamp(15px,2vw,26px)}.briefhead,.ledger-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.briefnav{display:flex;flex-wrap:wrap;gap:4px}.briefnav button{padding:7px 11px;background:white;border:1px solid #d4ddd8;border-radius:20px}.briefnav [aria-pressed=true]{background:#e8f3ee;border-color:#82aa9b;color:#154e42}#caseView{margin-top:17px}.casebook p,.casebook summary,.casebook label{font-size:13px}.brief-note{color:#516271;margin:8px 0}.casebook .kicker{margin-bottom:4px}.ledger-head select{max-width:100%}.casebook .scroll{max-height:310px}.casebook th{background:#f7f9f8;position:sticky;top:0}.casebook td small{display:block;color:#5b6872}.pairview{display:grid;grid-template-columns:1fr 1fr;gap:12px}.paired,.finding{border-radius:12px;background:#f5f8f7;padding:14px}.paired strong{display:block;font:650 25px monospace;color:#176355}.finding{margin-top:10px;border-left:3px solid #6da696}.quarter{display:grid;grid-template-columns:82px minmax(30px,1fr) auto;align-items:center;gap:10px;margin:8px 0;font-size:12px}.quarter i{height:8px;background:#e2ebe6;border-radius:5px}.quarter i b{display:block;height:100%;background:#468c7b;border-radius:5px}.casebook a,.evidence a{color:#165d52}.targets .goalbar{display:block;border-radius:3px;height:4px;background:#e2e9e6;margin:7px 0}.goalbar i{display:block;height:100%;border-radius:inherit;background:#458674}.briefnav button:focus-visible,.casebook summary:focus-visible{outline:2px solid #387aae}.casebook .guardline{padding:7px 0;border-top:1px solid #dce3df}.guardline p{padding:5px 0}.yearpick{cursor:pointer}.yearpick:hover{text-decoration:underline}@media(max-width:540px){.briefnav button{padding:6px 8px;font-size:11px}.pairview{grid-template-columns:1fr}.quarter{grid-template-columns:70px 1fr auto}.ledger-head label{width:100%}} .chart-links{display:flex;justify-content:flex-end;margin-top:8px}.chart-links button{font-size:11px;background:#fff;border:1px solid #cbd6cf;border-radius:8px;padding:5px 9px}.values{margin-top:7px}#factorLedger td{white-space:normal;overflow-wrap:anywhere}.forecast .evidence{grid-template-columns:repeat(2,minmax(0,1fr))}@media(max-width:540px){.forecast .evidence{grid-template-columns:1fr}} </style><link rel="stylesheet" href="assets/WattsOn_studio.css"></head><body><div class="wrap forecast"><nav><div class="logo"><img class="brand-wordmark" src="assets/WattsOn_logo.webp" alt="WattsOn" width="760" height="310"></div><div class="crumbs"><a href="index.html"><span>01 Baseline</span></a><a href="package.html"><span>02 Package</span></a><span class="on" aria-current="page">03 Forecast</span></div><label class="year">Forecast FY <select id="year"><option>2027</option><option>2028</option><option>2029</option><option selected>2030</option></select></label></nav>
+<main>
+<div class="atlas-summary" aria-label="Annual savings for the selected fiscal year"><div class="hero-stats">
+<div class="stat"><button data-inspect="co2"><b id="sumCarbon"></b><span>kg CO₂ avoided / yr</span></button></div>
+<div class="stat"><button data-inspect="cost"><b id="sumCost"></b><span>CHF saved / yr</span></button></div>
+<div class="stat"><button data-inspect="energy"><b id="sumEnergy"></b><span>kWh saved / yr</span></button></div>
+<div class="stat"><button id="summaryMeasures"><b id="sumMeasures"></b><span>Package measures</span></button></div>
+</div></div>
+<article class="forecast-map"><header class="maphead"><div><div class="ph">Package forecast</div><h1>Basel’s digital footprint</h1></div><div class="seg" id="metrics" role="group" aria-label="Chart metric"><button data-m="co2">CO₂</button><button data-m="cost">Cost</button><button data-m="energy">Energy</button></div></header>
+<div class="studio"><div class="plotcard"><div class="comparison" id="readouts"></div>
+<div class="plothead"><div class="keys"><span class="key base">Without package</span><span class="key pkg">With package</span><span class="key band">Growth range</span></div><small id="chartYear"></small></div><div id="chart"></div>
+<div class="year-strip"><div class="year-buttons" role="group" aria-label="Forecast year"><button data-fy="2027">2027</button><button data-fy="2028">2028</button><button data-fy="2029">2029</button><button data-fy="2030">2030</button></div><button class="inspect" id="inspectCalc">Inspect year ↗</button></div>
+</div><aside class="controls"><div class="controlhead"><h2>Assumptions</h2><button id="reset" title="Reset scenario" aria-label="Reset scenario">↺</button></div>
+<div class="knob"><label for="growth">Demand growth</label><output id="growthV"></output><input id="growth" type="range" min="-5" max="30" value="12"><small id="growthRange"></small></div>
+<div class="knob"><label for="grid">Grid carbon intensity</label><output id="gridV"></output><input id="grid" type="range" min="-15" max="10" value="-3"><small>Annual change</small></div>
+<div class="knob"><label for="rollout">Package measures</label><output id="rolloutV"></output><input id="rollout" type="range" min="0" max="8" value="8"></div><details class="pick"><summary>Edit measures</summary><div id="measureList"></div></details><label class="basis">Carbon accounting<select id="basis"><option value="location">Location-based</option><option value="market">Market-based</option></select></label></aside></div></article>
+<section class="compact"><div class="section-head"><h2>Package targets</h2><span>Baseline · FY 2025/26</span></div><div class="targets" id="targets"></div></section>
+<section class="compact casebook" aria-labelledby="briefTitle"><div class="section-head"><h2 id="briefTitle">Explore the forecast</h2></div><div class="briefnav" role="group" aria-label="Explore case evidence">
+<button data-view="drivers"><span class="entry-label">Top workloads</span><strong id="entryDriver"></strong><small>Largest baseline footprint</small></button>
+<button data-view="measures"><span class="entry-label">Human review</span><strong>12 vCPUs</strong><small>Dublin inventory gap</small></button>
+<button data-view="carbon"><span class="entry-label">Carbon accounting</span><strong id="entryCarbon"></strong><small>Grid footprint with package</small></button>
+<button data-view="seasons"><span class="entry-label">Peak quarter</span><strong id="entryPeak"></strong><small>Highest electricity use</small></button></div><div id="caseView" hidden></div></section>
+<dialog id="yearDetail" aria-labelledby="yearTitle"><div class="detail-head"><div><div class="ph">Forecast detail</div><h2 id="yearTitle"></h2></div><form method="dialog"><button autofocus aria-label="Close forecast details" class="dialog-close"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></form></div><div id="detailMetrics"></div><details class="values"><summary>Calculation</summary><div id="formula"></div></details>
+<details class="values"><summary>All years and ranges</summary><div class="scroll"><table><thead><tr><th>FY</th><th>Without · low / mid / high</th><th>With · low / mid / high</th></tr></thead><tbody id="years"></tbody></table></div></details></dialog>
+<details class="library compact" id="library"><summary>Evidence &amp; handover</summary><div class="evidence">
+<details><summary>Case scope &amp; assumptions ledger</summary><p>Basel 2037 addresses indirect emissions as well as emissions within the canton. This synthetic 112-person consulting SME makes decisions in Basel about workloads hosted elsewhere. The sample covers November 2024–September 2026. The comparison uses the last complete September–August year.</p><p>The case supplies CHF exchange rates, Basel holidays and list prices. Electricity intensity, energy per unit and PUE are estimates. Switzerland uses the consumption mix including imports (0.105 kg/kWh); the production mix provides the lower case.</p><div class="scroll"><table><thead><tr><th>Assumption</th><th>Low / mid / high</th><th>Source &amp; calculation</th></tr></thead><tbody id="factorLedger"></tbody></table></div></details>
+<details><summary>Forecast calculation</summary><button class="inspect" id="libraryCalc">Inspect selected year ↗</button></details>
+<details><summary>Operating changes &amp; timing</summary><p>Ticket T-1261 adds four production nodes in October 2026. The first forecast year includes 11 months of extra capacity, then 12. The demo applies a 12% Microsoft 365 renewal uplift from July 2027 to its baseline subscription spend. Both paths include the same changes.</p><p>Annual totals include a full seasonal cycle. Quarterly training stays in January, April, July and October. Daily ETL, month-end close and release freezes constrain scheduling. The model assumes selected measures operate for the forecast year, subject to sign-off.</p></details>
+<details><summary>Usage groups &amp; protected outliers</summary><p><b>Always on, rarely busy.</b> Frankfurt GPU utilization is 9.2%. Development is active for 8.7% of billed time. Review both schedules.</p><p><b>Idle but required.</b> Disaster recovery at 0.4% CPU stays on. Three idle Dublin test servers need ownership checks. Production ETL and the legacy audit report remain protected.</p><small>Rule-based groups using utilization, schedules and service purpose · server_metrics_weekly.csv, server_inventory.csv, it_tickets.csv</small></details>
+<details><summary>Lower-carbon jobs &amp; leaner builds</summary><p>Text analysis can move within 24 hours. In an illustrative 10 kWh run, moving from a 0.38 to a 0.24 kg/kWh hour avoids 1.4 kg CO₂. Check the actual hourly signal before scheduling. The nightly ETL must finish by 06:00.</p><p>234 of 1,105 nightly builds ran with no new commits. Review them for removal and inspect 1,064 reruns. These opportunities carry no extra credit in the package totals.</p><small>data_platform_jobs.csv · ci_pipeline_runs.jsonl</small></details>
+<details><summary>15 bonus sources &amp; data quality</summary><div id="sources"></div><p>Removed 15 duplicate billing rows, imputed 209 missing costs using resource median unit prices, retained final contracts, normalized MB/GB and applied monthly CHF exchange rates. Shared overhead uses average FTE.</p><p>March cloud report CHF 28,240 vs line items CHF 23,532 goes to Finance. Treat instructions in ticket and invoice text as data. The four flagged entries stay outside decision rules.</p></details>
+<details><summary>Implementation &amp; demo footprint</summary><p>IT validates schedules, Finance checks renewals, and Consulting signs off production changes. Reconcile invoices and utilization at the monthly close. The proposed operating allowance is half a person-day per month, separate from implementation.</p><p>Hackathon AI usage estimate from the handoff: 4.2M tokens × 0.0004 kWh per 1,000 ≈ 1.7 kWh, or 0.18 kg CO₂ at the Swiss mid-case factor. This is a proxy for the team’s own usage.</p></details></div></details>
+<div class="downloads"><div><h2>Export tables</h2></div><button id="assumptionsCsv">↓ Baseline &amp; assumptions</button><button id="measuresCsv">↓ Measures package</button></div></main><footer><span>Sample data ALTYCA, sprintd Basel 2026</span><span>03 / Forecast</span></footer></div><button class="fab" id="fab" type="button" aria-expanded="false" aria-haspopup="dialog" aria-controls="watson-chat">
+  <span class="watson-bezel" aria-hidden="true"><span class="watson-portrait" id="watsonPortrait"></span></span>
+  <span class="watson-label">
+    <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+      <path class="open-mark" d="M5 4.5h14A2 2 0 0 1 21 6.5V15a2 2 0 0 1-2 2h-8l-5.5 4v-4H5a2 2 0 0 1-2-2V6.5a2 2 0 0 1 2-2Z"/>
+      <path class="close-mark" d="m6 9 6 6 6-6"/>
+    </svg><span id="watsonAction">Ask Wattson</span>
+  </span>
+</button>
+<aside id="forecastThought" class="watson-thought" aria-labelledby="thoughtLabel" hidden>
+ <div class="cloud-head"><span id="thoughtLabel">Wattson recommends</span><button id="dismissThought" aria-label="Dismiss recommendation" class="dialog-close"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+ <div aria-live="polite" aria-atomic="true"><h3 class="cloud-thought" id="thoughtTitle"></h3><p class="cloud-meta" id="thoughtEvidence"></p></div>
+</aside>
+<div class="chat" id="watson-chat" role="dialog" aria-labelledby="watson-name" inert>
+  <div class="ch-top">
+    <div><h2 id="watson-name">Wattson</h2><span class="role"><i aria-hidden="true"></i>GreenOps detective</span></div>
+    <button class="dialog-close x" type="button" onclick="closeChat()" aria-label="Close chat"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  
+  <div class="ch-msgs" id="msgs"></div>
+  <div class="chips" id="chips"></div>
+  <form class="ch-in" onsubmit="send(event)"><input id="chIn" placeholder="Ask why, what if, or which…" autocomplete="off" aria-label="Message Wattson"><button type="submit" aria-label="Send"><svg class="ico" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></form>
+</div>
+<script>
+const factors=[{"parameter": "total_cost_baseline_year_chf", "must_or_bonus": "Must", "value_low": "470384", "value_mid": "470384", "value_high": "470384", "unit": "CHF per year", "source": "13 core files", "calculation_or_assumption": "Final rows, dedup, imputed, ECB monthly rates"}, {"parameter": "total_energy_baseline_year_kwh", "must_or_bonus": "Must", "value_low": "19500", "value_mid": "56139", "value_high": "177400", "unit": "kWh per year", "source": "factors below", "calculation_or_assumption": "Σ quantity × energy/unit × PUE"}, {"parameter": "total_co2_location_based_baseline_year_kg", "must_or_bonus": "Must", "value_low": "2925", "value_mid": "11956", "value_high": "48600", "unit": "kg CO2 per year", "source": "factors below", "calculation_or_assumption": "Σ kWh × grid factor at data centre"}, {"parameter": "total_co2_market_based_baseline_year_kg", "must_or_bonus": "Bonus", "value_low": "1200", "value_mid": "2004", "value_high": "6500", "unit": "kg CO2 per year", "source": "provider sustainability reports, hoster GoO tickets", "calculation_or_assumption": "certificate-adjusted factors"}, {"parameter": "grid_mix_location_based_switzerland", "must_or_bonus": "Must", "value_low": "0.030", "value_mid": "0.105", "value_high": "0.150", "unit": "kg CO2 per kWh", "source": "UNIGE SysEner hourly CO₂; BFE production mix", "calculation_or_assumption": "consumption mix incl. imports (low = production mix)"}, {"parameter": "grid_mix_location_based_germany", "must_or_bonus": "Must", "value_low": "0.330", "value_mid": "0.380", "value_high": "0.450", "unit": "kg CO2 per kWh", "source": "Umweltbundesamt, Strommix 2024", "calculation_or_assumption": "national average, upstream in high"}, {"parameter": "grid_mix_location_based_ireland", "must_or_bonus": "Must", "value_low": "0.230", "value_mid": "0.280", "value_high": "0.350", "unit": "kg CO2 per kWh", "source": "SEAI / EirGrid 2024", "calculation_or_assumption": "national average"}, {"parameter": "grid_mix_market_based", "must_or_bonus": "Bonus", "value_low": 0.006764374295377677, "value_mid": 0.03569710896168439, "value_high": 0.3333333333333333, "unit": "kg CO2 per kWh", "source": "Demo blended supplier factor", "calculation_or_assumption": "Mid = market CO2 / baseline kWh. Extremes bracket supplier uncertainty."}, {"parameter": "energy_per_vcpu_hour", "must_or_bonus": "Must", "value_low": "0.002", "value_mid": "0.005", "value_high": "0.012", "unit": "kWh", "source": "Cloud Carbon Footprint; Boavizta", "calculation_or_assumption": "0.74–3.5 W/vCPU + 0.39 W/GB RAM"}, {"parameter": "energy_per_node_hour", "must_or_bonus": "Must", "value_low": "0.05", "value_mid": "0.10", "value_high": "0.20", "unit": "kWh", "source": "derived", "calculation_or_assumption": "16 vCPU + 64 GB per node"}, {"parameter": "energy_per_gpu_hour", "must_or_bonus": "Must", "value_low": "0.25", "value_mid": "0.40", "value_high": "0.55", "unit": "kWh", "source": "300 W TDP + host share", "calculation_or_assumption": "idle GPU still draws power"}, {"parameter": "energy_per_gb_storage_day", "must_or_bonus": "Must", "value_low": "0.00001", "value_mid": "0.00003", "value_high": "0.00008", "unit": "kWh", "source": "CCF storage coefficients", "calculation_or_assumption": "0.65–1.2 Wh/TB·h × replication 2"}, {"parameter": "energy_per_1000_tokens", "must_or_bonus": "Must", "value_low": "0.0001", "value_mid": "0.0004", "value_high": "0.002", "unit": "kWh", "source": "ML.ENERGY Leaderboard; Epoch AI 2025", "calculation_or_assumption": "in+out tokens, large-model weighted"}, {"parameter": "energy_per_subscription_message", "must_or_bonus": "Must", "value_low": "0.0003", "value_mid": "0.0005", "value_high": "0.003", "unit": "kWh", "source": "Google 2025 (0.24 Wh median prompt); Epoch AI", "calculation_or_assumption": "longer contexts in high"}, {"parameter": "pue", "must_or_bonus": "Must", "value_low": "1.15", "value_mid": "1.30", "value_high": "1.60", "unit": "ratio", "source": "Uptime Institute 2024; provider reports", "calculation_or_assumption": "providers' claims discounted"}, {"parameter": "growth_per_year", "must_or_bonus": "Bonus", "value_low": "5", "value_mid": "12", "value_high": "20", "unit": "percent", "source": "provider_monthly_report trend; T-1261", "calculation_or_assumption": "+24 %/yr historic, one-offs removed"}, {"parameter": "allocation_rule_shared_costs", "must_or_bonus": "Must", "value_low": "Direct by mapping; shared by FTE", "value_mid": "Direct by mapping; shared by FTE", "value_high": "Direct by mapping; shared by FTE", "unit": "text", "source": "headcount.csv; mapping_departments_tools.csv", "calculation_or_assumption": "Allocate shared overhead by average FTE across seven departments."}, {"parameter": "grid_mix_eu_shared", "must_or_bonus": "Bonus", "value_low": 0.2, "value_mid": 0.25, "value_high": 0.32, "unit": "kg CO2 per kWh", "source": "Case handoff: EU mixed workloads", "calculation_or_assumption": "Shared AI and SaaS use the EU factor."}, {"parameter": "energy_per_gb_network", "must_or_bonus": "Bonus", "value_low": 0.001, "value_mid": 0.005, "value_high": 0.03, "unit": "kWh per GB", "source": "Case baseline model", "calculation_or_assumption": "Apply to billed network traffic in GB."}, {"parameter": "energy_per_saas_seat_month", "must_or_bonus": "Bonus", "value_low": 0.2, "value_mid": 0.5, "value_high": 1.5, "unit": "kWh per seat-month", "source": "Case baseline model", "calculation_or_assumption": "Purchased seat-month proxy includes collaboration usage. Do not add video activity twice."}, {"parameter": "production_capacity_step", "must_or_bonus": "Bonus", "value_low": 20, "value_mid": 24, "value_high": 24, "unit": "nodes", "source": "T-1261; dp-prod baseline", "calculation_or_assumption": "20 to 24 from October 2026; apply step to CHF 87255.5 and 21141.1 kWh."}, {"parameter": "m365_renewal_uplift", "must_or_bonus": "Bonus", "value_low": 12, "value_mid": 12, "value_high": 12, "unit": "percent", "source": "Illustrative renewal assumption; saas_contracts.csv; exchange_rates.csv", "calculation_or_assumption": "From July 2027; apply to final M365 invoices converted monthly to CHF."}];
+const m365Spend=14240.98;
+const caseData={"ledger": [{"src": "Cloud", "rid": "db-fin", "loc": "CH", "chf": 11933.9, "kwh": 906.0, "co2": 95.1, "tool": "Finance database", "dept": "Finance", "cat": "Servers"}, {"src": "Cloud", "rid": "dp-dev", "loc": "DE", "chf": 38274.4, "kwh": 9035.5, "co2": 3433.5, "tool": "Data platform development", "dept": "IT", "cat": "Data platform"}, {"src": "Cloud", "rid": "dp-prod", "loc": "CH", "chf": 87255.5, "kwh": 21141.1, "co2": 2219.8, "tool": "Data platform production", "dept": "Consulting", "cat": "Data platform"}, {"src": "Cloud", "rid": "dp-storage", "loc": "CH", "chf": 6234.5, "kwh": 347.4, "co2": 36.5, "tool": "Data platform storage", "dept": "Consulting", "cat": "Data platform"}, {"src": "Cloud", "rid": "gpu-ml", "loc": "DE", "chf": 11233.6, "kwh": 4492.8, "co2": 1707.3, "tool": "AI compute server (GPU)", "dept": "Consulting", "cat": "Servers"}, {"src": "Cloud", "rid": "pbi-kap", "loc": "CH", "chf": 23753.3, "kwh": 449.3, "co2": 47.2, "tool": "Power BI capacity", "dept": "IT", "cat": "Cloud"}, {"src": "Cloud", "rid": "vm-app", "loc": "CH", "chf": 22937.1, "kwh": 2867.1, "co2": 301.1, "tool": "App server", "dept": "IT", "cat": "Servers"}, {"src": "Cloud", "rid": "cicd", "loc": "IE", "chf": 5473.3, "kwh": 148.1, "co2": 41.5, "tool": "CI/CD pipelines", "dept": "IT", "cat": "Cloud"}, {"src": "Cloud", "rid": "net-egress", "loc": "CH", "chf": 2659.4, "kwh": 230.6, "co2": 24.2, "tool": "Data egress", "dept": "IT", "cat": "Cloud"}, {"src": "Cloud", "rid": "sandbox", "loc": "IE", "chf": 58.7, "kwh": 9.6, "co2": 2.7, "tool": "Test account", "dept": "Test account", "cat": "Servers"}, {"src": "Cloud", "rid": "st-archive", "loc": "CH", "chf": 7271.1, "kwh": 405.5, "co2": 42.6, "tool": "Legacy project archive", "dept": "Sales", "cat": "Cloud"}, {"src": "Cloud", "rid": "st-backup", "loc": "IE", "chf": 9396.6, "kwh": 917.6, "co2": 256.9, "tool": "Backup archive", "dept": "IT", "cat": "Cloud"}, {"src": "Cloud", "rid": "support", "loc": "CH", "chf": 10788.5, "kwh": 0.0, "co2": 0.0, "tool": "Cloud support", "dept": "IT", "cat": "Cloud"}, {"src": "Cloud", "rid": "vm-test", "loc": "IE", "chf": 24607.2, "kwh": 3634.2, "co2": 1017.6, "tool": "Test environments", "dept": "IT", "cat": "Servers"}, {"src": "Cloud", "rid": "logs", "loc": "CH", "chf": 13720.0, "kwh": 764.8, "co2": 80.3, "tool": "Logging and monitoring", "dept": "IT", "cat": "Cloud"}, {"src": "Cloud", "rid": "st-proj", "loc": "CH", "chf": 4186.7, "kwh": 233.5, "co2": 24.5, "tool": "Project file storage", "dept": "Consulting", "cat": "Cloud"}, {"src": "Cloud", "rid": "web-cdn", "loc": "CH", "chf": 1101.1, "kwh": 95.3, "co2": 10.0, "tool": "Web hosting and CDN", "dept": "Marketing", "cat": "Cloud"}, {"src": "AI", "rid": "ai-agent", "loc": "EU", "chf": 1924.5, "kwh": 381.7, "co2": 95.4, "tool": "Support-Agent", "dept": "Consulting", "cat": "AI"}, {"src": "AI", "rid": "ai-agent2", "loc": "EU", "chf": 3108.9, "kwh": 619.5, "co2": 154.9, "tool": "Other agents", "dept": "Sales", "cat": "AI"}, {"src": "AI", "rid": "ai-assistant", "loc": "EU", "chf": 22071.5, "kwh": 2373.9, "co2": 593.5, "tool": "Office AI assistant", "dept": "Overhead", "cat": "AI"}, {"src": "AI", "rid": "ai-chatbot", "loc": "EU", "chf": 291.3, "kwh": 37.4, "co2": 9.4, "tool": "Knowledge chatbot", "dept": "HR", "cat": "AI"}, {"src": "AI", "rid": "ai-marketing", "loc": "EU", "chf": 11557.2, "kwh": 1912.8, "co2": 478.2, "tool": "Marketing text analysis", "dept": "Marketing", "cat": "AI"}, {"src": "AI", "rid": "ai-quote", "loc": "EU", "chf": 513.4, "kwh": 27.0, "co2": 6.7, "tool": "Quote generator", "dept": "Sales", "cat": "AI"}, {"src": "AI", "rid": "ai-report", "loc": "EU", "chf": 107.1, "kwh": 19.1, "co2": 4.8, "tool": "Report-Agent", "dept": "Finance", "cat": "AI"}, {"src": "AI", "rid": "sub-chatgpt", "loc": "EU", "chf": 5482.2, "kwh": 3.1, "co2": 0.8, "tool": "ChatGPT Team (subscription)", "dept": "Overhead", "cat": "AI"}, {"src": "AI", "rid": "sub-claude", "loc": "EU", "chf": 8104.2, "kwh": 71.5, "co2": 17.9, "tool": "Claude Team (subscription)", "dept": "Overhead", "cat": "AI"}, {"src": "AI", "rid": "sub-copilot", "loc": "EU", "chf": 22181.4, "kwh": 100.0, "co2": 25.0, "tool": "Microsoft Copilot (subscription)", "dept": "Overhead", "cat": "AI"}, {"src": "SaaS", "rid": "saas:Accounting software", "loc": "EU", "chf": 4560.0, "kwh": 60.0, "co2": 15.0, "tool": "Accounting software", "dept": "Overhead", "cat": "SaaS"}, {"src": "SaaS", "rid": "saas:CRM platform", "loc": "EU", "chf": 17765.0, "kwh": 161.5, "co2": 40.4, "tool": "CRM platform", "dept": "Overhead", "cat": "SaaS"}, {"src": "SaaS", "rid": "saas:Chat tool", "loc": "EU", "chf": 7144.7, "kwh": 562.0, "co2": 140.5, "tool": "Chat tool", "dept": "Overhead", "cat": "SaaS"}, {"src": "SaaS", "rid": "saas:Design tool", "loc": "EU", "chf": 1525.5, "kwh": 48.0, "co2": 12.0, "tool": "Design tool", "dept": "Overhead", "cat": "SaaS"}, {"src": "SaaS", "rid": "saas:E-signature", "loc": "EU", "chf": 8075.0, "kwh": 161.5, "co2": 40.4, "tool": "E-signature", "dept": "Overhead", "cat": "SaaS"}, {"src": "SaaS", "rid": "saas:HR software", "loc": "EU", "chf": 2160.0, "kwh": 120.0, "co2": 30.0, "tool": "HR software", "dept": "Overhead", "cat": "SaaS"}, {"src": "SaaS", "rid": "saas:Knowledge base", "loc": "EU", "chf": 4934.4, "kwh": 310.5, "co2": 77.6, "tool": "Knowledge base", "dept": "Overhead", "cat": "SaaS"}, {"src": "SaaS", "rid": "saas-m365", "loc": "EU", "chf": 14241.0, "kwh": 702.5, "co2": 175.6, "tool": "Microsoft 365 (licences)", "dept": "Overhead", "cat": "SaaS"}, {"src": "SaaS", "rid": "saas:Note-taking tool", "loc": "EU", "chf": 2555.3, "kwh": 201.0, "co2": 50.2, "tool": "Note-taking tool", "dept": "Overhead", "cat": "SaaS"}, {"src": "SaaS", "rid": "saas:Password manager", "loc": "EU", "chf": 3572.3, "kwh": 562.0, "co2": 140.5, "tool": "Password manager", "dept": "Overhead", "cat": "SaaS"}, {"src": "SaaS", "rid": "saas:Project management", "loc": "EU", "chf": 7261.7, "kwh": 280.5, "co2": 70.1, "tool": "Project management", "dept": "Overhead", "cat": "SaaS"}, {"src": "SaaS", "rid": "saas:Project scheduling", "loc": "EU", "chf": 7780.3, "kwh": 280.5, "co2": 70.1, "tool": "Project scheduling", "dept": "Overhead", "cat": "SaaS"}, {"src": "SaaS", "rid": "saas:Survey tool", "loc": "EU", "chf": 3328.6, "kwh": 60.0, "co2": 15.0, "tool": "Survey tool", "dept": "Overhead", "cat": "SaaS"}, {"src": "SaaS", "rid": "saas:Ticket system", "loc": "EU", "chf": 8915.4, "kwh": 280.5, "co2": 70.1, "tool": "Ticket system", "dept": "Overhead", "cat": "SaaS"}, {"src": "SaaS", "rid": "saas:Time tracking", "loc": "EU", "chf": 7868.0, "kwh": 562.0, "co2": 140.5, "tool": "Time tracking", "dept": "Overhead", "cat": "SaaS"}, {"src": "SaaS", "rid": "saas:Video conferencing tool", "loc": "EU", "chf": 12470.7, "kwh": 562.0, "co2": 140.5, "tool": "Video conferencing tool", "dept": "Overhead", "cat": "SaaS"}], "fte": {"Consulting": 42.141666666666666, "Sales": 20.966666666666665, "Finance": 12.574999999999998, "Marketing": 12.583333333333334, "HR": 6.308333333333334, "IT": 16.758333333333333, "Management": 6.258333333333333}, "quarters": [769.06, 784.7199999999999, 767.1700000000001, 695.3500000000005], "dataPath": "data/"};
+const measureHeader=["measure_id", "description", "resource_or_source", "change", "effort_person_days", "savings_cost_chf_per_year", "savings_energy_kwh_per_year", "savings_co2_kg_location_based", "savings_co2_kg_market_based", "risks_and_exceptions", "assumptions_and_sources"];
+const CHIPS=["Compare paths","Explain range","Check targets","AI seats"];
+const launcher = document.getElementById('fab');
+const chatPanel = document.getElementById('watson-chat');
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+const portrait = document.getElementById('watsonPortrait');
+const lastGestureFrame = 35;
+let gesturePosition = 0;
+let gestureRequest = 0;
+let blinkTimer = 0;
+
+function showFrame(frame){
+  portrait.style.backgroundPosition = ((frame % 6) * 20) + '% ' + (Math.floor(frame / 6) * 100 / 7) + '%';
+}
+
+function restPortrait(){
+  showFrame(Math.round(gesturePosition * lastGestureFrame));
+  if(reducedMotion.matches || document.hidden) return;
+  blinkTimer = setTimeout(() => {
+    const first = gesturePosition === 0 ? 36 : 42;
+    const started = performance.now();
+    function blink(now){
+      const step = Math.floor((now - started) / 28);
+      if(step >= 6){restPortrait();return}
+      showFrame(first + step);
+      gestureRequest = requestAnimationFrame(blink);
+    }
+    gestureRequest = requestAnimationFrame(blink);
+  }, 4700);
+}
+
+function moveHat(open){
+  clearTimeout(blinkTimer);
+  cancelAnimationFrame(gestureRequest);
+  const target = open ? 1 : 0;
+  const start = gesturePosition;
+  if(reducedMotion.matches || document.hidden || start === target){
+    gesturePosition = target;
+    restPortrait();
+    return;
+  }
+  const began = performance.now();
+  const duration = 1180 * Math.abs(target - start);
+  function advance(now){
+    const t = Math.min(1, (now - began) / duration);
+    gesturePosition = start + (target - start) * t;
+    showFrame(Math.round(gesturePosition * lastGestureFrame));
+    if(t < 1) gestureRequest = requestAnimationFrame(advance);
+    else restPortrait();
+  }
+  gestureRequest = requestAnimationFrame(advance);
+}
+restPortrait();
+document.addEventListener('visibilitychange', () => moveHat(!chatPanel.inert));
+
+function setChatOpen(open){
+  if(open === !chatPanel.inert) return;
+  chatPanel.inert = !open;
+  launcher.setAttribute('aria-expanded', String(open));
+  document.getElementById('watsonAction').textContent = open ? 'Close chat' : 'Ask Wattson';
+  document.body.classList.toggle('chat-open', open);
+  moveHat(open);
+  if(open && !document.getElementById('msgs').children.length){
+    bot('Choose a question to inspect the current scenario.');
+    const chips = document.getElementById('chips');
+    for(const prompt of CHIPS){
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.textContent = prompt;
+      chip.addEventListener('click', () => ask(prompt));
+      chips.appendChild(chip);
+    }
+  }
+  if(open)showAdviceInChat();
+  (open ? document.getElementById('chIn') : launcher).focus({preventScroll:true});
+}
+function openChat(){setChatOpen(true)}
+function closeChat(){setChatOpen(false)}
+launcher.addEventListener('click', () => setChatOpen(chatPanel.inert));
+reducedMotion.addEventListener('change', () => moveHat(!chatPanel.inert));
+
+</script><script src="assets/WattsOn_forecast.js"></script></body></html>

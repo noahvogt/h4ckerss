@@ -6,9 +6,18 @@ from app.pipeline.build import BASELINE, KEY
 from app.pipeline.common import mapping
 from app.pipeline.schema import validate
 
+# Recurring billing and licence feeds in the case dataset.
+_MONTHLY_BILLING_SOURCES = {
+    "azure_costs.csv",
+    "aws_costs.csv",
+    "hoster_invoice.csv",
+    "ai_subscriptions.csv",
+    "saas_contracts.csv",
+}
+
 
 def select_baseline_facts(facts: pd.DataFrame) -> pd.DataFrame:
-    """Return a validated copy of the baseline rows in their original order."""
+    """Validate the full input, then check baseline coverage and keys."""
     facts = validate(facts, name="baseline input")
     baseline = facts.loc[facts["month"].between(*BASELINE)].copy()
 
@@ -17,6 +26,15 @@ def select_baseline_facts(facts: pd.DataFrame) -> pd.DataFrame:
     if not missing_months.empty:
         months = ", ".join(missing_months.strftime("%Y-%m"))
         raise ValueError(f"baseline facts: missing baseline months: {months}")
+
+    months_by_source = baseline.groupby("source")["month"].unique()
+    missing_source_months = [
+        f"({source}, {month:%Y-%m})"
+        for source in sorted(_MONTHLY_BILLING_SOURCES.intersection(facts["source"]))
+        for month in expected_months.difference(months_by_source.get(source, []))
+    ]
+    if missing_source_months:
+        raise ValueError(f"baseline facts: missing source months: {', '.join(missing_source_months)}")
 
     duplicates = baseline.duplicated(KEY, keep=False)
     if duplicates.any():
@@ -29,8 +47,19 @@ def select_baseline_facts(facts: pd.DataFrame) -> pd.DataFrame:
     if missing_ids.any():
         raise ValueError(f"baseline facts: missing resource IDs in {missing_ids.sum()} row(s)")
 
-    unknown_ids = resource_ids.loc[~resource_ids.isin(mapping().index)].unique()
-    if len(unknown_ids):
-        raise ValueError(f"baseline facts: unknown resource IDs: {unknown_ids.tolist()}")
+    master_ids = mapping().index
+    invalid_ids = resource_ids.loc[~resource_ids.isin(master_ids)].drop_duplicates()
+    noncanonical = invalid_ids.str.strip().isin(master_ids)
+    problems = []
+    if noncanonical.any():
+        corrections = ", ".join(
+            f"{resource_id!r} (use {resource_id.strip()!r})"
+            for resource_id in invalid_ids.loc[noncanonical]
+        )
+        problems.append(f"noncanonical resource IDs: {corrections}")
+    if (~noncanonical).any():
+        problems.append(f"unknown resource IDs: {invalid_ids.loc[~noncanonical].tolist()}")
+    if problems:
+        raise ValueError("baseline facts: " + "; ".join(problems))
 
     return baseline

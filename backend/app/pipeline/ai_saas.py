@@ -4,9 +4,10 @@ from pathlib import Path
 
 import pandas as pd
 
-from app.pipeline.schema import COST_CENTER_TO_DEPARTMENT, DEPARTMENTS, empty, validate
+from app.pipeline import common
+from app.pipeline.schema import DEPARTMENTS, empty, validate
 
-DATA_DIR = Path(__file__).resolve().parents[3] / "data" / "provided"
+DATA_DIR = common.DATA_DIR
 AI_USAGE_KEYS = [
     "month",
     "resource_id",
@@ -39,25 +40,8 @@ DETAIL_COLUMNS = [
 ]
 
 
-def _read_exchange_rates(data_dir: Path) -> pd.DataFrame:
-    rates = pd.read_csv(data_dir / "exchange_rates.csv")
-    rates["month"] = pd.to_datetime(rates["month"], errors="coerce").dt.to_period("M").dt.to_timestamp()
-    for column in ("eur_chf", "usd_chf"):
-        rates[column] = pd.to_numeric(rates[column], errors="coerce")
-    return rates.drop_duplicates("month", keep="last").set_index("month")
-
-
 def _notes(*parts: str) -> str:
     return "; ".join(part for part in parts if part)
-
-
-def _department(cost_center: object) -> tuple[str, str]:
-    cost_center_value = "" if pd.isna(cost_center) else str(cost_center).strip()
-    mapping = COST_CENTER_TO_DEPARTMENT | {"4000": "Consulting"}
-    department = mapping.get(cost_center_value)
-    if department:
-        return department, ""
-    return "Unallocated", f"unmapped cost center {cost_center_value or '(missing)'}"
 
 
 def _strict_sum(values: pd.Series) -> float:
@@ -65,36 +49,28 @@ def _strict_sum(values: pd.Series) -> float:
     return values.sum(min_count=len(values))
 
 
-def _currency_to_chf(
-    amounts: pd.Series,
-    currencies: pd.Series,
-    months: pd.Series,
-    rates: pd.DataFrame,
-) -> tuple[pd.Series, pd.Series]:
-    amount_values = pd.to_numeric(amounts, errors="coerce")
-    month_values = pd.to_datetime(months, errors="coerce").dt.to_period("M").dt.to_timestamp()
-    currency_values = currencies.astype("string").str.upper().str.strip()
-    factors = pd.Series(float("nan"), index=amount_values.index, dtype="float64")
-    factors.loc[currency_values.eq("CHF").fillna(False)] = 1.0
-    for currency, rate_column in (("USD", "usd_chf"), ("EUR", "eur_chf")):
-        matching = currency_values.eq(currency).fillna(False)
-        factors.loc[matching] = month_values.loc[matching].map(rates[rate_column])
+def _known_sum(values: pd.Series) -> float:
+    """Sum known values without turning an entirely missing group into zero."""
+    return values.sum(min_count=1)
 
-    cost_chf = amount_values * factors
-    reasons = pd.Series("", index=amount_values.index, dtype="string")
-    reasons.loc[amount_values.isna()] = "missing amount"
-    missing_currency = currency_values.isna() | currency_values.eq("").fillna(False)
-    reasons.loc[missing_currency] = "missing currency"
-    unsupported = currency_values.notna() & ~currency_values.isin(["CHF", "USD", "EUR"])
-    reasons.loc[unsupported] = "unsupported currency"
-    missing_rate = currency_values.isin(["USD", "EUR"]) & factors.isna() & amount_values.notna()
-    reasons.loc[missing_rate] = "missing monthly exchange rate"
-    return cost_chf, reasons
+
+def _token_note(missing_input: int, missing_output: int, rows: int) -> str:
+    if not (missing_input or missing_output):
+        return ""
+    if missing_input == rows and missing_output == rows:
+        return (
+            "incomplete token usage: all input and output token values missing; "
+            "usage unavailable"
+        )
+    return (
+        f"incomplete token usage: {missing_input} missing input values, "
+        f"{missing_output} missing output values; known tokens only"
+    )
 
 
 def _load_ai_usage(data_dir: Path) -> tuple[pd.DataFrame, pd.DataFrame]:
-    raw = pd.read_csv(data_dir / "ai_usage.csv")
-    raw["month"] = pd.to_datetime(raw["date"], errors="coerce").dt.to_period("M").dt.to_timestamp()
+    raw = common.read_csv(str(data_dir / "ai_usage.csv")).drop_duplicates().copy()
+    raw["month"] = common.month_start(raw["date"])
     for column in ("tokens_in", "tokens_in_cache", "tokens_out", "cost_chf"):
         raw[column] = pd.to_numeric(raw[column], errors="coerce")
     known_departments = raw["department"].isin(DEPARTMENTS)
@@ -102,35 +78,43 @@ def _load_ai_usage(data_dir: Path) -> tuple[pd.DataFrame, pd.DataFrame]:
     raw.loc[~known_departments, "department_note"] = "unknown department; set to Unallocated"
     raw["department"] = raw["department"].where(known_departments, "Unallocated")
 
-    raw["row_tokens"] = raw["tokens_in"] + raw["tokens_out"]
     details = (
         raw.groupby(AI_USAGE_KEYS, dropna=False, sort=False)
         .agg(
-            tokens_in=("tokens_in", _strict_sum),
-            tokens_in_cache=("tokens_in_cache", _strict_sum),
-            tokens_out=("tokens_out", _strict_sum),
+            tokens_in=("tokens_in", _known_sum),
+            tokens_in_cache=("tokens_in_cache", _known_sum),
+            tokens_out=("tokens_out", _known_sum),
             missing_tokens_in=("tokens_in", lambda values: values.isna().sum()),
             missing_tokens_in_cache=("tokens_in_cache", lambda values: values.isna().sum()),
             missing_tokens_out=("tokens_out", lambda values: values.isna().sum()),
-            rows=("tokens_out", "size"),
+            rows=("tokens_in", "size"),
             department_note=("department_note", lambda values: _notes(*values)),
         )
         .reset_index()
     )
-    for column in ("missing_tokens_in", "missing_tokens_in_cache", "missing_tokens_out"):
+    for column in (
+        "missing_tokens_in",
+        "missing_tokens_in_cache",
+        "missing_tokens_out",
+        "rows",
+    ):
         details[column] = details[column].astype("int64")
     details["note"] = [
         _notes(
             department_note,
-            f"missing input tokens in {missing_input} row(s)" if missing_input else "",
-            f"missing cached input tokens in {missing_cache} row(s)" if missing_cache else "",
-            f"missing output tokens in {missing_output} row(s)" if missing_output else "",
+            _token_note(missing_input, missing_output, rows),
+            (
+                f"missing cached input tokens in {missing_cache} row(s)"
+                if missing_cache
+                else ""
+            ),
         )
-        for department_note, missing_input, missing_cache, missing_output in zip(
+        for department_note, missing_input, missing_cache, missing_output, rows in zip(
             details["department_note"],
             details["missing_tokens_in"],
             details["missing_tokens_in_cache"],
             details["missing_tokens_out"],
+            details["rows"],
             strict=True,
         )
     ]
@@ -139,47 +123,63 @@ def _load_ai_usage(data_dir: Path) -> tuple[pd.DataFrame, pd.DataFrame]:
     facts = (
         raw.groupby(fact_keys, dropna=False, sort=False)
         .agg(
-            usage_qty=("row_tokens", _strict_sum),
+            tokens_in=("tokens_in", _known_sum),
+            tokens_out=("tokens_out", _known_sum),
             cost_chf=("cost_chf", _strict_sum),
-            missing_input=("tokens_in", lambda values: values.isna().any()),
-            missing_output=("tokens_out", lambda values: values.isna().any()),
+            missing_input=("tokens_in", lambda values: values.isna().sum()),
+            missing_output=("tokens_out", lambda values: values.isna().sum()),
+            rows=("tokens_in", "size"),
             missing_cost=("cost_chf", lambda values: values.isna().any()),
             department_note=("department_note", lambda values: _notes(*values)),
         )
         .reset_index()
     )
-    notes = []
-    for row in facts.itertuples(index=False):
-        issues = []
-        if row.missing_input:
-            issues.append("incomplete token usage: missing input tokens")
-        if row.missing_output:
-            issues.append("incomplete token usage: missing output tokens")
-        if row.missing_cost:
-            issues.append("incomplete AI cost: missing cost_chf")
-        notes.append(_notes(row.department_note, *issues))
-    facts["note"] = notes
+    facts["usage_qty"] = facts[["tokens_in", "tokens_out"]].sum(
+        axis=1, min_count=1
+    )
+    facts["note"] = [
+        _notes(
+            department_note,
+            _token_note(missing_input, missing_output, rows),
+            "incomplete AI cost: missing cost_chf" if missing_cost else "",
+        )
+        for department_note, missing_input, missing_output, rows, missing_cost in zip(
+            facts["department_note"],
+            facts["missing_input"],
+            facts["missing_output"],
+            facts["rows"],
+            facts["missing_cost"],
+            strict=True,
+        )
+    ]
     facts["category"] = "ai"
     facts["source"] = "ai_usage.csv"
     facts["location"] = "EU"
     facts["usage_kind"] = "tokens"
     facts["cost_center"] = pd.NA
-    details["department"] = details["department"].fillna("Unallocated")
     facts = facts.drop(
-        columns=["missing_input", "missing_output", "missing_cost", "department_note"]
+        columns=[
+            "tokens_in",
+            "tokens_out",
+            "missing_input",
+            "missing_output",
+            "rows",
+            "missing_cost",
+            "department_note",
+        ]
     )
-    return facts, details
+    return facts, details.drop(columns="department_note")
 
 
 def _subscription_details(
     data_dir: Path,
     filename: str,
     product_column: str,
-    rates: pd.DataFrame,
 ) -> pd.DataFrame:
-    raw = pd.read_csv(data_dir / filename)
-    raw["month"] = pd.to_datetime(raw["month"], errors="coerce").dt.to_period("M").dt.to_timestamp()
-    raw["cost_center"] = raw["cost_center"].astype("string")
+    raw = common.read_csv(
+        str(data_dir / filename), dtype={"cost_center": "string"}
+    )
+    raw["month"] = common.month_start(raw["month"])
     for column in (
         "licences_purchased",
         "licences_active_30d",
@@ -190,26 +190,44 @@ def _subscription_details(
     ):
         if column in raw:
             raw[column] = pd.to_numeric(raw[column], errors="coerce")
-    raw["department"] = raw["cost_center"].map(
-        lambda value: _department(value)[0] if pd.notna(value) else "Unallocated"
+    raw["department"] = common.department_for(raw["cost_center"])
+    raw["amount_chf"] = common.to_chf(
+        raw["amount"],
+        raw["currency"],
+        raw["month"],
+        data_dir=data_dir,
     )
-    amount_chf, fx_notes = _currency_to_chf(raw["amount"], raw["currency"], raw["month"], rates)
-    raw["amount_chf"] = amount_chf
+    unknown_cost_centers = raw["department"].eq("Unallocated")
+    cost_center_notes = [
+        (
+            "unmapped cost center "
+            + (
+                str(cost_center).strip()
+                if pd.notna(cost_center) and str(cost_center).strip()
+                else "(missing)"
+            )
+            if unknown
+            else ""
+        )
+        for cost_center, unknown in zip(
+            raw["cost_center"], unknown_cost_centers, strict=True
+        )
+    ]
     raw["note"] = [
         _notes(
             "Draft; excluded from billed totals" if status == "Draft" else "",
             "unknown contract status; excluded from billed totals"
             if status not in {"Final", "Draft"}
             else "",
-            _department(cost_center)[1],
-            reason,
+            cost_center_note,
+            "missing amount" if pd.isna(amount) else "",
             "missing purchased licences" if pd.isna(purchased) else "",
             "missing active licences" if pd.isna(active) else "",
         )
-        for status, cost_center, reason, purchased, active in zip(
+        for status, cost_center_note, amount, purchased, active in zip(
             raw["contract_status"],
-            raw["cost_center"],
-            fx_notes,
+            cost_center_notes,
+            raw["amount"],
             raw["licences_purchased"],
             raw["licences_active_30d"],
             strict=True,
@@ -275,23 +293,20 @@ def load_ai_usage_details(data_dir: str | Path = DATA_DIR) -> pd.DataFrame:
 
 def load_ai_subscription_details(data_dir: str | Path = DATA_DIR) -> pd.DataFrame:
     """Return AI licence counts and contract details, including Draft rows."""
-    path = Path(data_dir)
-    return _subscription_details(path, "ai_subscriptions.csv", "product", _read_exchange_rates(path))
+    return _subscription_details(Path(data_dir), "ai_subscriptions.csv", "product")
 
 
 def load_saas_subscription_details(data_dir: str | Path = DATA_DIR) -> pd.DataFrame:
     """Return SaaS licence counts and contract details, including Draft rows."""
-    path = Path(data_dir)
-    return _subscription_details(path, "saas_contracts.csv", "contract", _read_exchange_rates(path))
+    return _subscription_details(Path(data_dir), "saas_contracts.csv", "contract")
 
 
 def load_ai_saas(data_dir: str | Path = DATA_DIR) -> pd.DataFrame:
     """Load validated monthly AI and SaaS facts without double-counting costs."""
     path = Path(data_dir)
     ai_facts, _ = _load_ai_usage(path)
-    rates = _read_exchange_rates(path)
-    ai_subscriptions = _subscription_details(path, "ai_subscriptions.csv", "product", rates)
-    saas_subscriptions = _subscription_details(path, "saas_contracts.csv", "contract", rates)
+    ai_subscriptions = _subscription_details(path, "ai_subscriptions.csv", "product")
+    saas_subscriptions = _subscription_details(path, "saas_contracts.csv", "contract")
     facts = pd.concat(
         [
             ai_facts,

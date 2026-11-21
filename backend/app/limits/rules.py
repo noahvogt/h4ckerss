@@ -89,8 +89,10 @@ def protected_days(rule_id: str, start: date, end: date) -> list[date]:
     days = [start + timedelta(n) for n in range((end - start).days + 1)]
     kind, _, arg = rule["schedule"].partition(":")
 
-    if kind == "always":
+    if kind in ("always", "daily"):  # daily: the window recurs every day at its times
         return days
+    if kind == "month_workdays":
+        return [d for d in days if d.month == int(arg) and is_workday(d)]
     if kind == "date_range":
         lo = date.fromisoformat(rule["start_date"]) if rule["start_date"] else date.min
         hi = date.fromisoformat(rule["end_date"]) if rule["end_date"] else date.max

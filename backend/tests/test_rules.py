@@ -9,10 +9,11 @@ from app.main import app
 client = TestClient(app)
 
 
-def test_rules_file_is_valid_and_every_rule_has_a_ticket():
+def test_rules_file_is_valid_and_every_rule_has_a_source():
     rules = load_rules()
     assert rules["rule_id"].is_unique
-    assert rules["source"].str.match(r"^T-\d{4}(;T-\d{4})*$").all()
+    source = r"(T-\d{4}|[a-z_]+\.csv)"  # a ticket or a data file
+    assert rules["source"].str.fullmatch(rf"{source}(;{source})*").all()
 
 
 @pytest.mark.parametrize(
@@ -61,9 +62,10 @@ def test_api_list_and_filter():
     all_rules = client.get("/api/rules").json()
     assert len(all_rules) == len(load_rules())
     windows = client.get("/api/rules", params={"kind": "window"}).json()
-    assert {r["rule_id"] for r in windows} == {"R01", "R02", "R04", "R09"}
+    assert {r["rule_id"] for r in windows} == {"R01", "R02", "R04", "R09", "R18", "R19"}
     r01 = next(r for r in windows if r["rule_id"] == "R01")
-    assert r01["source"] == ["T-1029"] and r01["until_time"] == "04:00" and r01["end_date"] is None
+    assert r01["source"] == ["T-1029", "data_platform_jobs.csv"]
+    assert (r01["from_time"], r01["until_time"], r01["end_date"]) == ("18:00", "04:00", None)
 
 
 def test_api_check():
@@ -71,11 +73,56 @@ def test_api_check():
     assert r.status_code == 200
     body = r.json()
     assert body["status"] == "blocked" and body["decided_by"] == "Head of Finance"
-    assert body["reasons"][0]["source"] == "T-1029"
+    assert body["reasons"][0]["source"] == ["T-1029", "data_platform_jobs.csv"]
+    assert {r["rule_id"] for r in body["reasons"]} == {"R01", "R18", "R19"}
     assert client.get("/api/rules/check", params={"resource_id": "x", "change": "explode"}).status_code == 422
 
 
 def test_api_days():
     r = client.get("/api/rules/R01/days", params={"start": "2025-09-01", "end": "2025-09-30"})
-    assert r.json() == {"rule_id": "R01", "until_time": "04:00", "days": ["2025-09-26", "2025-09-29", "2025-09-30"]}
+    assert r.json() == {
+        "rule_id": "R01", "from_time": "18:00", "until_time": "04:00",
+        "days": ["2025-09-26", "2025-09-29", "2025-09-30"],
+    }
     assert client.get("/api/rules/R99/days", params={"start": "2025-09-01", "end": "2025-09-30"}).status_code == 404
+
+
+def explain(resource_id, change):
+    r = client.get("/api/rules/explain", params={"resource_id": resource_id, "change": change})
+    assert r.status_code == 200
+    return r.json()
+
+
+def test_explain_night_shutdown_of_production():
+    body = explain("dp-prod", "schedule_off")
+    assert body["status"] == "allowed_outside_windows"
+    assert body["headline"].startswith("Allowed outside protection windows: last 3 working days of each month, 18:00-04:00")
+    assert [w["rule_id"] for w in body["windows"]] == ["R01", "R18", "R19"]
+    ev = body["evidence"]
+    assert ev["idle_share"] == 0.65
+    assert ev["usage_by_day_type"][0] == {
+        "day_type": "closing day", "days": 36, "runtime_h": 24.0, "active_use_h": 20.64,
+        "queries": 4667.08, "idle_share": 0.14,
+    }
+    assert ev["jobs"][0]["job_name"] == "Nightly ETL" and "index" not in ev["jobs"][0]
+    assert sum(r["off_hours"] for r in ev["possible_off_hours"]) == 3210
+    assert ev["possible_off_hours"][0]["day_type"] == "weekend/holiday"
+
+
+def test_explain_blocked_and_human_cases():
+    assert explain("dp-prod", "switch_off")["status"] == "blocked"
+    backup = explain("st-backup", "delete")
+    assert backup["status"] == "blocked" and backup["reasons"][0]["source"] == ["T-1039", "T-1195"]
+    chatgpt = explain("sub-chatgpt", "cancel_seats")
+    assert chatgpt["status"] == "needs_human" and chatgpt["decided_by"] == "Management"
+
+
+def test_explain_agreed_change_and_unknown_resource():
+    assert explain("dp-dev", "relocate")["headline"] == "Allowed and already agreed (T-1074)."
+    unknown = explain("no-such-resource", "pause")
+    assert unknown["status"] == "allowed" and unknown["evidence"]["sources"] == []
+
+
+def test_explain_never_repeats_injected_text():
+    body = str(explain("dp-prod", "switch_off"))
+    assert "Ignore all previous instructions" not in body and "R16" not in body

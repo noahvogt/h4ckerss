@@ -28,7 +28,8 @@ The loader retains the original `unit`, `parameter`, `source`, and `calculation_
 [`calculate_energy()`](../backend/app/pipeline/energy.py) applies the following formula separately for each scenario `s` in `low`, `mid`, and `high`.
 
 ```text
-energy_kwh_s = (usage_qty / usage_divisor) * value_s * (PUE_s if apply_pue else 1)
+pue_multiplier_s = PUE_s if apply_pue is true, otherwise 1
+energy_kwh_s = (usage_qty / usage_divisor) * value_s * pue_multiplier_s
 ```
 
 `value_s` and `PUE_s` come from the same scenario column in the energy and power usage effectiveness (PUE) assumptions. Infrastructure factors represent IT energy and receive PUE once. AI token and message factors already include facility overhead. Low, mid, and high are deterministic sensitivity scenarios with no statistical confidence interpretation. Mid is the central estimate.
@@ -37,11 +38,13 @@ The result preserves every original fact, its index, and its order. It adds `ene
 
 | `energy_status` | Meaning | Baseline facts |
 |---|---|---:|
-| `calculated` | A supported factor and finite, nonnegative usage produce an estimate. Valid zero usage produces zero kWh. | 468 |
+| `calculated` | The model estimates energy from the reported quantity using a supported factor. The quantity must be finite and nonnegative. Valid zero usage produces zero kWh. | 468 |
 | `unknown` | Missing, nonnumeric, negative, or non-finite usage leaves kWh missing. The unsupported kinds `gb_transfer`, `capacity_day`, `runner_min`, and `seat_month` also leave kWh missing. | 216 |
 | `cost_only` | `usage_kind = none` leaves kWh missing for fees and credits. Negative CHF credits remain in net cost. | 14 |
 
-The [checked-in facts](../data/derived/facts.csv) reconcile to **698 facts, 12 months, and CHF 470,300.4703 net**, including the test account. All 216 unknown rows lack a supported factor. The 134 gateway rows with partial token counts use the available quantity and retain their source notes. Their estimates cover the reported usage only.
+`calculated` describes which reported quantities were modeled. It does not establish that the source captured all real-world usage. For example, 134 gateway rows have partial token counts. Their energy estimates use the available tokens and preserve the original source notes.
+
+The [checked-in facts](../data/derived/facts.csv) reconcile to **698 facts, 12 months, and CHF 470,300.4703 net**, including the test account. All 216 unknown rows lack a supported factor.
 
 ## Limitations and planned work
 

@@ -54,13 +54,12 @@ illustrative figures.
 Energy and emissions subtotals describe the usage the pipeline could model. Production
 scheduling still requires the approvals shown in the answer.
 
-Enable OpenAI by setting `OPENAI_API_KEY` in the backend process environment. For a local
-demo with Bash or Zsh, run this from `backend/` and enter the key at the hidden prompt.
+For a local demo with OpenAI, create `backend/.env` and set `OPENAI_API_KEY` to your key.
+Git ignores this file. Add `OPENAI_MODEL=gpt-4.1-mini` to select the default model explicitly,
+then start the backend from `backend/`.
 
 ```sh
-read -r -s OPENAI_API_KEY
-export OPENAI_API_KEY
-uv run uvicorn app.main:app
+uv run uvicorn app.main:app --env-file .env
 ```
 
 The backend uses the official OpenAI Python SDK. OpenAI receives the question and curated

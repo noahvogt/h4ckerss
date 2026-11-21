@@ -83,34 +83,42 @@ footer{
  .region-summary h2{font-size:27px}
  .region-summary .regional-total strong{font-size:24px}
 }
-.wrap>nav{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px}
+.wrap>nav{
+ --nav-gutter:36px;
+ display:grid;grid-template-columns:minmax(0,1fr) max-content minmax(0,1fr);gap:12px;
+ min-height:90px;margin-inline:calc(var(--nav-gutter) - var(--page-gutter));
+}
 .wrap>nav .crumbs{justify-self:center}
 .wrap>nav .crumbs span{font-size:var(--text-label)}
-.nav-period{min-width:0;justify-self:end;display:grid;justify-items:end;gap:3px}
+.wrap>nav>.year{align-self:start}
+.nav-period{min-width:0;max-width:100%;justify-self:end;display:grid;grid-template-columns:minmax(0,1fr);justify-items:end;gap:3px}
 .nav-period .nav-r{font-size:10px}
 .nav-period .time-filter,.ex-time .time-filter{margin:0;justify-content:flex-end}
 .nav-period .time-filter>small,.ex-time .time-filter>small{display:none}
 .nav-period .time-settings,.ex-time .time-settings{position:absolute;right:0;top:100%;width:min(475px,calc(100vw - 40px));max-height:65dvh;overflow:auto}
 .nav-period .time-host,.ex-time{position:relative}
+.nav-period .time-host,.nav-period .time-filter details{min-width:0;max-width:100%}
 .ex-time .time-filter{display:flex}
-.nav-period .time-filter summary{flex-wrap:nowrap}
-.nav-period output{max-width:24ch;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-@media(max-width:800px){
- .wrap>nav{grid-template-columns:1fr auto;row-gap:8px;padding-block:9px}
+.nav-period .time-filter summary{flex-wrap:nowrap;white-space:nowrap}
+.nav-period output{min-width:0;max-width:24ch;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:1040px){
+ .wrap>nav{
+  --nav-gutter:20px;
+  grid-template-columns:minmax(0,1fr) auto;row-gap:8px;padding-block:9px;
+  min-height:0;container-type:inline-size;
+ }
  .wrap>nav .crumbs{grid-column:1/-1;grid-row:2;justify-self:start}
- .wrap>nav .nav-period{grid-column:2;grid-row:1}
+ .wrap>nav :is(.nav-period,.year){grid-column:2;grid-row:1}
+ .wrap>nav>.year{align-self:center}
  .nav-period .nav-r{display:none}
  .nav-period output{max-width:15ch}
- .nav-period .time-settings,.ex-time .time-settings{width:min(420px,calc(100vw - 36px))}
+ .nav-period .time-settings{width:min(420px,100cqw)}
 }
+@media(max-width:800px){.ex-time .time-settings{width:min(420px,calc(100vw - 36px))}}
 @media(max-width:520px){
  .nav-period output{display:none}
  .nav-period details[open] output{display:block;position:absolute;right:0;top:100%;z-index:1;margin:14px 12px 0;max-width:calc(100vw - 58px);font-size:11px}
  .nav-period details[open] .time-settings{padding-top:32px}
-}
-@media(max-width:800px){
- .wrap>nav{container-type:inline-size}
- .nav-period .time-settings{width:min(420px,100cqw)}
 }
 .time-settings .time-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
 .time-settings .time-fields label{min-width:0}
@@ -165,6 +173,7 @@ footer{
  .fab{width:auto;height:44px}
  .fab .watson-bezel{display:none}
  .fab .watson-label{position:static;min-height:44px}
+ .wrap>nav{--nav-gutter:14px}
  .wrap>nav .crumbs{max-width:100%;gap:1px}
  .wrap>nav .crumbs span{letter-spacing:0;text-transform:none;padding:7px clamp(3px,1.5vw,8px);white-space:nowrap}
 }

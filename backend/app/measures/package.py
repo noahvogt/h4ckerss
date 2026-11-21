@@ -107,6 +107,13 @@ def co2_inputs(scenario: str = "mid") -> Co2Inputs:
     )
 
 
+@cache
+def catalogue() -> pd.DataFrame:
+    """The measures catalogue (cached: the data does not change while the app runs)."""
+    return build_catalogue()
+
+
+@cache
 def baseline_cost_chf() -> float:
     facts = read_facts()
     return float(facts.loc[facts["month"].between(*BASELINE), "cost_chf"].sum())
@@ -249,7 +256,7 @@ def recommend(co2: Co2Inputs | None = None, include_needs_human: bool = False) -
 
     Uses the baseline CO2 (mid scenario) unless other Co2Inputs are given."""
     co2 = co2 or co2_inputs()
-    cat = build_catalogue()
+    cat = catalogue()
     baseline = baseline_cost_chf()
     ranked = search(cat, baseline, co2, include_needs_human)
     best = ranked.iloc[0].to_dict()
@@ -259,7 +266,7 @@ def recommend(co2: Co2Inputs | None = None, include_needs_human: bool = False) -
 
 def sensitivity(measures: list[str]) -> dict[str, dict]:
     """The same package evaluated with the low, mid and high CO2 scenarios."""
-    cat = build_catalogue()
+    cat = catalogue()
     selected = cat[cat["measure_id"].isin(measures)]
     baseline = baseline_cost_chf()
     return {s: evaluate(selected, baseline, co2_inputs(s)) for s in SCENARIOS}

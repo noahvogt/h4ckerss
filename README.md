@@ -20,6 +20,21 @@ uv run python -m app.measures.catalogue   # rebuild data/derived/measures.csv (m
 uv run python -m app.measures.package     # best package under target and budget -> submission/measures_package.csv
 ```
 
+### API for the frontend
+
+Same numbers as the files in `submission/`. Details and response schemas at `/docs`.
+
+| Endpoint | For |
+|---|---|
+| `GET /api/baseline` | Page 1: cost, kWh, CO₂ per year, month, location, department, tool; drivers; `rows` for the map |
+| `GET /api/package` | Page 2: recommended package, targets, per-measure savings, CO₂ low/mid/high, alternatives (`?approvals=true` includes measures that need a human decision) |
+| `POST /api/package/evaluate` | Page 2: recalculate after approve/reject, body `{"measure_ids": [...]}` |
+| `GET /api/measures` | all measures, also blocked ones, each with its own savings |
+| `GET /api/rules/explain?resource_id=…&change=…` | explain box (every measure has its `explain_url`) |
+| `GET /api/rules/contradictions` | contradicting sources and which one we trust |
+
+Unknown values are `null`, never 0. CORS is open, so a page served from another port can call the API.
+
 ## Baseline submission
 
 From `backend/`, generate the official baseline table and the supplementary evidence:

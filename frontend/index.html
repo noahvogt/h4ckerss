@@ -14,12 +14,12 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--ink);font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:16px;line-height:1.5;overflow-x:hidden;-webkit-font-smoothing:antialiased}
-.mono{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-ui);font-size:16px;line-height:1.5;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.mono{font-family:var(--font-data);font-variant-numeric:tabular-nums}
 button{font-family:inherit;cursor:pointer}
 :focus-visible{outline:3px solid var(--elec);outline-offset:3px;border-radius:8px}
 #gl{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
-.wrap{position:relative;z-index:2;max-width:1360px;margin:0 auto;padding:0 36px 140px}
+.wrap{--page-gutter:36px;position:relative;z-index:2;max-width:1360px;margin:0 auto;padding:0 var(--page-gutter)}
 .ico{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.12em}
 
 /* nav */
@@ -150,7 +150,6 @@ section{margin-top:84px}
 .card .acts .ok:hover{box-shadow:0 10px 24px #0f1a1444;transform:translateY(-1px)}
 .card .acts .no:hover{background:var(--red);border-color:var(--red);color:#fff}
 .card.done{opacity:.55}.card.done .acts{display:none}
-footer{margin-top:100px;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:600}
 .reveal{opacity:0;transform:translateY(24px);transition:.8s cubic-bezier(.2,.8,.2,1)}
 .reveal.in{opacity:1;transform:none}
 .reveal .m,.reveal .card{opacity:0;transform:translateY(18px) scale(.97);transition:opacity .45s cubic-bezier(.34,1.3,.5,1),transform .45s cubic-bezier(.34,1.3,.5,1)}
@@ -282,7 +281,7 @@ body.chat-open .chat{transform:none;opacity:1;visibility:visible;pointer-events:
   display:flex;align-items:center;justify-content:space-between;gap:12px;flex:none;padding:13px 16px 13px 20px;
   color:#faf8f0;background:linear-gradient(110deg,#233a2d,#10231b 86%);border-bottom:1px solid #ac9a71;
 }
-.ch-top h2{font:500 25px/1.1 Georgia,'Times New Roman',serif;letter-spacing:-.035em}
+.ch-top h2{font:800 var(--text-section)/1.2 var(--font-ui);letter-spacing:-.035em}
 .ch-top .role{display:flex;align-items:center;gap:7px;margin-top:4px;color:#d6dfd2;font-size:11px}
 .ch-top .role i{width:6px;height:6px;border-radius:50%;background:var(--volt)}
 .ch-top .x{
@@ -321,9 +320,9 @@ body.chat-open .chat{transform:none;opacity:1;visibility:visible;pointer-events:
 /* Offline 3D portrait. Character geometry and skin materials adapted from the MakeHuman Community CC0 assets. */
 .watson-portrait{background-image:url(assets/WattsOn_portrait.webp)}
 
-.crumbs a{display:flex;text-decoration:none}.crumbs a:hover span{background:#eaf1d9}.atlas-hero{padding:36px 0 28px;grid-template-columns:1.4fr 1fr;align-items:center}.atlas-hero h1{font-size:clamp(42px,5.5vw,80px)}.atlas-hero .stat{padding:14px 18px}.stat button{display:block;font:700 28px 'JetBrains Mono',monospace;letter-spacing:-.04em;color:var(--eco-d);background:transparent;border:0}.stat .n:hover{background:var(--volt)}.atlas-grid{display:grid;grid-template-columns:minmax(0,1.95fr) minmax(290px,1fr);gap:18px;align-items:start}.geo-card,.region{min-width:0;margin:0;border:1px solid var(--line);border-radius:var(--r);background:white;box-shadow:var(--shadow);overflow:hidden}.geo-head,.geo-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 22px}.geo-head h2{font-size:23px;letter-spacing:-.04em}.modes{display:flex;background:var(--bg);border:1px solid var(--line);border-radius:30px;padding:3px}.modes button,.geo-foot button{background:none;border:0;padding:9px 14px;font-weight:700;font-size:12px;border-radius:20px}.modes [aria-pressed=true]{background:var(--ink);color:var(--volt)}.map-window{height:clamp(350px,29vw,440px);position:relative;isolation:isolate;overflow:hidden;background:#e4ece7}.map-window iframe,.map-window svg,#pins{position:absolute;inset:0;width:100%;height:100%;border:0}.map-window iframe{pointer-events:none}.map-window.free iframe{pointer-events:auto}.map-window.free #pins,.map-window.free svg{display:none}#pins{pointer-events:none}.map-pin,.hq{position:absolute;transform:translate(-50%,-50%);display:grid;place-items:center}.map-pin{width:44px;height:44px;background:transparent;border:0;pointer-events:auto}.disc{position:absolute;width:var(--size);height:var(--size);border-radius:50%;background:var(--tint);border:2px solid var(--color);transition:width .28s,height .28s;box-shadow:0 0 0 2px #ffffffaa}.disc:after{content:'';display:block;width:7px;height:7px;border:1.5px solid white;border-radius:50%;background:var(--color);position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}.map-pin[aria-pressed=true] .disc{outline:1.5px dashed var(--color);outline-offset:4px}.pin-text,.hq-label{position:absolute;white-space:nowrap;background:white;border:1px solid var(--line2);box-shadow:0 3px 10px #20342326;border-radius:10px;padding:4px 8px;font:700 12px 'Plus Jakarta Sans',system-ui;color:var(--ink)}.map-pin[aria-pressed=true] .pin-text{background:var(--ink);color:white}.pin-text small{display:block;font:500 10px 'JetBrains Mono',monospace}.pin-FRA .pin-text,.pin-DUB .pin-text{bottom:calc(24px + var(--size)/2)}.pin-ZRH .pin-text{top:calc(24px + var(--size)/2);left:16px}.hq{background:var(--ink);width:13px;height:13px;border:3px solid var(--volt);border-radius:3px}.hq-label{right:15px;top:4px;color:var(--volt);background:var(--ink);border:0;text-align:right}.hq-label small{display:block;color:white;font:9px 'JetBrains Mono',monospace}.geo-foot{font-size:12px;color:var(--mute);padding:9px 16px}.geo-foot button{border:1px solid var(--line);color:var(--ink)}.region{padding:22px 24px;background:linear-gradient(155deg,#fff 48%,#f2f9e4);border-color:#cfdfa9}.region h2{font-size:38px;letter-spacing:-.06em;line-height:1.1;margin:12px 0 3px}.country,.scope{font-size:12px;color:var(--mute)}.regional-total{margin:16px 0 8px;display:flex;align-items:baseline;gap:7px}.regional-total strong{font:700 38px/1 'JetBrains Mono',monospace;letter-spacing:-.065em}.regional-total small{color:var(--mute);font-weight:600}.track{height:7px;background:#e2e8df;border-radius:10px;margin-bottom:5px}.track i{display:block;height:100%;background:var(--accent);border-radius:inherit;transition:width .35s}.region h3{font-size:15px;margin:19px 0 7px}.region details{border-top:1px solid var(--line);padding:8px 0}.region summary{cursor:pointer;font-size:13px;font-weight:700}.region summary b{float:right;font:600 12px 'JetBrains Mono',monospace}.workload{display:flex;justify-content:space-between;align-items:baseline;gap:6px;font-size:12px;color:var(--mute);padding:5px 0 1px 13px}.workload small{white-space:nowrap;font:11px 'JetBrains Mono',monospace}.scope{margin:13px 4px}.scope i{display:inline-block;width:8px;height:8px;background:var(--eu);border-radius:100%;margin-right:4px}.go{text-decoration:none}.cta{margin-top:24px}.cta h3{font-size:23px}.sr{position:absolute;clip-path:inset(50%);width:1px;height:1px;overflow:hidden}.explorer{visibility:hidden}body.explore .explorer{visibility:visible}@media(max-width:930px){.atlas-hero{grid-template-columns:1fr;gap:18px}.hero-stats{grid-template-columns:repeat(4,1fr)}.nav-r{display:none}.atlas-grid{grid-template-columns:minmax(0,1.5fr) minmax(250px,1fr)}.wrap{padding-inline:20px}}@media(max-width:730px){.atlas-grid{grid-template-columns:1fr}.hero-stats{grid-template-columns:1fr 1fr}.wrap{padding-inline:14px}.crumbs span{padding:7px 9px;font-size:10px}.crumbs .future{display:none}.geo-head{padding:14px}.geo-head h2{font-size:18px}.geo-foot{flex-wrap:wrap}.region{padding:20px}.atlas-hero{padding:22px 0}.atlas-hero h1{margin:15px 0}.map-window{height:345px}.cta{padding:20px}.go{justify-self:start}footer{flex-wrap:wrap;gap:12px}.ex-top{flex-wrap:wrap;padding:10px}.ex-top .h{font-size:22px}.ex-tools{gap:4px}.ex-tools button{padding:0 8px}}
-.region{background:#fff;padding:22px}.regionTabs{display:flex;gap:3px;border-radius:12px;padding:4px;background:#f0f4ed;margin:16px 0}.regionTabs button{flex:1;padding:9px 3px;border:0;border-radius:9px;background:none;font-size:12px;font-weight:700;color:var(--mute)}.regionTabs [aria-pressed=true]{background:var(--ink);color:var(--volt)}#insights{font-size:13px;color:var(--ink2)}#insights h4,#books h3{font-size:14px;margin:15px 0 5px}.region .advice h3{font-size:18px;letter-spacing:-.035em;line-height:1.25;margin:7px 0 12px}.waste{padding:0 0 14px}.waste .ph{color:#985619}.waste p{margin-top:5px}.advice{padding:15px;background:linear-gradient(125deg,#f4fae8,#fbfdf6);border:1px solid #c9dfad;border-radius:15px}.advice .ph{color:#40651a;font-size:10px}.savings{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:8px 0}.savings b,.savings span{display:block}.savings b{font:700 16px 'JetBrains Mono',monospace}.savings span,.advice p,#insights small,.fine{font-size:11px;color:var(--mute)}.proof{border:0;background:none;text-decoration:underline;text-underline-offset:4px;color:var(--eco-d);font-weight:700;margin-top:8px}.region .insight summary{display:flex;justify-content:space-between;align-items:center;gap:8px}.insight summary:after{content:'+';font:18px monospace}.insight[open] summary:after{content:'−'}.region .insight summary b{margin-left:auto;color:#466240;max-width:49%;text-align:right;font-size:11px}.insight p{margin:8px 0 4px}.region .insight small{word-break:break-word}.region [hidden],.geo-card [hidden]{display:none!important}.map-tools{position:absolute;z-index:2;top:12px;right:12px;display:flex;gap:3px;background:#fff;border:1px solid var(--line2);border-radius:12px;padding:3px;box-shadow:var(--shadow)}.map-tools button{font:700 16px system-ui;background:white;color:var(--ink);border:0;border-radius:8px;min-width:36px;height:36px}.map-tools button:first-child{font-size:11px;padding-inline:8px}.map-tools button:hover:enabled{background:var(--volt)}.map-tools button:disabled{color:#a8afa8}.sitePin{position:absolute;transform:translate(-50%,-50%);width:44px;height:44px;border:0;background:transparent;pointer-events:auto}.sitePin i{display:block;width:15px;height:15px;margin:auto;border-radius:50%;background:var(--ink);border:3px solid white;box-shadow:0 0 0 2px var(--ink)}.sitePin[aria-pressed=true] i{background:var(--volt)}.sitePin span{position:absolute;left:50%;bottom:32px;transform:translateX(-50%);padding:5px 9px;background:white;color:var(--ink);border-radius:8px;box-shadow:var(--shadow);font:700 11px system-ui;white-space:nowrap}.point-1 span{bottom:auto;top:32px}.sitePin[aria-pressed=true] span{background:var(--ink);color:var(--volt)}.site-info{margin:0 18px 6px;padding:12px 14px;background:#f2f6ec;border-radius:12px;font-size:12px}.site-info strong{display:block;font-size:16px}.site-info .ph{font-size:9px}.geo-foot{flex-wrap:wrap}.map-links{display:flex;gap:5px;align-items:center;flex-wrap:wrap}.geo-foot .focus-btn{background:var(--ink);color:var(--volt)}.scope{clear:both}.area-switch{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 18px 0}.area-switch button{background:white;color:var(--ink);border:1px solid var(--line);padding:7px 12px;border-radius:16px;font-size:12px;font-weight:650}.area-switch [aria-pressed=true]{background:#eaf3d8;border-color:#9abc76}.fine{margin-bottom:10px}.package-goals{display:flex;gap:10px;flex-wrap:wrap;margin-top:9px}.package-goals span{border:1px solid #617160;padding:4px 8px;border-radius:8px;color:white;font-size:11px}.site-info p{margin-top:3px}.map-window{touch-action:pan-y}.atlas-grid{align-items:start}.region:focus{outline:none}@media(min-width:1000px){.atlas-hero{padding:24px 0}.atlas-hero h1{font-size:clamp(44px,4.8vw,72px)}}.site-metrics{font:600 11px/1.6 "JetBrains Mono",monospace;color:var(--eco-d);padding-top:5px}</style>
-<link rel="stylesheet" href="assets/WattsOn_timeline.css"><script src="assets/WattsOn_timeline.js"></script>
+.crumbs a{display:flex;text-decoration:none}.crumbs a:hover span{background:#eaf1d9}.atlas-hero{padding:36px 0 28px;grid-template-columns:1.4fr 1fr;align-items:center}.atlas-hero h1{font-size:clamp(42px,5.5vw,80px)}.atlas-hero .stat{padding:14px 18px}.stat button{display:block;font:700 28px 'JetBrains Mono',monospace;letter-spacing:-.04em;color:var(--eco-d);background:transparent;border:0}.stat .n:hover{background:var(--volt)}.atlas-grid{display:grid;grid-template-columns:minmax(0,1.95fr) minmax(290px,1fr);gap:18px;align-items:start}.geo-card,.region{min-width:0;margin:0;border:1px solid var(--line);border-radius:var(--r);background:white;box-shadow:var(--shadow);overflow:hidden}.geo-head,.geo-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 22px}.geo-head h2{font-size:23px;letter-spacing:-.04em}.modes{display:flex;background:var(--bg);border:1px solid var(--line);border-radius:30px;padding:3px}.modes button,.geo-foot button{background:none;border:0;padding:9px 14px;font-weight:700;font-size:12px;border-radius:20px}.modes [aria-pressed=true]{background:var(--ink);color:var(--volt)}.map-window{height:clamp(350px,29vw,440px);position:relative;isolation:isolate;overflow:hidden;background:#e4ece7}.map-window iframe,.map-window svg,#pins{position:absolute;inset:0;width:100%;height:100%;border:0}.map-window iframe{pointer-events:none}.map-window.free iframe{pointer-events:auto}.map-window.free #pins,.map-window.free svg{display:none}#pins{pointer-events:none}.map-pin,.hq{position:absolute;transform:translate(-50%,-50%);display:grid;place-items:center}.map-pin{width:44px;height:44px;background:transparent;border:0;pointer-events:auto}.disc{position:absolute;width:var(--size);height:var(--size);border-radius:50%;background:var(--tint);border:2px solid var(--color);transition:width .28s,height .28s;box-shadow:0 0 0 2px #ffffffaa}.disc:after{content:'';display:block;width:7px;height:7px;border:1.5px solid white;border-radius:50%;background:var(--color);position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}.map-pin[aria-pressed=true] .disc{outline:1.5px dashed var(--color);outline-offset:4px}.pin-text,.hq-label{position:absolute;white-space:nowrap;background:white;border:1px solid var(--line2);box-shadow:0 3px 10px #20342326;border-radius:10px;padding:4px 8px;font:700 12px 'Plus Jakarta Sans',system-ui;color:var(--ink)}.map-pin[aria-pressed=true] .pin-text{background:var(--ink);color:white}.pin-text small{display:block;font:500 10px 'JetBrains Mono',monospace}.pin-FRA .pin-text,.pin-DUB .pin-text{bottom:calc(24px + var(--size)/2)}.pin-ZRH .pin-text{top:calc(24px + var(--size)/2);left:16px}.hq{background:var(--ink);width:13px;height:13px;border:3px solid var(--volt);border-radius:3px}.hq-label{right:15px;top:4px;color:var(--volt);background:var(--ink);border:0;text-align:right}.hq-label small{display:block;color:white;font:9px 'JetBrains Mono',monospace}.geo-foot{font-size:12px;color:var(--mute);padding:9px 16px}.geo-foot button{border:1px solid var(--line);color:var(--ink)}.region{padding:22px 24px;background:linear-gradient(155deg,#fff 48%,#f2f9e4);border-color:#cfdfa9}.region h2{font-size:38px;letter-spacing:-.06em;line-height:1.1;margin:12px 0 3px}.country,.scope{font-size:12px;color:var(--mute)}.regional-total{margin:16px 0 8px;display:flex;align-items:baseline;gap:7px}.regional-total strong{font:700 38px/1 'JetBrains Mono',monospace;letter-spacing:-.065em}.regional-total small{color:var(--mute);font-weight:600}.track{height:7px;background:#e2e8df;border-radius:10px;margin-bottom:5px}.track i{display:block;height:100%;background:var(--accent);border-radius:inherit;transition:width .35s}.region h3{font-size:15px;margin:19px 0 7px}.region details{border-top:1px solid var(--line);padding:8px 0}.region summary{cursor:pointer;font-size:13px;font-weight:700}.region summary b{float:right;font:600 12px 'JetBrains Mono',monospace}.workload{display:flex;justify-content:space-between;align-items:baseline;gap:6px;font-size:12px;color:var(--mute);padding:5px 0 1px 13px}.workload small{white-space:nowrap;font:11px 'JetBrains Mono',monospace}.scope{margin:13px 4px}.scope i{display:inline-block;width:8px;height:8px;background:var(--eu);border-radius:100%;margin-right:4px}.go{text-decoration:none}.cta{margin-top:24px}.cta h3{font-size:23px}.sr{position:absolute;clip-path:inset(50%);width:1px;height:1px;overflow:hidden}.explorer{visibility:hidden}body.explore .explorer{visibility:visible}@media(max-width:930px){.atlas-hero{grid-template-columns:1fr;gap:18px}.hero-stats{grid-template-columns:repeat(4,1fr)}.nav-r{display:none}.atlas-grid{grid-template-columns:minmax(0,1.5fr) minmax(250px,1fr)}.wrap{--page-gutter:20px}}@media(max-width:730px){.atlas-grid{grid-template-columns:1fr}.hero-stats{grid-template-columns:1fr 1fr}.wrap{--page-gutter:14px}.crumbs .future{display:none}.geo-head{padding:14px}.geo-head h2{font-size:18px}.geo-foot{flex-wrap:wrap}.region{padding:20px}.atlas-hero{padding:22px 0}.atlas-hero h1{margin:15px 0}.map-window{height:345px}.cta{padding:20px}.go{justify-self:start}.ex-top{flex-wrap:wrap;padding:10px}.ex-top .h{font-size:22px}.ex-tools{gap:4px}.ex-tools button{padding:0 8px}}
+.region{background:#fff;padding:22px}.regionTabs{display:flex;gap:3px;border-radius:12px;padding:4px;background:#f0f4ed;margin:16px 0}.regionTabs button{flex:1;padding:9px 3px;border:0;border-radius:9px;background:none;font-size:12px;font-weight:700;color:var(--mute)}.regionTabs [aria-pressed=true]{background:var(--ink);color:var(--volt)}#insights{font-size:13px;color:var(--ink2)}#insights h4,#books h3{font-size:14px;margin:15px 0 5px}.region .advice h3{font-size:18px;letter-spacing:-.035em;line-height:1.25;margin:7px 0 12px}.waste{padding:0 0 14px}.waste .ph{color:#985619}.waste p{margin-top:5px}.advice{padding:15px;background:linear-gradient(125deg,#f4fae8,#fbfdf6);border:1px solid #c9dfad;border-radius:15px}.advice .ph{color:#40651a;font-size:10px}.savings{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:8px 0}.savings b,.savings span{display:block}.savings b{font:700 16px 'JetBrains Mono',monospace}.savings span,.advice p,#insights small,.fine{font-size:11px;color:var(--mute)}.proof{border:0;background:none;text-decoration:underline;text-underline-offset:4px;color:var(--eco-d);font-weight:700;margin-top:8px}.region .insight summary{display:flex;justify-content:space-between;align-items:center;gap:8px}.insight summary:after{content:'+';font:18px monospace}.insight[open] summary:after{content:'−'}.region .insight summary b{margin-left:auto;color:#466240;max-width:49%;text-align:right;font-size:11px}.insight p{margin:8px 0 4px}.region .insight small{word-break:break-word}.region [hidden],.geo-card [hidden]{display:none!important}.map-tools{position:absolute;z-index:2;top:12px;right:12px;display:flex;gap:3px;background:#fff;border:1px solid var(--line2);border-radius:12px;padding:3px;box-shadow:var(--shadow)}.map-tools button{font:700 16px system-ui;background:white;color:var(--ink);border:0;border-radius:8px;min-width:36px;height:36px}.map-tools button:first-child{font-size:11px;padding-inline:8px}.map-tools button:hover:enabled{background:var(--volt)}.map-tools button:disabled{color:#a8afa8}.sitePin{position:absolute;transform:translate(-50%,-50%);width:44px;height:44px;border:0;background:transparent;pointer-events:auto}.sitePin i{display:block;width:15px;height:15px;margin:auto;border-radius:50%;background:var(--ink);border:3px solid white;box-shadow:0 0 0 2px var(--ink)}.sitePin[aria-pressed=true] i{background:var(--volt)}.sitePin span{position:absolute;left:50%;bottom:32px;transform:translateX(-50%);padding:5px 9px;background:white;color:var(--ink);border-radius:8px;box-shadow:var(--shadow);font:700 11px var(--font-ui);white-space:nowrap}.point-1 span{bottom:auto;top:32px}.sitePin[aria-pressed=true] span{background:var(--ink);color:var(--volt)}.site-info{margin:0 18px 6px;padding:12px 14px;background:#f2f6ec;border-radius:12px;font-size:12px}.site-info strong{display:block;font-size:16px}.site-info .ph{font-size:9px}.geo-foot{flex-wrap:wrap}.map-links{display:flex;gap:5px;align-items:center;flex-wrap:wrap}.geo-foot .focus-btn{background:var(--ink);color:var(--volt)}.scope{clear:both}.area-switch{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 18px 0}.area-switch button{background:white;color:var(--ink);border:1px solid var(--line);padding:7px 12px;border-radius:16px;font-size:12px;font-weight:650}.area-switch [aria-pressed=true]{background:#eaf3d8;border-color:#9abc76}.fine{margin-bottom:10px}.package-goals{display:flex;gap:10px;flex-wrap:wrap;margin-top:9px}.package-goals span{border:1px solid #617160;padding:4px 8px;border-radius:8px;color:white;font-size:11px}.site-info p{margin-top:3px}.map-window{touch-action:pan-y}.atlas-grid{align-items:start}.region:focus{outline:none}@media(min-width:1000px){.atlas-hero{padding:24px 0}.atlas-hero h1{font-size:clamp(44px,4.8vw,72px)}}.site-metrics{font:600 11px/1.6 "JetBrains Mono",monospace;color:var(--eco-d);padding-top:5px}</style>
+<link rel="stylesheet" href="assets/WattsOn_timeline.css?v=aligned-nav"><script src="assets/WattsOn_timeline.js?v=footer-bottom"></script>
 <link rel="stylesheet" href="assets/WattsOn_guide.css">
 <script defer src="assets/WattsOn_guide.js"></script>
 </head>
@@ -341,22 +340,17 @@ body.chat-open .chat{transform:none;opacity:1;visibility:visible;pointer-events:
   <div class="nav-period"><div class="time-host"></div><div class="nav-r mono">FY Sep 25 – Aug 26 · budget CHF 16,500</div></div>
 </nav>
 
-<div class="atlas-summary">
- <div class="hero-stats"><div class="stat"><button class="n" data-tree="co2" data-count="11956">11,956</button><span>kg CO₂ / year</span></div><div class="stat"><button class="n" data-tree="cost" data-count="470384">470,384</button><span>CHF / year</span></div><div class="stat"><button class="n" data-tree="energy" data-count="56139">56,139</button><span>kWh / year</span></div><div class="stat"><b>3</b><span>Mapped cloud regions</span></div></div>
+<div class="atlas-summary baseline-summary">
+ <div class="hero-stats"><div class="stat"><button class="n" data-tree="co2" data-count="11956">11,956</button><span>kg CO₂ / year</span></div><div class="stat"><button class="n" data-tree="cost" data-count="470384">470,384</button><span>CHF / year</span></div><div class="stat"><button class="n" data-tree="energy" data-count="56139">56,139</button><span>kWh / year</span></div></div>
 </div>
 <main><div class="atlas-grid"><section class="geo-card">
-<div class="geo-head"><div><div class="ph">Operations map</div><h1>Basel’s cloud footprint</h1></div><div class="modes" aria-label="Bubble metric" role="group"><button data-mode="co2" aria-pressed="true">CO₂</button><button data-mode="chf" aria-pressed="false">Cost</button></div></div>
+<div class="geo-head"><div><div class="ph">Operations map</div><h1>Digital footprint by region</h1></div><div class="modes" aria-label="Bubble metric" role="group"><button data-mode="co2" aria-pressed="true">CO₂</button><button data-mode="chf" aria-pressed="false">Cost</button></div></div>
 <div class="map-stage"><div class="map-window" id="geoWindow" aria-label="Regional operations map"><iframe id="googleMap" title="Google Maps view of Western Europe" tabindex="-1" referrerpolicy="no-referrer-when-downgrade"></iframe><svg id="routes" aria-hidden="true"></svg><div id="pins"></div><a class="map-launch" id="mapLaunch" href="https://www.google.com/maps/@?api=1&amp;map_action=map&amp;center=50.48%2C1.55&amp;zoom=6" aria-label="Open this view in Google Maps">Open in Maps &#8599;</a><div class="map-tools" aria-label="Map zoom"><button id="mapBack" hidden>← Europe</button><button id="zoomOut" aria-label="Zoom out">−</button><button id="zoomIn" aria-label="Zoom in to local workloads">+</button></div></div><aside class="region" id="region" tabindex="-1" hidden aria-labelledby="city"><div class="region-scroll"><div class="cloud-head"><span>Selected region · <b id="code"></b></span><button id="cloudClose" aria-label="Close region details" class="dialog-close"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div class="region-summary"><h2 id="city"></h2><div class="country" id="country"></div><div class="regional-total"><strong id="amount"></strong><small id="units"></small></div></div><div class="track"><i id="shareBar"></i></div><p class="country" id="share"></p><div class="regionTabs" id="regionTabs" role="group" aria-label="Regional detail"><button>Overview</button><button>Workloads</button><button>Evidence</button></div><a id="regionMaps" class="region-map-link" href="https://www.google.com/maps/search/?api=1&amp;query=Frankfurt%2C%20Germany">Open Frankfurt in Maps</a><div id="insights"></div><div id="books" hidden><h3>Regional cloud ledger</h3><p class="fine">Annual baseline by department and tool. Values rounded.</p><div id="breakdown"></div></div><span class="sr" id="announcement" role="status"></span></div></aside></div><div class="area-switch" id="areaSwitch" role="group" aria-label="Select region"></div>
-<div class="geo-foot"><span id="legend"></span><div class="map-links"><button id="regionAction" class="focus-btn">Local workloads</button><button id="readRegion">Read region ↓</button><a id="openGoogleMaps" href="https://www.google.com/maps/search/?api=1&amp;query=47.5596%2C7.5886" target="_blank" rel="noopener noreferrer" aria-label="Open selected region in Google Maps">Expand map</a></div></div><div class="site-info" id="siteInfo" hidden></div></section>
+<div class="geo-foot"><span id="legend" aria-live="polite"></span></div><div class="site-info" id="siteInfo" hidden></div></section>
 </div>
-<p class="scope"><i></i> EU-mixed AI and SaaS are counted separately in the company totals · <span id="mixedPeriod">2,615 kg CO₂ · CHF 189,500</span></p>
+<p class="scope"><strong>Shared AI and SaaS (EU)</strong> · <span id="mixedPeriod">2,615 kg CO₂ · CHF 189,500</span><br>Included in company totals without a city-level breakdown.</p>
 <div class="cta"><div><h3>Eight measures meet both annual targets.</h3><p>Eight measures from the case baseline combine regional actions with shared AI and SaaS changes.<span class="package-goals"><span>CO₂ −54.5% · target −40%</span><span>Cost −28.7% · target −25%</span><span>CHF 15,950 of 16,500 budget</span></span></p></div><a class="go" href="package.html">View the package →</a></div>
-</main><footer><span>WattsOn · sprintd Basel 2026</span><span id="periodFoot">Sep 2025 – Aug 2026</span><span>01 / Baseline</span></footer></div>
-<dialog id="mapsDialog" class="maps-dialog" aria-labelledby="mapsDialogTitle">
- <div class="maps-dialog-head"><div><small>Google Maps</small><h2 id="mapsDialogTitle">Selected location</h2></div><form method="dialog"><button aria-label="Close map" class="dialog-close"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></form></div>
- <iframe id="mapsDialogFrame" title="Expanded Google Maps view" referrerpolicy="no-referrer-when-downgrade"></iframe>
- <div class="maps-dialog-foot"><a id="mapsWebsite" href="https://www.google.com/maps/search/?api=1&amp;query=47.5596%2C7.5886">Open Google Maps website ↗</a></div>
-</dialog>
+</main><footer>WattsON · sprintd Basel 2026</footer></div>
 <!-- ═══ TREE EXPLORER ═══ -->
 <div class="explorer" role="dialog" aria-modal="true" aria-labelledby="exH">
   <div class="ex-top">
@@ -680,7 +674,6 @@ function updateInspector(){
  }
  byId('books').querySelector('.fine').textContent=(timeline.full?'Annual baseline':'Selected period')+' by department and tool. Values rounded.';
  if(tabName==='Overview')byId('explainRegional').onclick=()=>openTree(p.measure.toLowerCase());
- byId('regionAction').textContent=active.name+' workloads';
 }
 function selectTab(name){tabName=name;updateInspector()}
 function chooseRegion(r,zoomIn=false){
@@ -720,34 +713,24 @@ function nearestRegion(e){
  return regions.reduce((best,r)=>{const distance=c=>Math.hypot(parseFloat(c.pin.style.left)-x,parseFloat(c.pin.style.top)-y);return distance(r)<distance(best)?r:best},active)
 }
 
-const basel={lat:47.5596,lng:7.5886}, mapBox=document.getElementById('geoWindow');
+const basel={lat:47.5596,lng:7.5886}, mapBox=document.getElementById('geoWindow'), mapFrame=document.getElementById('googleMap');
 const byId=id=>document.getElementById(id), format=n=>timeline.number(n);
 let metric='co2',active=regions[0],lastMap='';
 function mapsDestination(){
  const site=localLevel && chosenSite!==null ? profiles[active.code].sites[chosenSite] : null;
  const name=site ? site[0]+' · '+active.name : active.name;
  const query=site ? (active.lat+site[3]).toFixed(5)+','+(active.lng+site[4]).toFixed(5) : active.name+', '+active.place;
- return {name,query,site};
+ return {name,query};
 }
 function updateMapsLink(){
  const {name,query}=mapsDestination();
  const href='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(query);
- for(const id of ['mapLaunch','regionMaps','mapsWebsite']){
+ for(const id of ['mapLaunch','regionMaps']){
   const link=byId(id);
   link.href=href;
   link.textContent='Open '+name+' in Maps ↗';
  }
- byId('openGoogleMaps').href=href;
- byId('openGoogleMaps').setAttribute('aria-label','Expand map for '+name);
 }
-byId('openGoogleMaps').onclick=e=>{
- e.preventDefault();
- const {name,query,site}=mapsDestination();
- byId('mapsDialogTitle').textContent=name;
- byId('mapsDialogFrame').src='https://maps.google.com/maps?q='+encodeURIComponent(query)+'&z='+(site?15:11)+'&hl=en&output=embed';
- byId('mapsDialog').showModal();
-};
-byId('mapsDialog').onclose=()=>{byId('mapsDialogFrame').src='about:blank'};
 function showRegion(region){
  active=region;
  updateMapsLink();
@@ -793,8 +776,10 @@ function positionMap(){
  updateMapsLink();
  origin.hidden=!!localLevel;byId('routes').style.display=localLevel?'none':'';
  regions.forEach(r=>r.pin.hidden=!!localLevel);
- const src='https://maps.google.com/maps?ll='+mapCenter.lat+','+mapCenter.lng+'&z='+zoom+'&t=m&hl=en&output=embed';
- if(lastMap!==src){byId('googleMap').src=src;lastMap=src}
+ // Keep the overlay aligned when the display-only iframe clips its left control strip.
+ const mapLongitude=mapCenter.lng+mapFrame.offsetLeft*180/scale;
+ const src='https://maps.google.com/maps?ll='+mapCenter.lat+','+mapLongitude+'&z='+zoom+'&t=m&hl=en&output=embed';
+ if(lastMap!==src){mapFrame.src=src;lastMap=src}
  function point(city){const [x,y]=world(city);return {x:width/2+(x-centerPoint[0])*scale,y:height/2+(y-centerPoint[1])*scale}}
  function place(node,p){node.style.left=p.x+'px';node.style.top=p.y+'px'}
  const start=point(basel);place(origin,start);
@@ -811,15 +796,15 @@ function positionMap(){
   const angle=Math.atan2((1-t)*(cy-start.y)+t*(end.y-cy),(1-t)*(cx-start.x)+t*(end.x-cx))*180/Math.PI;
   drawing+='<path d="'+path+'" fill="none" stroke="white" stroke-width="4.8"/><path d="'+path+'" fill="none" stroke="'+r.color+'" stroke-width="2.2"/><path d="M-6 -4 L3 0 -6 4Z" fill="'+r.color+'" transform="translate('+ax+' '+ay+') rotate('+angle+')"/>';
  });
- renderLocalSites(point,place);byId('routes').innerHTML=drawing;byId('legend').textContent=localLevel?'Illustrative site locations · select a pin':(timeline.full?'Bubble area = annual ':'Bubble area = selected period ')+(metric==='co2'?'CO₂ emissions':'cost in CHF');
+ renderLocalSites(point,place);byId('routes').innerHTML=drawing;
+ const metricLabel=metric==='co2'?'CO₂ emissions':'cost (CHF)';
+ byId('legend').textContent=localLevel?'Illustrative site locations · select a pin':`Bubbles sized by ${timeline.full?'annual '+metricLabel:metricLabel+' for the selected period'}`;
 }
 document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{
  metric=b.dataset.mode;document.querySelectorAll('[data-mode]').forEach(s=>s.setAttribute('aria-pressed',s===b));showRegion(active);positionMap()
 });
 byId('zoomIn').onclick=()=>zoomTo(1);byId('zoomOut').onclick=()=>zoomTo(-1);
 byId('mapBack').onclick=()=>{localLevel=0;chosenSite=null;positionMap();closeRegionDetails()};
-byId('regionAction').onclick=()=>{if(!localLevel)zoomTo(1);selectTab('Workloads');openRegionDetails()};
-byId('readRegion').onclick=()=>{selectTab('Overview');openRegionDetails()};
 byId('regionTabs').querySelectorAll('button').forEach(b=>b.onclick=()=>selectTab(b.textContent));
 mapBox.addEventListener('dblclick',e=>{if(!e.target.closest('button'))zoomTo(1,localLevel?active:nearestRegion(e))});
 let lastWheel=0;
@@ -838,7 +823,6 @@ function updateRegionalPeriod(){
  }
  regionalData.forEach((row,i)=>{for(const key of ['co2','chf'])row[key]=annualBooks[i][key]*timeline.share});
  byId('mixedPeriod').textContent=timeline.total(2615)+' kg CO₂ · CHF '+timeline.total(189500);
- byId('periodFoot').textContent=timeline.label;
  showRegion(active);positionMap();
 }
 let cloudTrigger=null;
@@ -857,13 +841,13 @@ function closeRegionDetails(){
  byId('region').hidden=true;
  positionMap();
  byId('watsonThought').hidden=true;
- if(cloudTrigger?.isConnected&&!cloudTrigger.hidden)cloudTrigger.focus({preventScroll:true});
- else byId('readRegion').focus({preventScroll:true});
+ if(cloudTrigger?.isConnected&&!cloudTrigger.closest('[hidden]')&&!cloudTrigger.disabled&&cloudTrigger!==document.body)cloudTrigger.focus({preventScroll:true});
+ else (localLevel?byId('zoomOut'):active.pin).focus({preventScroll:true});
 }
 byId('cloudClose').onclick=closeRegionDetails;
 byId('dismissThought').onclick=()=>{byId('watsonThought').hidden=true;launcher.focus({preventScroll:true})};
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!byId('region').hidden&&!document.body.classList.contains('explore')&&!document.body.classList.contains('chat-open')){closeRegionDetails();e.stopImmediatePropagation()}},true);
-document.addEventListener('pointerdown',e=>{if(!byId('region').hidden&&!document.body.classList.contains('explore')&&!e.target.closest('.region,.map-launch,.maps-dialog,.area-switch,.map-pin,.geo-foot,.time-host,.fab,.chat,.map-tools,.sitePin,.watson-thought,.modes')){closeRegionDetails()}});
+document.addEventListener('pointerdown',e=>{if(!byId('region').hidden&&!document.body.classList.contains('explore')&&!e.target.closest('.region,.map-launch,.area-switch,.map-pin,.geo-foot,.time-host,.fab,.chat,.map-tools,.sitePin,.watson-thought,.modes')){closeRegionDetails()}});
 
 new ResizeObserver(positionMap).observe(mapBox);showRegion(active);positionMap();
 </script><script>

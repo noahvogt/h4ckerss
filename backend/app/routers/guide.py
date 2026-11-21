@@ -9,7 +9,7 @@ import pandas as pd
 from fastapi import APIRouter
 from pydantic import BaseModel, StringConstraints
 
-from app.guide_usage import Usage, provider_enabled, route_question
+from app.guide_usage import MISSING_KEY_NOTICE, Usage, provider_enabled, route_question
 from app.limits import evidence
 from app.limits.explain import explain
 from app.measures import gpu
@@ -36,6 +36,7 @@ class Answer(BaseModel):
     topic: str
     mode: Mode
     usage: Usage | None = None
+    estimated_cost_usd: float | None = None
     notice: str | None = None
 
 
@@ -47,6 +48,7 @@ class Example(BaseModel):
 class Examples(BaseModel):
     mode: Mode
     examples: list[Example]
+    notice: str | None = None
 
 
 @cache
@@ -64,7 +66,12 @@ def _examples() -> tuple[Example, ...]:
 
 @router.get("/examples")
 def examples() -> Examples:
-    return Examples(mode="ai" if provider_enabled() else "demo", examples=list(_examples()))
+    enabled = provider_enabled()
+    return Examples(
+        mode="ai" if enabled else "demo",
+        examples=list(_examples()),
+        notice=None if enabled else MISSING_KEY_NOTICE,
+    )
 
 
 def _number(value, digits: int = 2) -> str:
@@ -244,6 +251,11 @@ _TOPICS: dict[str, tuple[str, str, Callable[[], tuple[str, list[Source]]]]] = {
 }
 
 
+@cache
+def _evidence_packets() -> dict[str, tuple[str, list[Source]]]:
+    return {topic: build() for topic, (_, _, build) in _TOPICS.items()}
+
+
 @router.post("/ask")
 def ask(body: Question) -> Answer:
     question = body.question.lower()
@@ -252,21 +264,32 @@ def ask(body: Question) -> Answer:
     ))
     exact_topic = example_topics.get(question)
     measure_id = re.search(r"\bm-[a-z0-9]+(?:-[a-z0-9]+)+\b", question)
-    if measure_id:
-        result = _measure(measure_id[0])
-        if result:
-            return Answer(answer=result[0], sources=result[1], topic="measure", mode="demo")
-
-    options = {key: details[0] for key, details in _TOPICS.items()}
-    options["unsupported"] = "outside those data and calculations"
-    routed = route_question(body.question, options)
+    measure = _measure(measure_id[0]) if measure_id else None
+    packets = _evidence_packets().copy() if provider_enabled() else {}
+    if measure:
+        packets["measure"] = measure
+    context = {
+        key: {
+            "topic": _TOPICS[key][0] if key in _TOPICS else "the requested individual measure",
+            "calculation": answer,
+            "sources": [source.reference for source in sources],
+        }
+        for key, (answer, sources) in packets.items() if sources
+    }
+    routed = route_question(body.question, context)
     local_topic = next((key for key, (_, pattern, _) in _TOPICS.items() if re.search(pattern, question)), None)
-    topic = exact_topic or routed.topic or local_topic or "unsupported"
-    answer, sources = (
-        _TOPICS[topic][2]() if topic in _TOPICS else (
+    topic = "measure" if measure else exact_topic or routed.topic or local_topic or "unsupported"
+    packet = packets.get(topic)
+    if packet is None and topic in _TOPICS:
+        packet = _TOPICS[topic][2]()
+    if packet is None or not packet[1]:
+        topic = "unsupported"
+        packet = (
             "I don’t have a calculation that answers that question. Try one of the three examples, "
-            "ask about the annual baseline or recommended package, or enter a measure ID.", [],
+            "ask about the annual baseline or recommended package, or enter a measure ID.",
+            [],
         )
+    return Answer(
+        answer=packet[0], sources=packet[1], topic=topic, mode="ai" if routed.topic else "demo",
+        usage=routed.usage, estimated_cost_usd=routed.estimated_cost_usd, notice=routed.notice,
     )
-    return Answer(answer=answer, sources=sources, topic=topic, mode="ai" if routed.topic else "demo",
-                  usage=routed.usage, notice=routed.notice)

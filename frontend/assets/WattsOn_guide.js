@@ -71,6 +71,13 @@
       report.textContent = "Provider token counts and inference footprint are unavailable for this reply.";
       message.append(report);
     }
+    if (result.usage) {
+      const cost = document.createElement("small");
+      cost.className = "guide-usage";
+      cost.textContent = result.estimated_cost_usd == null ? "Estimated API cost unavailable." :
+        `Estimated API cost: USD ${result.estimated_cost_usd.toLocaleString("en-US", {maximumSignificantDigits: 4})}.`;
+      message.append(cost);
+    }
     messages.scrollTop += message.getBoundingClientRect().top - messages.getBoundingClientRect().top - 12;
   }
 
@@ -93,7 +100,7 @@
       });
       if (!response.ok) throw new Error("Guide response failed");
       const result = await response.json();
-      mode.textContent = result.mode === "ai" ? "AI routing · Project evidence" : "Demo mode · Local answers";
+      mode.textContent = result.mode === "ai" ? "OpenAI · Project evidence" : "Demo mode · Local answers";
       waiting.remove();
       showAnswer(result);
     } catch {
@@ -112,7 +119,8 @@
       const response = await fetch("/api/guide/examples", {signal: AbortSignal.timeout(10000)});
       if (!response.ok) throw new Error("Guide examples failed");
       const data = await response.json();
-      mode.textContent = data.mode === "ai" ? "AI routing available" : "Demo mode · Local answers";
+      mode.textContent = data.mode === "ai" ? "OpenAI available" : "Demo mode · Local answers";
+      if (data.notice) append(data.notice);
       for (const example of data.examples) {
         const button = document.createElement("button");
         button.type = "button";

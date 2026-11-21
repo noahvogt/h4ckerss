@@ -33,7 +33,7 @@ Same numbers as the files in `submission/`. Details and response schemas at `/do
 | `GET /api/rules/explain?resource_id=…&change=…` | explain box (every measure has its `explain_url`) |
 | `GET /api/rules/contradictions` | contradicting sources and which one we trust |
 | `GET /api/guide/examples` | Official example questions and Guide mode |
-| `POST /api/guide/ask` | Guide reply, sources and provider-reported token usage for `{"question": "..."}` |
+| `POST /api/guide/ask` | Guide reply, sources, provider-reported tokens, and estimated USD cost for `{"question": "..."}` |
 
 Unknown values are `null`, never 0. CORS is open, so a page served from another port can call the API.
 
@@ -54,14 +54,38 @@ illustrative figures.
 Energy and emissions subtotals describe the usage the pipeline could model. Production
 scheduling still requires the approvals shown in the answer.
 
-Set `OPENAI_API_KEY` before starting the backend to enable OpenAI topic routing.
-`WATTSON_GUIDE_OPENAI_MODEL` defaults to `gpt-4.1-mini`. The backend sends the question and
-the supported topic descriptions to OpenAI. The server writes the answers from the project’s
-calculations and selects the sources. Local routing remains available if the provider fails.
+Enable OpenAI by setting `OPENAI_API_KEY` in the backend process environment. For a local
+demo with Bash or Zsh, run this from `backend/` and enter the key at the hidden prompt.
+
+```sh
+read -r -s OPENAI_API_KEY
+export OPENAI_API_KEY
+uv run uvicorn app.main:app
+```
+
+The backend uses the official OpenAI Python SDK. OpenAI receives the question and curated
+calculation summaries with source references, then selects an evidence-backed answer.
+The server renders the figures and citations. Missing credentials and API errors produce
+a visible notice and a deterministic demo reply.
+
+| Backend setting | Default and behavior |
+|---|---|
+| `OPENAI_MODEL` | `gpt-4.1-mini` |
+| `OPENAI_MAX_OUTPUT_TOKENS` | `32` completion tokens, configurable from 1 to 4096 |
+| `OPENAI_PRICES_USD_PER_1M` | Optional comma-separated input, cached input, and output rates in USD per million tokens. Supply this for estimates with a custom model. |
+
+Each question is limited to 700 characters. The complete text sent to OpenAI, including the
+grounding context and system instructions, is limited to 16 KiB in UTF-8. The SDK issues a
+single request per question without retries. Both limits apply per request.
 
 Provider attempts append to `out/guide/usage.jsonl` at the repository root. Override the path
-with `WATTSON_GUIDE_USAGE_LOG`. The log records provider-reported input and output token counts
-when available, without logging questions or keys. A local reply uses no provider tokens.
+with `WATTSON_GUIDE_USAGE_LOG`. The log records provider-reported input, cached input, and output
+token counts when available, without logging questions or keys. The separate
+`estimated_cost_usd` field uses the default model’s standard rates or the configured rates.
+If cached token details are unavailable, the estimate uses the uncached rate for all input.
+Missing token totals or rates leave the estimate unknown. Check the billed amount in the provider
+dashboard. [GPT-4.1 mini rates](https://developers.openai.com/api/docs/models/gpt-4.1-mini)
+
 With both counts available, the shared pipeline applies the research CSV’s facility-inclusive
 inference proxy to estimate mid-scenario electricity. This proxy uses the baseline token mix
 and is not a measurement of the Guide model. Location-based CO₂e remains unknown unless

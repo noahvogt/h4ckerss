@@ -162,9 +162,13 @@ def test_loads_valid_monthly_facts_and_keeps_ai_cost_in_chf(tmp_path):
 
     ai_subscription = facts.loc[facts["source"].eq("ai_subscriptions.csv")].iloc[0]
     assert ai_subscription["cost_chf"] == 80
-    assert ai_subscription["usage_kind"] == "seat_month"
+    assert ai_subscription["usage_kind"] == "messages"
+    assert ai_subscription["usage_qty"] == 12
     assert ai_subscription["department"] == "Consulting"
-    assert facts.loc[facts["source"].eq("saas_contracts.csv"), "cost_chf"].tolist() == [45, 20]
+    saas_facts = facts.loc[facts["source"].eq("saas_contracts.csv")]
+    assert saas_facts["cost_chf"].tolist() == [45, 20]
+    assert saas_facts["usage_kind"].tolist() == ["seat_month", "seat_month"]
+    assert saas_facts["usage_qty"].tolist() == [3, 2]
     assert facts["location"].eq("EU").all()
     assert not facts["note"].str.contains("Draft", na=False).any()
 
@@ -288,6 +292,51 @@ def test_reads_cost_centers_as_strings_and_notes_missing_centers(tmp_path):
     assert pd.isna(unallocated["cost_center"])
     assert unallocated["department"] == "Unallocated"
     assert "unmapped cost center (missing)" in unallocated["note"]
+
+
+def test_ai_subscription_messages_sum_known_values_and_flag_partial_usage(tmp_path):
+    path = _data_dir(tmp_path)
+    subscriptions = pd.read_csv(path / "ai_subscriptions.csv")
+    extra = subscriptions.iloc[0].copy()
+    extra["messages_30d"] = 5
+    extra["amount"] = 0
+    subscriptions.loc[0, "messages_30d"] = pd.NA
+    subscriptions = pd.concat(
+        [subscriptions, pd.DataFrame([extra])], ignore_index=True
+    )
+    subscriptions.to_csv(path / "ai_subscriptions.csv", index=False)
+
+    facts = load_ai_saas(path)
+    ai_fact = facts.loc[
+        facts["source"].eq("ai_subscriptions.csv")
+        & facts["resource_id"].str.endswith("AI Team:OpenAI")
+    ].iloc[0]
+
+    assert ai_fact["usage_kind"] == "messages"
+    assert ai_fact["usage_qty"] == 5
+    assert ai_fact["cost_chf"] == 80
+    assert (
+        "incomplete message usage: 1 missing message values; known messages only"
+        in ai_fact["note"]
+    )
+
+
+def test_all_missing_ai_subscription_messages_keep_nan_and_are_flagged(tmp_path):
+    path = _data_dir(tmp_path)
+    subscriptions = pd.read_csv(path / "ai_subscriptions.csv")
+    subscriptions.loc[0, "messages_30d"] = pd.NA
+    subscriptions.to_csv(path / "ai_subscriptions.csv", index=False)
+
+    facts = load_ai_saas(path)
+    ai_fact = facts.loc[
+        facts["source"].eq("ai_subscriptions.csv")
+        & facts["resource_id"].str.endswith("AI Team:OpenAI")
+    ].iloc[0]
+
+    assert ai_fact["usage_kind"] == "messages"
+    assert pd.isna(ai_fact["usage_qty"])
+    assert ai_fact["cost_chf"] == 80
+    assert "all message values missing; usage unavailable" in ai_fact["note"]
 
 
 def test_preserves_seat_details_but_excludes_drafts_from_billing_and_unused_seats(tmp_path):

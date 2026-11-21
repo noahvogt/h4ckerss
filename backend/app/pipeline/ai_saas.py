@@ -257,32 +257,68 @@ def _subscription_facts(
     )
     billed["tool"] = billed["product"]
     keys = ["month", "resource_id", "tool", "department", "cost_center"]
+    is_ai = category == "ai"
+    usage_column = "messages_30d" if is_ai else "licences_purchased"
+    usage_aggregation = _known_sum if is_ai else _strict_sum
     grouped = (
         billed.groupby(keys, dropna=False, sort=False)
         .agg(
-            usage_qty=("licences_purchased", _strict_sum),
+            usage_qty=(usage_column, usage_aggregation),
             cost_chf=("amount_chf", _strict_sum),
-            missing_seats=("licences_purchased", lambda values: values.isna().any()),
+            missing_usage_count=(usage_column, lambda values: values.isna().sum()),
+            usage_rows=(usage_column, "size"),
             missing_cost=("amount_chf", lambda values: values.isna().any()),
             notes=("note", lambda values: _notes(*values)),
         )
         .reset_index()
     )
+    if is_ai:
+        grouped["usage_note"] = [
+            (
+                "incomplete message usage: all message values missing; usage unavailable"
+                if missing == rows
+                else (
+                    f"incomplete message usage: {missing} missing message values; "
+                    "known messages only"
+                )
+                if missing
+                else ""
+            )
+            for missing, rows in zip(
+                grouped["missing_usage_count"], grouped["usage_rows"], strict=True
+            )
+        ]
+        grouped["usage_kind"] = "messages"
+    else:
+        grouped["usage_note"] = grouped["missing_usage_count"].map(
+            lambda missing: "incomplete purchased-seat count" if missing else ""
+        )
+        grouped["usage_kind"] = "seat_month"
     grouped["note"] = [
         _notes(
             note,
-            "incomplete purchased-seat count" if missing_seats else "",
+            usage_note,
             "incomplete subscription cost" if missing_cost else "",
         )
-        for note, missing_seats, missing_cost in zip(
-            grouped["notes"], grouped["missing_seats"], grouped["missing_cost"], strict=True
+        for note, usage_note, missing_cost in zip(
+            grouped["notes"],
+            grouped["usage_note"],
+            grouped["missing_cost"],
+            strict=True,
         )
     ]
     grouped["category"] = category
     grouped["source"] = filename
     grouped["location"] = "EU"
-    grouped["usage_kind"] = "seat_month"
-    return grouped.drop(columns=["missing_seats", "missing_cost", "notes"])
+    return grouped.drop(
+        columns=[
+            "missing_usage_count",
+            "usage_rows",
+            "missing_cost",
+            "notes",
+            "usage_note",
+        ]
+    )
 
 
 def load_ai_usage_details(data_dir: str | Path = DATA_DIR) -> pd.DataFrame:

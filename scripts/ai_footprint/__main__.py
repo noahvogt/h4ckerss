@@ -7,8 +7,14 @@ from collections.abc import Iterable
 from datetime import date
 from pathlib import Path
 
+from .claude import default_transcripts, import_claude
 from .codex import import_codex
 from .records import END, START, Usage, Window, read_csv, reconcile, write_csv
+
+IMPORTERS = {
+    "import-codex": ("Codex", "sessions", import_codex),
+    "import-claude": ("Claude Code", "transcripts", import_claude),
+}
 
 
 def _period(parser: argparse.ArgumentParser) -> None:
@@ -30,6 +36,13 @@ def main() -> int:
     codex.add_argument("--member", required=True, help="team member's name or agreed alias")
     codex.add_argument("--output", "-o", type=Path, required=True, help="destination CSV")
     _period(codex)
+
+    claude = commands.add_parser("import-claude", help="export usage metadata from local Claude Code transcripts")
+    claude.add_argument("--transcripts", type=Path, default=default_transcripts(),
+                        help="JSONL file or directory (default: ~/.claude/projects)")
+    claude.add_argument("--member", required=True, help="team member's name or agreed alias")
+    claude.add_argument("--output", "-o", type=Path, required=True, help="destination CSV")
+    _period(claude)
 
     template = commands.add_parser("template", help="create an empty manual usage CSV")
     template.add_argument("--output", "-o", type=Path, required=True)
@@ -54,15 +67,16 @@ def main() -> int:
             return 0
 
         window = Window(args.start, args.end)
-        if args.command == "import-codex":
+        if args.command in IMPORTERS:
+            label, source, importer = IMPORTERS[args.command]
             if not args.member.strip():
                 raise ValueError("member must be nonempty")
-            sessions = args.sessions.expanduser()
-            if args.output.resolve().suffix.lower() != ".csv" or args.output.resolve() == sessions.resolve():
-                raise ValueError("choose a new CSV destination separate from the Codex logs")
-            rows, warnings = import_codex(sessions, args.member.strip(), window)
+            logs = getattr(args, source).expanduser()
+            if args.output.resolve().suffix.lower() != ".csv" or args.output.resolve() == logs.resolve():
+                raise ValueError(f"choose a new CSV destination separate from the {label} logs")
+            rows, warnings = importer(logs, args.member.strip(), window)
             for message, count in sorted(warnings.items()):
-                print(f"Codex: {count:,} {message}.", file=sys.stderr)
+                print(f"{label}: {count:,} {message}.", file=sys.stderr)
         else:
             if args.output is not None and args.output.resolve() in {path.resolve() for path in args.files}:
                 raise ValueError("choose an output path different from the input files")

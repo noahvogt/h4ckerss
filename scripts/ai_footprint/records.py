@@ -13,6 +13,8 @@ START = date(2026, 11, 20)
 END = date(2026, 11, 22)
 TOKEN_FIELDS = ("input_tokens", "cached_input_tokens", "output_tokens")
 COUNT_FIELDS = (*TOKEN_FIELDS, "requests")
+# Importers derive evidence references from source event IDs, so the reference alone identifies a row.
+IMPORTED_METHODS = frozenset({"codex_jsonl", "claude_jsonl"})
 
 
 @dataclass(frozen=True)
@@ -118,8 +120,8 @@ def reconcile(rows: Iterable[Usage], window: Window) -> tuple[list[Usage], int, 
         if not window.contains(row.timestamp):
             outside += 1
             continue
-        if row.measurement_method == "codex_jsonl":
-            key = ("codex_jsonl", row.evidence_reference)
+        if row.measurement_method in IMPORTED_METHODS:
+            key = (row.measurement_method, row.evidence_reference)
         else:
             key = (row.member.casefold(), row.tool.casefold(), row.model.casefold(),
                    row.timestamp, row.evidence_reference)

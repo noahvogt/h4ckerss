@@ -22,7 +22,19 @@ uv run --locked --project backend python -m scripts.ai_footprint import-codex \
   --member "MyName" --output out/ai_footprint/members/my-name-codex.csv
 ```
 
-**Claude Code, ChatGPT, Cursor, Copilot, Gemini and other tools.** Create a manual CSV
+**Claude Code.** The importer reads the local transcripts in `~/.claude/projects/`
+(or `$CLAUDE_CONFIG_DIR/projects`). That directory holds one subdirectory per working
+directory, so point `--transcripts` at the hackathon repository's subdirectory, for example
+`~/.claude/projects/-home-me-src-h4ckerss`, if you used Claude Code for other projects over
+the same weekend. Without it, every project's sessions in the period are counted.
+
+```sh
+uv run --locked --project backend python -m scripts.ai_footprint import-claude \
+  --member "MyName" --transcripts ~/.claude/projects/-home-me-src-h4ckerss \
+  --output out/ai_footprint/members/my-name-claude.csv
+```
+
+**ChatGPT, Cursor, Copilot, Gemini and other tools.** Create a manual CSV
 or copy [template.csv](template.csv). Use it for official usage exports or screenshots
 showing actual counts for an interval fully within the hackathon. A usage-limit percentage
 alone cannot establish token counts. Leave those fields blank if that is all you have.
@@ -37,19 +49,18 @@ blank counts intentionally. Add numbers only where your own evidence reports the
 
 ```csv
 member,tool,model,timestamp,input_tokens,cached_input_tokens,output_tokens,requests,measurement_method,evidence_reference
-MyName,Claude Code,,2026-11-20,,,,,official_export,my-claude-day1
+MyName,ChatGPT,,2026-11-20,,,,,official_export,my-chatgpt-day1
 MyName,Cursor,,2026-11-21,,,,,screenshot,my-cursor-day2
-MyName,ChatGPT,,2026-11-22,,,,,screenshot,my-chatgpt-day3
+MyName,Gemini,,2026-11-22,,,,,screenshot,my-gemini-day3
 ```
 
 - Use an ISO date for a daily total, or a timestamp with an offset for a timed event.
   The CLI writes timestamps in UTC. `--start` and `--end` override the inclusive Basel dates
-  for `import-codex`, `combine`, and `summary`.
+  for `import-codex`, `import-claude`, `combine`, and `summary`.
 - Include cached input in `input_tokens` exactly once. Use `cached_input_tokens` for the subset
-  read from cache if the source reports it. For Claude Code's official telemetry, the
-  inclusive input total is the sum of uncached input, cache reads, and cache creation
-  tokens. Use the reported output count. The importer uses CSV for Claude Code because
-  its local transcript token schema and replay behavior were not verified on this machine.
+  read from cache if the source reports it. For Claude Code, the inclusive input total is
+  the sum of uncached input, cache reads, and cache creation tokens. The importer applies
+  this rule automatically.
   [Claude Code monitoring and token field definitions](https://code.claude.com/docs/en/monitoring-usage)
 - Enter actual request counts where reported. Use `0` for a reported zero and leave unknown
   numbers blank. Use a short evidence label. Keep raw logs, screenshots, prompts, and keys local.
@@ -85,6 +96,19 @@ deployment grid. Omit the option to report unknown CO₂e.
   At the start of the reporting period it can use the latest measured increment if a
   cumulative delta spans the cutoff. A first cumulative-only snapshot from an earlier or
   uncertain start remains unknown. [Codex token accounting](https://github.com/openai/symphony/blob/main/elixir/docs/token_accounting.md)
+- The Claude Code reader exports one row per API response, using the `usage` object
+  that the transcript stores with each assistant message. A response split into several
+  content blocks repeats the same usage on several lines. The reader keys rows on the
+  request ID, falling back to the message ID, so those lines count once. Responses that a
+  resumed or forked session copies into another transcript also count once. If the lines
+  of one response disagree, the reader keeps the largest value for each field and prints a
+  warning. Locally generated `<synthetic>` messages are skipped. `requests` is `1` per
+  response. Claude Code's background calls (such as session titles, classifiers and
+  context compaction) do not produce assistant messages in the transcript. The session
+  `cost-state` totals include them but carry no timestamps. On the development machine those
+  totals were often 10–30 % higher in cache reads than the per-response sum, so treat the
+  import as a lower bound. The reported `inference_geo` was `global`, which does not
+  identify a deployment grid.
 - Import warnings go to the terminal. Missing usage fields stay blank. Codex request counts
   stay blank because token snapshots do not reliably identify individual requests. Context
   estimates, unreadable log lines, and forked rollouts whose inherited usage cannot be

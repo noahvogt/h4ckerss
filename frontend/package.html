@@ -14,12 +14,12 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--ink);font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:16px;line-height:1.5;overflow-x:hidden;-webkit-font-smoothing:antialiased}
-.mono{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-ui);font-size:16px;line-height:1.5;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.mono{font-family:var(--font-data);font-variant-numeric:tabular-nums}
 button{font-family:inherit;cursor:pointer}
 :focus-visible{outline:3px solid var(--elec);outline-offset:3px;border-radius:8px}
 #gl{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
-.wrap{position:relative;z-index:2;max-width:1360px;margin:0 auto;padding:0 36px 140px}
+.wrap{position:relative;z-index:2;max-width:1360px;margin:0 auto;padding:0 36px}
 .ico{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.12em}
 
 /* nav */
@@ -43,7 +43,10 @@ h1 .g{background:linear-gradient(100deg,var(--eco) 0%,var(--volt-d) 55%,var(--el
 .hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .stat{padding:18px 20px;border-radius:18px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow)}
 .stat b{display:block;font-family:'JetBrains Mono';font-size:28px;letter-spacing:-.03em;color:var(--eco-d)}
+.stat-value{display:flex;align-items:baseline;gap:.35rem;white-space:nowrap}
+.stat-value small{font-size:12px;font-weight:700;color:var(--eco-d)}
 .stat span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:600}
+@media(max-width:360px){.atlas-summary .stat .stat-value b{font-size:17px}.stat-value small{font-size:11px}.stat-value{gap:4px}}
 
 /* compare */
 .compare{display:grid;grid-template-columns:1fr 150px 1fr;margin-top:40px}
@@ -53,11 +56,13 @@ h1 .g{background:linear-gradient(100deg,var(--eco) 0%,var(--volt-d) 55%,var(--el
 .panel.after::after{content:"";position:absolute;top:-140px;right:-140px;width:380px;height:380px;background:radial-gradient(circle,#C8F31D66,transparent 60%);pointer-events:none}
 .ph{display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);font-weight:700}
 .ph .pill{padding:4px 10px;border-radius:999px;border:1px solid var(--line);font-family:'JetBrains Mono';letter-spacing:0;text-transform:none;font-weight:500;background:#fff}
+.compare .panel .ph{flex-wrap:wrap;gap:6px 10px;font-size:var(--text-section);line-height:1.25;letter-spacing:-.025em;text-transform:none}
+.compare .panel .pill{font-size:var(--text-label);white-space:nowrap}
 .panel.after .ph{color:var(--eco-d)}
 .big{display:flex;align-items:baseline;gap:12px;margin:22px 0 4px;position:relative;z-index:1}
 .big .num{font-family:'JetBrains Mono';font-weight:700;font-size:clamp(44px,4.6vw,68px);letter-spacing:-.05em;line-height:1}
 .big small{font-size:15px;color:var(--mute);font-weight:600}
-.unit{font-size:13px;color:var(--mute);margin-bottom:22px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;position:relative;z-index:1}
+.unit{font-size:var(--text-copy);color:var(--mute);margin-bottom:22px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;position:relative;z-index:1}
 .sep{height:1px;background:var(--line);margin:22px 0}
 .n{cursor:pointer;position:relative;display:inline-block;border-radius:10px;padding:0 6px;margin:0 -6px;transition:.25s;text-decoration:underline dotted var(--line2);text-underline-offset:6px;text-decoration-thickness:2px}
 .n:hover{background:var(--volt);text-decoration-color:transparent;color:var(--ink)}
@@ -65,7 +70,7 @@ h1 .g{background:linear-gradient(100deg,var(--eco) 0%,var(--volt-d) 55%,var(--el
 .n:hover::after{opacity:1;transform:none}
 .bars{display:flex;flex-direction:column;gap:10px;position:relative;z-index:1}
 .bar{display:grid;grid-template-columns:84px 1fr 64px;align-items:center;gap:12px}
-.bar .lab{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);font-weight:600}
+.bar .lab{font-size:var(--text-label);letter-spacing:.04em;text-transform:uppercase;color:var(--mute);font-weight:600}
 .bar .trk{height:10px;border-radius:999px;background:#0f1a140d;position:relative;overflow:hidden}
 .bar .fill{position:absolute;inset:0;width:0;border-radius:999px;transition:width 1.4s cubic-bezier(.2,.8,.2,1)}
 .bar .ghost{position:absolute;inset:0;border-radius:999px;background:repeating-linear-gradient(90deg,#0f1a1422 0 3px,transparent 3px 6px)}
@@ -150,7 +155,6 @@ section{margin-top:84px}
 .card .acts .ok:hover{box-shadow:0 10px 24px #0f1a1444;transform:translateY(-1px)}
 .card .acts .no:hover{background:var(--red);border-color:var(--red);color:#fff}
 .card.done{opacity:.55}.card.done .acts{display:none}
-footer{margin-top:100px;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:600}
 .reveal{opacity:0;transform:translateY(24px);transition:.8s cubic-bezier(.2,.8,.2,1)}
 .reveal.in{opacity:1;transform:none}
 .reveal .m,.reveal .card{opacity:0;transform:translateY(18px) scale(.97);transition:opacity .45s cubic-bezier(.34,1.3,.5,1),transform .45s cubic-bezier(.34,1.3,.5,1)}
@@ -282,7 +286,7 @@ body.chat-open .chat{transform:none;opacity:1;visibility:visible;pointer-events:
   display:flex;align-items:center;justify-content:space-between;gap:12px;flex:none;padding:13px 16px 13px 20px;
   color:#faf8f0;background:linear-gradient(110deg,#233a2d,#10231b 86%);border-bottom:1px solid #ac9a71;
 }
-.ch-top h2{font:500 25px/1.1 Georgia,'Times New Roman',serif;letter-spacing:-.035em}
+.ch-top h2{font:800 var(--text-section)/1.2 var(--font-ui);letter-spacing:-.035em}
 .ch-top .role{display:flex;align-items:center;gap:7px;margin-top:4px;color:#d6dfd2;font-size:11px}
 .ch-top .role i{width:6px;height:6px;border-radius:50%;background:var(--volt)}
 .ch-top .x{
@@ -337,8 +341,8 @@ body.chat-open .chat{transform:none;opacity:1;visibility:visible;pointer-events:
 .package-content{margin-top:32px}
 #approvals{scroll-margin-top:90px;background:#edf2eb;border:1px solid #cbd6c8;border-radius:20px;padding:16px}
 .approval-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-.approval-head h2{font-size:17px;letter-spacing:-.025em}
-.approval-head span,.card h3 small{font:600 11px monospace;border-radius:7px;background:white;padding:4px 7px}
+.approval-head h2{font-size:var(--text-section);letter-spacing:-.025em}
+.approval-head span,.card h3 small{font:600 11px var(--font-data);border-radius:7px;background:white;padding:4px 7px}
 .approval-link{color:var(--volt);text-underline-offset:3px}
 #approvals .card{display:flex;flex-direction:column;padding:18px;min-width:0}
 #approvals .stamp{align-self:start}
@@ -350,7 +354,7 @@ body.chat-open .chat{transform:none;opacity:1;visibility:visible;pointer-events:
 #approvals .revise{grid-column:span 2}
 #approvals .figs div{min-width:0}
 @media(max-width:550px){#approvals{padding:10px}.approval-head{padding:4px}}
-.decision-strip{display:inline-flex;align-items:center;padding-right:8px;gap:1px;border-radius:8px;background:#fff0cc;color:#794500;font:700 13px monospace}.decision-strip[hidden]{display:none}
+.decision-strip{display:inline-flex;align-items:center;padding-right:8px;gap:1px;border-radius:8px;background:#fff0cc;color:#794500;font:700 13px var(--font-data)}.decision-strip[hidden]{display:none}
 .card .stamp.decision-icon,.m .tag.human.decision-icon,.decision-strip .decision-icon{display:inline-grid;place-items:center;padding:0;border-radius:50%;width:28px;height:28px;line-height:1;color:var(--status-fg);background:var(--status-bg)}
 .decision-icon[data-state=pending]{--status-fg:#925600;--status-bg:#fff0cc}
 .decision-icon[data-state=ok]{--status-fg:#176d36;--status-bg:#dcf4df}
@@ -360,7 +364,7 @@ body.chat-open .chat{transform:none;opacity:1;visibility:visible;pointer-events:
 #approvals .who{margin:0 38px 8px 0}
 .approval-head .status-reader{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);padding:0}
 </style>
-<link rel="stylesheet" href="assets/WattsOn_timeline.css"><script src="assets/WattsOn_timeline.js"></script></head>
+<link rel="stylesheet" href="assets/WattsOn_timeline.css?v=mobile-chat"><script src="assets/WattsOn_timeline.js?v=footer-bottom"></script></head>
 <body>
 <svg width="0" height="0" aria-hidden="true" style="position:absolute"><defs>
  <symbol id="status-pending" viewBox="0 0 24 24"><circle cx="8.5" cy="7" r="3.4"/><path d="M2.5 20v-1.8a6 6 0 0 1 12 0V20M19 4.5v8"/><circle cx="19" cy="16.7" r="1.3" fill="currentColor" stroke="none"/></symbol>
@@ -382,10 +386,10 @@ body.chat-open .chat{transform:none;opacity:1;visibility:visible;pointer-events:
 
 <div class="atlas-summary" role="region" aria-label="Package summary">
   <div class="hero-stats">
-    <div class="stat"><b data-count="135210" data-prefix="−">0</b><span>CHF saved / yr</span></div>
-    <div class="stat"><b data-count="6516" data-prefix="−">0</b><span>kg CO₂ saved / yr</span></div>
-    <div class="stat"><b>6 wk</b><span>payback</span></div>
-    <div class="stat"><b>550</b><span>CHF under budget</span></div>
+    <div class="stat"><div class="stat-value"><small>CHF</small> <b data-count="135210">135,210</b></div><span>Cost savings /&nbsp;yr</span></div>
+    <div class="stat"><div class="stat-value"><b data-count="6516">6,516</b> <small>kg CO₂</small></div><span>Emissions avoided /&nbsp;yr</span></div>
+    <div class="stat"><div class="stat-value"><b>6</b> <small>weeks</small></div><span>Payback</span></div>
+    <div class="stat"><div class="stat-value"><small>CHF</small> <b>550</b></div><span>Under budget</span></div>
   </div>
 </div>
 
@@ -462,7 +466,7 @@ body.chat-open .chat{transform:none;opacity:1;visibility:visible;pointer-events:
     <article class="card" data-measure="m5" style="--i:3"><span class="stamp"><i aria-hidden="true"></i>Pending</span><div class="who"><i>IT</i>Approver · Head of IT</div><h3><small>M5</small> Reduce unused AI subscriptions</h3><p class="why">67 of 157 AI seats idle. New requests are rejected because "a subscription with the same benefit already exists".</p><div class="figs"><div><b>10</b><span>kg CO₂</span></div><div><b>14,990</b><span>CHF / yr</span></div><div><b>1.0</b><span>days</span></div></div><div class="guard"><b>Before approval</b><br>Move the two active ChatGPT users first. Check renewal dates and the 30-day notice period.</div><div class="acts"><button class="ex" onclick="openTree('m5')">Explain</button><button class="ok" onclick="decide(this,'ok')">Approve</button><button class="no" onclick="decide(this,'no')">Reject</button><button class="revise" onclick="decide(this,'pending')" hidden>Undo decision</button></div></article>
   </div>
 </section>
-<footer><span>WattsOn · sprintd Basel 2026</span><span>02 / 03</span></footer>
+<footer>WattsON · sprintd Basel 2026</footer>
 </div>
 
 <!-- ═══ TREE EXPLORER ═══ -->
@@ -473,7 +477,6 @@ body.chat-open .chat{transform:none;opacity:1;visibility:visible;pointer-events:
     <div class="ex-tools">
       <button onclick="expandAll(true)"><svg class="ico" viewBox="0 0 24 24"><path d="M4 14h16M12 6v16M8 10l4-4 4 4"/></svg>Expand all</button>
       <button onclick="expandAll(false)">Collapse</button>
-      <button onclick="fit()">Fit</button>
       <button class="dialog-close x" onclick="closeTree()" aria-label="Close"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
   </div>

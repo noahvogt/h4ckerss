@@ -47,7 +47,7 @@ function draw(a,s){
  const points=Array.from({length:5},(_,n)=>[series(n,false,a,s),series(n,true,a,s)]);
  const top=Math.max(...points.flat(2))*1.08;
  const narrow=window.matchMedia('(max-width:540px)').matches;
- const width=narrow?350:675,left=narrow?40:62,right=width-(narrow?22:41);
+ const width=narrow?350:675,left=narrow?54:62,right=width-(narrow?22:41);
  const step=(right-left)/4;
  const x=n=>left+n*step, y=v=>184-154*v/top;
  const path=arr=>arr.map(([x,y],i)=>(i?'L':'M')+x.toFixed(1)+' '+y.toFixed(1)).join(' ');
@@ -286,11 +286,9 @@ function recommend(reason){
   latestAdvice=scenarioAdvice(reason);
   id('thoughtTitle').textContent=latestAdvice[0];
   id('thoughtEvidence').textContent=latestAdvice[1];
-  id('forecastThought').hidden=false;
   if(!chatPanel.inert)showAdviceInChat();
  };
  if(['growth','grid','rollout'].includes(reason))adviceTimer=setTimeout(publish,240);
  else publish();
 }
-id('dismissThought').onclick=()=>{clearTimeout(adviceTimer);id('forecastThought').hidden=true;launcher.focus({preventScroll:true})};
-render();
+render('initial');

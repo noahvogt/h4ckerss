@@ -1,7 +1,10 @@
 import pandas as pd
 import pytest
 
+from app.pipeline.azure import SOURCE as AZURE_SOURCE
 from app.pipeline.baseline import select_baseline_facts
+from app.pipeline.build import read_facts
+from app.pipeline.common import lookup
 from app.pipeline.schema import validate
 
 
@@ -53,6 +56,25 @@ def test_requires_all_twelve_months(facts):
         select_baseline_facts(facts.loc[facts["month"].ne("2026-02-01")])
 
 
+def test_rejects_missing_azure_month_even_with_other_sources_in_same_month():
+    facts = read_facts()
+    february = facts["month"].eq(pd.Timestamp("2026-02-01"))
+    azure = facts["source"].eq(AZURE_SOURCE)
+    assert (february & azure).any()
+    assert set(facts.loc[february & ~azure, "source"]) == set(facts["source"]) - {AZURE_SOURCE}
+
+    with pytest.raises(ValueError, match=r"missing source months.*azure_costs\.csv.*2026-02"):
+        select_baseline_facts(facts.loc[~(february & azure)])
+
+
+@pytest.mark.parametrize("source", ["ai_usage.csv", "events.csv"])
+def test_activity_sources_can_be_sparse(facts, source):
+    event = facts.iloc[[0]].assign(source=source)
+    combined = pd.concat([facts, event], ignore_index=True)
+
+    pd.testing.assert_frame_equal(select_baseline_facts(combined), combined)
+
+
 def test_rejects_duplicate_fact_keys(facts):
     duplicate = facts.iloc[[0]].assign(cost_chf=20.0)
     combined = pd.concat([facts, duplicate], ignore_index=True)
@@ -77,6 +99,31 @@ def test_rejects_noncanonical_resource_ids(facts, resource_id, message):
         select_baseline_facts(facts)
 
 
+def test_distinguishes_known_padded_resource_id_from_unknown_id(facts):
+    facts.loc[0, "resource_id"] = "vm-app "
+    assert lookup(facts.loc[[0], "resource_id"])["tool"].item() == "App server"
+
+    with pytest.raises(ValueError, match="noncanonical resource IDs.*'vm-app '.*'vm-app'"):
+        select_baseline_facts(facts)
+
+
+def test_validates_schema_even_for_out_of_period_rows(facts):
+    outside = facts.iloc[[0]].assign(month=pd.Timestamp("2026-09-01"), location="invalid")
+    combined = pd.concat([facts, outside], ignore_index=True)
+
+    with pytest.raises(ValueError, match="baseline input: unknown location"):
+        select_baseline_facts(combined)
+
+
+@pytest.mark.parametrize(("month", "message"), [("not-a-date", "not-a-date"), (pd.NaT, "empty values in 'month'")])
+def test_rejects_months_that_cannot_be_filtered(facts, month, message):
+    invalid = facts.iloc[[0]].assign(month=month)
+    combined = pd.concat([facts, invalid], ignore_index=True)
+
+    with pytest.raises(ValueError, match=message):
+        select_baseline_facts(combined)
+
+
 def test_invalid_resource_ids_outside_baseline_do_not_block_selection(facts):
     outside = facts.iloc[:2].copy()
     outside["month"] = pd.to_datetime(["2025-08-01", "2026-09-01"])
@@ -85,6 +132,15 @@ def test_invalid_resource_ids_outside_baseline_do_not_block_selection(facts):
     combined = pd.concat([facts, outside], ignore_index=True)
 
     pd.testing.assert_frame_equal(select_baseline_facts(combined), facts)
+
+
+@pytest.mark.parametrize("month", ["2025-09-01 06:00:00", "2026-08-01 06:00:00"])
+def test_rejects_non_midnight_months_at_both_baseline_boundaries(facts, month):
+    invalid = facts.iloc[[0]].assign(month=pd.Timestamp(month))
+    combined = pd.concat([facts, invalid], ignore_index=True)
+
+    with pytest.raises(ValueError, match="month.*at midnight"):
+        select_baseline_facts(combined)
 
 
 def test_preserves_negative_credits(facts):

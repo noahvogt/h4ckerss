@@ -16,7 +16,7 @@ Rules:
 import pandas as pd
 
 COLUMNS: dict[str, str] = {
-    "month": "datetime64[ns]",  # first day of the month
+    "month": "datetime64[ns]",  # first day of the month at midnight
     "category": "string",  # see CATEGORIES
     "source": "string",  # file name, e.g. "azure_costs.csv"
     "resource_id": "string",  # as in mapping_departments_tools.csv, e.g. "dp-prod"
@@ -110,9 +110,10 @@ def validate(df: pd.DataFrame, name: str = "facts") -> pd.DataFrame:
         if bad:
             problems.append(f"unknown {col} values {bad}")
 
-    not_first = out["month"].dropna().dt.day.ne(1).sum()
-    if not_first:
-        problems.append(f"{not_first} 'month' values not on the 1st of the month")
+    months = out["month"].dropna()
+    not_month_start = (months.dt.day.ne(1) | months.ne(months.dt.normalize())).sum()
+    if not_month_start:
+        problems.append(f"{not_month_start} 'month' values not on the 1st of the month at midnight")
 
     no_cost_no_note = out["cost_chf"].isna() & out["note"].fillna("").eq("")
     if no_cost_no_note.any():

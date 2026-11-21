@@ -1,6 +1,6 @@
 # Baseline calculation
 
-The implemented pipeline selects monthly facts, validates research factors, and estimates facility electricity per fact.
+The implemented pipeline selects monthly facts, validates research factors, and estimates facility electricity and location-based CO₂e per fact.
 
 ## Baseline selection
 
@@ -46,10 +46,26 @@ The result preserves every original fact, its index, and its order. It adds `ene
 
 The [checked-in facts](../data/derived/facts.csv) reconcile to **698 facts, 12 months, and CHF 470,300.4703 net**, including the test account. All 216 unknown rows lack a supported factor.
 
+## Location-based emissions
+
+[`calculate_emissions()`](../backend/app/pipeline/emissions.py) uses the grid factor for each fact's location and pairs each facility energy scenario with the same grid intensity scenario.
+
+```text
+co2e_kg_s = energy_kwh_s * grid_intensity_s
+```
+
+Grid factors cover Switzerland (`CH`), Germany (`DE`), Ireland (`IE`), and a mixed EU proxy (`EU`). The output retains the original `grid_factor_parameter` and `grid_factor_unit` for matched locations. CH, DE, and IE retain the CSV label `kg CO2 per kWh`, and the EU row uses `kg CO2e per kWh`. All four methods document a CO₂e basis, so the output values are in kg CO₂e.
+
+| `emissions_status` | Meaning | Baseline facts |
+|---|---|---:|
+| `calculated` | The fact has calculated energy in all three scenarios and a matching grid factor. Zero energy gives zero CO₂e. | 468 |
+| `unknown` | An unmatched location or unavailable energy leaves all three emissions values missing. Any existing energy estimates are preserved. | 216 |
+| `cost_only` | Cost-only energy facts keep this status and have missing emissions. | 14 |
+
+The result adds `co2e_kg_low`, `co2e_kg_mid`, and `co2e_kg_high` alongside the status and grid metadata. It preserves the original facts and their index and order. Non-finite or negative calculated emissions raise `ValueError`. All 216 unknown emissions facts in the checked-in baseline lack an energy estimate.
+
 ## Limitations and planned work
 
-Energy values use researched proxies. The storage factor assumes logical GB-days, and the GPU factor models the board. Coverage is limited to supported usage and the quantities reported in the facts.
+Energy values use researched proxies. The storage factor assumes logical GB-days, and the GPU factor models the board. Energy and emissions cover only supported kinds and reported usage. The Swiss grid factor uses a consumption mix including imports. The German, Irish, and mixed EU factors use generation-based proxies, and the mixed EU factor represents the region rather than individual providers.
 
-**CO₂e calculation — NOT YET IMPLEMENTED.** The loader validates grid factors for CH, DE, IE, and mixed EU, but facility energy does not use them. Planned location-based emissions will multiply each scenario's facility kWh by the matching location and scenario intensity in kg CO₂e/kWh. Unknown locations have no grid factor. The CH, DE, and IE CSV labels retain `kg CO2 per kWh`, while their documented basis is CO₂e. The mixed EU row already uses `kg CO2e per kWh`.
-
-Aggregation, frontend integration, and submission export are also outside the current pipeline.
+Aggregation, frontend integration, and submission export are outside the current pipeline.

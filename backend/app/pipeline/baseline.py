@@ -25,6 +25,10 @@ def select_baseline_facts(facts: pd.DataFrame) -> pd.DataFrame:
         )
 
     resource_ids = baseline["resource_id"]
+    missing_ids = resource_ids.isna() | resource_ids.str.strip().eq("")
+    if missing_ids.any():
+        raise ValueError(f"baseline facts: missing resource IDs in {missing_ids.sum()} row(s)")
+
     unknown_ids = resource_ids.loc[~resource_ids.isin(mapping().index)].unique()
     if len(unknown_ids):
         raise ValueError(f"baseline facts: unknown resource IDs: {unknown_ids.tolist()}")

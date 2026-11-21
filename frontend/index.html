@@ -336,7 +336,7 @@ body.chat-open .chat{transform:none;opacity:1;visibility:visible;pointer-events:
 <div class="wrap">
 <nav>
   <div class="logo"><img class="brand-wordmark" src="assets/WattsOn_logo.webp" alt="WattsOn" width="760" height="310"></div>
-  <div class="crumbs"><span class="on" aria-current="page">01 Baseline</span><a href="package.html"><span>02 Package</span></a><a href="forecast.html" style="display:flex;text-decoration:none"><span>03 Forecast</span></a></div>
+  <div class="crumbs"><span class="on" aria-current="page">01 Baseline</span><a href="package.html"><span>02 Package</span></a><a href="forecast.html" style="display:flex;text-decoration:none"><span>03 Forecast</span></a><a href="integrations.html" style="display:flex;text-decoration:none"><span>04 Integrations</span></a></div>
   <div class="nav-period"><div class="time-host"></div><div class="nav-r mono">FY Sep 25 – Aug 26 · budget CHF 16,500</div></div>
 </nav>
 
@@ -880,5 +880,5 @@ function periodLabels(){
  if(document.body.classList.contains('explore')&&curKey)openTree(curKey);
 }
 document.addEventListener('timelinechange',periodLabels);
-</script></body>
+</script><script src="assets/WattsOn_wattson_llm.js"></script></body>
 </html>

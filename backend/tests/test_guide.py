@@ -84,6 +84,29 @@ def test_baseline_package_and_unknown_questions():
     assert unknown["topic"] == "unsupported" and not unknown["sources"]
 
 
+@pytest.mark.parametrize(("question", "expected"), [
+    ("Which AI subscriptions should we optimize first?", [
+        ("data/provided/ai_subscriptions.csv", None),
+        ("data/provided/exchange_rates.csv", None),
+    ]),
+    ("What does the overall optimization package save each year?", [
+        ("submission/measures_package.csv", "/api/package"),
+        ("docs/baseline_calculation.md", "/api/baseline"),
+        ("submission/research_baseline_and_assumptions.csv", None),
+    ]),
+    ("Who won the World Cup?", []),
+])
+def test_source_references_serialize_and_api_links_resolve(question, expected):
+    sources = ask(question)["sources"]
+    assert [(source["reference"], source["api_url"]) for source in sources] == expected
+    for reference, api_url in expected:
+        assert (DATA_DIR.parents[1] / reference).is_file()
+        if api_url:
+            response = client.get(api_url)
+            assert response.status_code == 200
+            assert response.headers["content-type"].startswith("application/json")
+
+
 def test_shared_chat_is_served_with_baseline_and_package_pages():
     for path in ("/", "/package.html"):
         page = client.get(path)

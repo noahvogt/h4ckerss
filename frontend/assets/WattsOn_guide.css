@@ -29,7 +29,16 @@
 }
 
 .guide-sources ul {
+  margin-top: 4px;
   padding-inline-start: 16px;
+}
+
+.guide-sources li + li {
+  margin-top: 4px;
+}
+
+.guide-source-label {
+  color: var(--ink2);
 }
 
 .guide-sources a {

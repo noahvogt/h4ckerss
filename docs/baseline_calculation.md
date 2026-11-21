@@ -1,43 +1,20 @@
-# Baseline Calculation Methodology
+# Baseline calculation
 
-## 1. Purpose
+The implemented pipeline selects monthly facts, validates research factors, and estimates facility electricity per fact.
 
-This document describes how the baseline calculation pipeline estimates energy consumption and location-based greenhouse gas emissions from the provided monthly usage and cost data.
+## Baseline selection
 
-**Baseline period:** September 2025 – August 2026 (12 months).
+[`select_baseline_facts()`](../backend/app/pipeline/baseline.py) validates the input against the shared fact schema, including required fields, allowed categorical values, month-start dates, and a note on any missing CHF cost. It selects **September 2025 through August 2026**, inclusive, and requires at least one fact in each of the 12 months.
 
-The validated baseline contains 698 facts with net costs of CHF 470,300.4703.
+Within the selected period, it rejects duplicate keys on `(month, source, resource_id, department, usage_kind)` and missing or unknown resource IDs. Valid IDs come from the [master mapping](../data/provided/mapping_departments_tools.csv). Selection preserves row order, CHF values, and source notes.
 
-All estimates are traceable to the researched assumptions in `submission/research_baseline_and_assumptions.csv`.
+## Research factors
 
-## 2. Energy Calculation
+[`load_factors()`](../backend/app/pipeline/factors.py) reads the [research CSV](../submission/research_baseline_and_assumptions.csv). It requires the energy, PUE, and location-based grid assumptions, rejects duplicate parameters, and checks required fields, exact units, and the documented `Must` or `Bonus` labels. Values must be finite and satisfy `0 <= low <= mid <= high`. PUE must be at least 1.
 
-For each fact and scenario \(s \in \{\text{low}, \text{mid}, \text{high}\}\), estimated facility energy is calculated as:
+The loader retains the original `unit`, `parameter`, `source`, and `calculation_or_assumption` fields. Each energy factor also supplies a precise `factor_unit`, a `usage_divisor` for converting the fact quantity to the factor's denominator, and an `apply_pue` flag.
 
-\[
-E_s =
-\frac{\text{usage\_qty}}{\text{usage\_divisor}}
-\times \text{energy\_factor}_s
-\times
-\begin{cases}
-\text{PUE}_s & \text{if apply\_pue = true}\\
-1 & \text{otherwise}
-\end{cases}
-\]
-
-Where:
-
-- `usage_qty`: Monthly usage quantity from the fact.
-- `usage_divisor`: Number of usage units represented by one factor value.
-- `energy_factor_s`: Researched energy factor for scenario `s`.
-- `PUE_s`: Power Usage Effectiveness for scenario `s`.
-- `apply_pue`: Whether the energy factor requires facility overhead.
-
-The resulting energy is expressed in **kWh**.
-
-### Factor units
-
-| Usage kind | Factor unit | Divisor | Apply PUE |
+| Supported `usage_kind` | Factor unit | Divisor | Apply PUE |
 |---|---|---:|---|
 | `vcpu_h` | kWh/vCPU-hour | 1 | Yes |
 | `node_h` | kWh/node-hour | 1 | Yes |
@@ -46,86 +23,30 @@ The resulting energy is expressed in **kWh**.
 | `tokens` | kWh/1,000 tokens | 1,000 | No |
 | `messages` | kWh/message | 1 | No |
 
-PUE is applied only when the researched factor represents IT energy rather than facility-inclusive energy. It must never be applied twice.
+## Facility energy
 
-## 3. Scenario Interpretation
+[`calculate_energy()`](../backend/app/pipeline/energy.py) applies the following formula separately for each scenario `s` in `low`, `mid`, and `high`.
 
-All calculations preserve three scenarios:
+```text
+energy_kwh_s = (usage_qty / usage_divisor) * value_s * (PUE_s if apply_pue else 1)
+```
 
-- **Low:** Lower-bound sensitivity estimate.
-- **Mid:** Central estimate used for the default dashboard view.
-- **High:** Upper-bound sensitivity estimate.
+`value_s` and `PUE_s` come from the same scenario column in the energy and power usage effectiveness (PUE) assumptions. Infrastructure factors represent IT energy and receive PUE once. AI token and message factors already include facility overhead. Low, mid, and high are deterministic sensitivity scenarios with no statistical confidence interpretation. Mid is the central estimate.
 
-These scenarios are deterministic sensitivity estimates, **not statistical confidence intervals**.
+The result preserves every original fact, its index, and its order. It adds `energy_kwh_low`, `energy_kwh_mid`, `energy_kwh_high`, and `energy_status`. It records `energy_factor_parameter`, `energy_factor_unit`, and `energy_apply_pue` for matched factors. The parameter links back to the research provenance. A non-finite or negative calculated result raises `ValueError`.
 
-The frontend should display the Mid scenario by default and allow users to inspect Low and High.
+| `energy_status` | Meaning | Baseline facts |
+|---|---|---:|
+| `calculated` | A supported factor and finite, nonnegative usage produce an estimate. Valid zero usage produces zero kWh. | 468 |
+| `unknown` | Missing, nonnumeric, negative, or non-finite usage leaves kWh missing. The unsupported kinds `gb_transfer`, `capacity_day`, `runner_min`, and `seat_month` also leave kWh missing. | 216 |
+| `cost_only` | `usage_kind = none` leaves kWh missing for fees and credits. Negative CHF credits remain in net cost. | 14 |
 
-## 4. Emissions Calculation
+The [checked-in facts](../data/derived/facts.csv) reconcile to **698 facts, 12 months, and CHF 470,300.4703 net**, including the test account. All 216 unknown rows lack a supported factor. The 134 gateway rows with partial token counts use the available quantity and retain their source notes. Their estimates cover the reported usage only.
 
-For each fact with a known location and calculable energy:
+## Limitations and planned work
 
-\[
-CO_{2e,s} = E_s \times I_{\text{location},s}
-\]
+Energy values use researched proxies. The storage factor assumes logical GB-days, and the GPU factor models the board. Coverage is limited to supported usage and the quantities reported in the facts.
 
-Where \(I_{\text{location},s}\) is the researched location-based grid intensity in kg CO₂e/kWh.
+**CO₂e calculation — NOT YET IMPLEMENTED.** The loader validates grid factors for CH, DE, IE, and mixed EU, but facility energy does not use them. Planned location-based emissions will multiply each scenario's facility kWh by the matching location and scenario intensity in kg CO₂e/kWh. Unknown locations have no grid factor. The CH, DE, and IE CSV labels retain `kg CO2 per kWh`, while their documented basis is CO₂e. The mixed EU row already uses `kg CO2e per kWh`.
 
-Supported grid locations:
-
-- `CH`: Switzerland
-- `DE`: Germany
-- `IE`: Ireland
-- `EU`: EU mixed proxy
-
-The original CSV unit labels and provenance are preserved. Some research rows use the template label `kg CO2 per kWh`, while their documented methodological basis is CO₂e.
-
-Unknown locations must not receive an invented grid factor.
-
-## 5. Missing Data and Cost-Only Facts
-
-Not every fact has a supported energy model.
-
-The pipeline must distinguish:
-
-| Status | Meaning |
-|---|---|
-| `calculated` | Energy can be estimated from a supported factor. |
-| `unknown` | Energy cannot be calculated because a suitable factor or required input is unavailable. |
-| `cost_only` | Financial entry without meaningful usage-based energy, such as a fee or credit. |
-
-Missing energy must **never** be silently replaced with zero.
-
-Negative financial credits remain part of net cost totals but do not automatically represent negative energy consumption.
-
-## 6. Traceability
-
-The calculation output should preserve sufficient metadata to reproduce and explain each result:
-
-- Original fact identifiers and usage quantity
-- Energy factor parameter and precise unit
-- Research source and calculation assumption
-- PUE applicability
-- Low/Mid/High energy results
-- Calculation status
-
-## 7. Implementation Plan
-
-1. Select and validate baseline facts.
-2. Load and validate researched energy factors.
-3. Calculate facility energy per fact.
-4. Calculate location-based emissions.
-5. Aggregate monthly and annual totals and rank drivers.
-6. Export detailed calculation results for the frontend.
-7. Export the official baseline and assumptions submission.
-
-## 8. Validation
-
-The calculation pipeline must be tested against synthetic examples and the actual baseline dataset.
-
-Baseline reconciliation:
-
-- 698 facts
-- 12 months
-- CHF 470,300.4703 net costs
-
-The pipeline must preserve all original facts and financial values while adding calculated environmental metrics.
+Aggregation, frontend integration, and submission export are also outside the current pipeline.

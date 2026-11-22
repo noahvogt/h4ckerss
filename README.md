@@ -45,6 +45,19 @@ WATTSON_MODEL=gpt-5
 The browser never receives the key. Without a key, `/api/wattson/chat` returns a local
 fallback answer so the UI still works.
 
+### Docker
+
+API and frontend in one container (Python 3.15), on http://localhost:8000:
+
+```sh
+docker compose up -d --build                     # OPENAI_API_KEY from the shell or .env
+OPENAI_API_KEY= docker compose up -d --build     # without a key: both assistants run offline
+docker compose up -d --force-recreate            # reset approval decisions before a demo
+docker compose down
+```
+
+`.env` is read by Compose but never copied into the image. Approval decisions live inside the container and reset on recreate. For a public link, run without a key: anyone with the link could otherwise spend OpenAI credit. `WATTSON_PORT=8080` changes the host port.
+
 ### API for the frontend
 
 Same numbers as the files in `submission/`. Details and response schemas at `/docs`.

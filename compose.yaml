@@ -1,0 +1,20 @@
+# docker compose up --build   ->   http://localhost:8000
+#
+# OPENAI_API_KEY comes from the shell or from .env next to this file (Compose reads it for
+# the ${...} below; the file itself is never copied into the image). Without a key both
+# assistants run offline: the Guide in demo mode, Wattson with its fallback answers.
+# Public demo without a key:   OPENAI_API_KEY= docker compose up -d --build
+#
+# Approval decisions and the Guide usage log live inside the container on purpose:
+# `docker compose up -d --force-recreate` resets the demo to the committed state.
+services:
+  wattson:
+    build: .
+    image: wattson:latest
+    ports:
+      - "${WATTSON_PORT:-8000}:8000"
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-}
+      WATTSON_MODEL: ${WATTSON_MODEL:-}
+    restart: unless-stopped

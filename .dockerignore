@@ -1,0 +1,19 @@
+# Secrets: never bake the API key into the image.
+.env
+.env.*
+**/.env
+
+# Local state and build output
+.git
+**/.venv
+**/__pycache__
+**/*.pyc
+**/.pytest_cache
+**/.ipynb_checkpoints
+out
+
+# Not needed at runtime
+Dockerfile
+compose.yaml
+.dockerignore
+*.pptx

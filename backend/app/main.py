@@ -9,7 +9,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from app.routers import baseline, measures, rules, wattson
+from app.routers import baseline, guide, measures, rules, wattson
 
 DATA_DIR = Path(__file__).resolve().parents[2] / "data" / "provided"
 FRONTEND_DIR = Path(__file__).resolve().parents[2] / "frontend"
@@ -37,6 +37,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(guide.router)
 app.include_router(rules.router)
 app.include_router(baseline.router)
 app.include_router(measures.router)
